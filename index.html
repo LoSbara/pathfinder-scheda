@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Torre di Jacob — Pathfinder 1e</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/character.css" />
+</head>
+<body>
+
+  <!-- ===== HOME: selezione / creazione personaggio ===== -->
+  <div id="screen-home" class="screen active">
+    <header class="home-header">
+      <div class="home-header-inner">
+        <h1 class="home-title">Torre di Jacob</h1>
+        <p class="home-subtitle">Pathfinder 1e &mdash; Gestione Schede</p>
+      </div>
+    </header>
+
+    <main class="home-main">
+      <div class="home-toolbar">
+        <button id="btn-new-character" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nuovo Personaggio</button>
+        <label class="btn btn-secondary" title="Importa da file .pf1.json">
+          <i class="fa-solid fa-file-import"></i> Importa
+          <input type="file" id="input-import" accept=".json,.pf1.json" hidden />
+        </label>
+      </div>
+
+      <div id="character-list" class="character-list">
+        <!-- Popolato da app.js -->
+      </div>
+
+      <p id="home-empty" class="home-empty hidden">
+        Nessun personaggio salvato.<br />Crea il tuo primo eroe!
+      </p>
+
+      <div id="storage-bar" class="storage-bar">
+        <span id="storage-text">Spazio: 0 KB / 5120 KB</span>
+        <div class="storage-track"><div id="storage-fill" class="storage-fill"></div></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== SCHEDA PERSONAGGIO ===== -->
+  <div id="screen-character" class="screen">
+
+    <!-- Barra superiore sticky (header + banner condizioni + nav tab) -->
+    <div class="char-top-bar">
+
+    <header class="char-header">
+      <button id="btn-back" class="btn btn-ghost" title="Torna alla home"><i class="fa-solid fa-house"></i> <span class="btn-text">Home</span></button>
+      <span id="char-header-name" class="char-header-name">Personaggio</span>
+      <div class="char-header-actions">
+        <button id="btn-level-up" class="btn btn-secondary" title="Sali di livello"><i class="fa-solid fa-arrow-trend-up"></i> <span class="btn-text">Livello</span></button>
+        <button id="btn-save" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> <span class="btn-text">Salva</span></button>
+        <button id="btn-export" class="btn btn-ghost" title="Esporta JSON"><i class="fa-solid fa-file-export"></i></button>
+      </div>
+    </header>
+
+    <!-- Banner condizioni attive (mostra solo se ci sono condizioni) -->
+    <div id="conditions-banner" class="conditions-banner hidden"></div>
+
+    <nav class="tab-nav" id="tab-nav">
+      <button class="tab-burger" id="tab-burger" aria-label="Menu sezioni" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="tab-active-label" id="tab-active-label">Sommario</span>
+      <div class="tab-menu">
+        <button class="tab-btn active" data-tab="sommario"><i class="fa-solid fa-scroll"></i> Sommario</button>
+        <button class="tab-btn" data-tab="caratteristiche"><i class="fa-solid fa-person"></i> Caratteristiche</button>
+        <button class="tab-btn" data-tab="combattimento"><i class="fa-solid fa-shield-halved"></i> Combattimento</button>
+        <button class="tab-btn" data-tab="abilita"><i class="fa-solid fa-book-open"></i> Abilità</button>
+        <button class="tab-btn" data-tab="armi"><i class="fa-solid fa-hand-fist"></i> Armi</button>
+        <button class="tab-btn" data-tab="equipaggiamento"><i class="fa-solid fa-bag-shopping"></i> Equip.</button>
+        <button class="tab-btn" data-tab="talenti"><i class="fa-solid fa-star"></i> Talenti</button>
+        <button class="tab-btn" data-tab="incantesimi"><i class="fa-solid fa-wand-magic-sparkles"></i> Incantesimi</button>
+        <button class="tab-btn" data-tab="note"><i class="fa-solid fa-pen"></i> Note</button>
+      </div>
+    </nav>
+
+    </div><!-- /.char-top-bar -->
+
+    <main class="tab-content">
+
+      <!-- ══ TAB: SOMMARIO ══════════════════════════════════════════════ -->
+      <section id="tab-sommario" class="tab-panel active">
+        <div class="sommario-layout">
+
+          <!-- Colonna sinistra: immagine personaggio -->
+          <div class="sommario-image-col">
+            <div class="char-image-wrapper" id="char-image-wrapper">
+              <img id="char-image" src="" alt="Personaggio" class="char-image hidden" />
+              <div id="char-image-placeholder" class="char-image-placeholder">
+                <span>&#128100;</span>
+                <small>Clicca per aggiungere immagine</small>
+              </div>
+              <input type="file" id="input-image" accept="image/*" hidden />
+            </div>
+            <button id="btn-remove-image" class="btn btn-danger btn-sm hidden"><i class="fa-solid fa-trash-can"></i> Rimuovi</button>
+          </div>
+
+          <!-- Colonna destra: dati anagrafici -->
+          <div class="sommario-info-col">
+            <div class="field-group">
+              <label>Nome Personaggio</label>
+              <input type="text" id="meta-name" class="field-input field-large" placeholder="Nome eroe..." />
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Giocatore</label>
+                <input type="text" id="meta-player" class="field-input" placeholder="Nome giocatore" />
+              </div>
+              <div class="field-group">
+                <label>Razza</label>
+                <input type="text" id="meta-race" class="field-input" placeholder="es. Mezzorco" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Allineamento</label>
+                <select id="meta-alignment" class="field-input">
+                  <option value="">—</option>
+                  <option>Legale Buono</option><option>Neutrale Buono</option><option>Caotico Buono</option>
+                  <option>Legale Neutrale</option><option>Neutrale</option><option>Caotico Neutrale</option>
+                  <option>Legale Malvagio</option><option>Neutrale Malvagio</option><option>Caotico Malvagio</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Divinità</label>
+                <input type="text" id="meta-deity" class="field-input" placeholder="es. Gorum" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Taglia</label>
+                <select id="meta-size" class="field-input">
+                  <option>Piccolissima</option><option>Piccola</option>
+                  <option selected>Media</option><option>Grande</option><option>Enorme</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Sesso</label>
+                <input type="text" id="meta-gender" class="field-input" placeholder="—" />
+              </div>
+              <div class="field-group">
+                <label>Età</label>
+                <input type="number" id="meta-age" class="field-input" min="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Altezza</label>
+                <input type="text" id="meta-height" class="field-input" placeholder="es. 1,80 m" />
+              </div>
+              <div class="field-group">
+                <label>Peso</label>
+                <input type="text" id="meta-weight" class="field-input" placeholder="es. 85 kg" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Occhi</label>
+                <input type="text" id="meta-eyes" class="field-input" placeholder="es. Rossi" />
+              </div>
+              <div class="field-group">
+                <label>Capelli</label>
+                <input type="text" id="meta-hair" class="field-input" placeholder="es. Neri" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Patria</label>
+                <input type="text" id="meta-homeland" class="field-input" placeholder="es. Brevoy" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Classi (lista dinamica) -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Classi</h3>
+            <button id="btn-add-class" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Classe</button>
+          </div>
+          <div id="classes-list" class="classes-list"></div>
+          <div class="field-row summary-row">
+            <span>Livello Totale: <strong id="total-level-display">1</strong></span>
+            <span>PX: <input type="number" id="meta-xp" class="field-input field-narrow" min="0" value="0" /></span>
+          </div>
+        </div>
+
+        <!-- Lingue -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lingue</h3>
+          </div>
+          <input type="text" id="meta-languages" class="field-input field-wide"
+            placeholder="es. Comune, Infernale, Nanico (separate da virgola)" />
+        </div>
+
+        <!-- Background -->
+        <div class="section-block">
+          <div class="section-header"><h3>Background</h3></div>
+          <textarea id="meta-background" class="field-textarea" rows="4"
+            placeholder="Storia del personaggio..."></textarea>
+        </div>
+      </section>
+
+      <!-- ══ TAB: CARATTERISTICHE ══════════════════════════════════════ -->
+      <section id="tab-caratteristiche" class="tab-panel">
+
+        <div class="abilities-grid" id="abilities-grid">
+          <!-- Generato da ui.js: una card per STR, DEX, CON, INT, WIS, CHA -->
+        </div>
+
+        <!-- Condizioni attive -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Condizioni</h3>
+          </div>
+          <div id="conditions-checkboxes" class="conditions-grid">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+
+        <!-- Ira di Stirpe (nascosto per classi senza ira) -->
+        <div class="section-block rage-block hidden" id="rage-block">
+          <div class="section-header">
+            <h3>Ira di Stirpe</h3>
+            <button id="btn-toggle-rage" class="btn btn-rage">Entra in Ira</button>
+          </div>
+          <div class="rage-stats">
+            <div class="stat-box">
+              <span class="stat-label">Round Usati</span>
+              <input type="number" id="rage-rounds-used" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Round Totali</span>
+              <span class="stat-value" id="rage-rounds-total">—</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Round Rimasti</span>
+              <span class="stat-value" id="rage-rounds-left">—</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Nome Stirpe</label>
+              <input type="text" id="rage-bloodline" class="field-input" placeholder="es. Abissale" />
+            </div>
+          </div>
+          <!-- Poteri di Stirpe -->
+          <div class="bloodline-powers-section">
+            <div class="section-subheader">
+              <span>Poteri di Stirpe</span>
+              <button id="btn-add-bloodline-power" class="btn btn-sm btn-secondary">
+                <i class="fa-solid fa-plus"></i> Aggiungi
+              </button>
+            </div>
+            <div id="bloodline-powers-list"></div>
+          </div>
+        </div>
+
+        <!-- Esibizione Bardica (Bardo, Skald) -->
+        <div class="section-block class-resource-block hidden" id="bard-block">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-music"></i> Esibizione Bardica</h3>
+            <button id="btn-bard-reset" class="btn btn-sm"><i class="fa-solid fa-rotate-left"></i> Ripristina</button>
+          </div>
+          <div class="rage-stats">
+            <div class="stat-box">
+              <span class="stat-label">Round Rimasti</span>
+              <input type="number" id="bard-rounds-left" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Round Totali</span>
+              <span class="stat-value" id="bard-rounds-max">—</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Bonus</span>
+              <input type="number" id="bard-extra" class="stat-value-input" value="0" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Esibizione attiva</label>
+              <input type="text" id="bard-active" class="field-input" placeholder="es. Ispirazione Coraggiosa" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Ki Pool (Monaco, Ninja) -->
+        <div class="section-block class-resource-block hidden" id="ki-block">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-wind"></i> Riserva di Ki</h3>
+            <button id="btn-ki-reset" class="btn btn-sm"><i class="fa-solid fa-rotate-left"></i> Ripristina</button>
+          </div>
+          <div class="rage-stats">
+            <div class="stat-box">
+              <span class="stat-label">Ki Attuali</span>
+              <input type="number" id="ki-current" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Ki Totali</span>
+              <span class="stat-value" id="ki-max">—</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Bonus</span>
+              <input type="number" id="ki-extra" class="stat-value-input" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Canalizzare Energia (Chierico, Paladino, Inquisitore, Guardiamarca) -->
+        <div class="section-block class-resource-block hidden" id="channel-block">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-sun"></i> Canalizzare Energia</h3>
+            <button id="btn-channel-reset" class="btn btn-sm"><i class="fa-solid fa-rotate-left"></i> Ripristina</button>
+          </div>
+          <div class="rage-stats">
+            <div class="stat-box">
+              <span class="stat-label">Tipo</span>
+              <select id="channel-type" class="stat-value-input field-select-sm">
+                <option value="positiva">Positiva</option>
+                <option value="negativa">Negativa</option>
+              </select>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Dado (Xd6)</span>
+              <input type="number" id="channel-dice" class="stat-value-input" min="1" value="1" />
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Usi Rimasti</span>
+              <input type="number" id="channel-uses-left" class="stat-value-input" min="0" value="3" />
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Usi Totali</span>
+              <input type="number" id="channel-uses-max" class="stat-value-input" min="1" value="3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Attacco Furtivo (Ladro, Ninja, Spia, Inquisitore, Vigilante) -->
+        <div class="section-block class-resource-block hidden" id="sneak-block">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-eye-slash"></i> Attacco Furtivo</h3>
+          </div>
+          <div class="rage-stats">
+            <div class="stat-box">
+              <span class="stat-label">Danno</span>
+              <span class="stat-value" id="sneak-dice">—</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">d6 bonus</span>
+              <input type="number" id="sneak-extra" class="stat-value-input" value="0" />
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ TAB: COMBATTIMENTO ════════════════════════════════════════ -->
+      <section id="tab-combattimento" class="tab-panel">
+
+        <!-- Punti Ferita -->
+        <div class="section-block">
+          <h3>Punti Ferita</h3>
+          <div class="hp-row">
+            <div class="hp-box">
+              <label>Massimi</label>
+              <input type="number" id="hp-max" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="hp-box hp-current-box">
+              <label>Attuali</label>
+              <input type="number" id="hp-current" class="stat-value-input hp-current" value="0" />
+            </div>
+            <div class="hp-box">
+              <label>Non Letali</label>
+              <input type="number" id="hp-nonlethal" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="hp-box">
+              <label>Temporanei</label>
+              <span class="stat-value" id="hp-temp-display" title="PF bonus durante l'ira">+0</span>
+            </div>
+            <div class="hp-box">
+              <label title="Ogni livello negativo: −1 a tiri attacco / TS / prove, −5 PF max">Liv. Negativi</label>
+              <input type="number" id="negative-levels" class="stat-value-input" min="0" value="0" />
+            </div>
+          </div>
+          <div class="hp-status-row">
+            <span id="hp-status" class="hp-status-badge hp-status-normal">Normale</span>
+          </div>
+        </div>
+
+        <!-- CA -->
+        <div class="section-block">
+          <h3>Classe Armatura</h3>
+          <div class="ca-summary">
+            <div class="ca-box ca-box-main">
+              <span class="ca-label">Normale</span>
+              <span class="ca-value" id="ca-normal">10</span>
+            </div>
+            <div class="ca-box">
+              <span class="ca-label">Contatto</span>
+              <span class="ca-value" id="ca-touch">10</span>
+            </div>
+            <div class="ca-box">
+              <span class="ca-label">Impreparato</span>
+              <span class="ca-value" id="ca-flat">10</span>
+            </div>
+          </div>
+          <div class="ca-breakdown">
+            <div class="field-row">
+              <div class="field-group">
+                <label>Armatura</label>
+                <input type="number" id="ac-armor" class="field-input field-narrow" />
+              </div>
+              <div class="field-group">
+                <label>Scudo</label>
+                <input type="number" id="ac-shield" class="field-input field-narrow" />
+              </div>
+              <div class="field-group">
+                <label>Naturale</label>
+                <input type="number" id="ac-natural" class="field-input field-narrow" />
+              </div>
+              <div class="field-group">
+                <label>Deflection</label>
+                <input type="number" id="ac-deflection" class="field-input field-narrow" />
+              </div>
+              <div class="field-group">
+                <label>Schivata</label>
+                <input type="number" id="ac-dodge" class="field-input field-narrow" />
+              </div>
+              <div class="field-group">
+                <label>Varie</label>
+                <input type="number" id="ac-misc" class="field-input field-narrow" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Armatura indossata -->
+        <div class="section-block">
+          <h3>Armatura Indossata</h3>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Nome</label>
+              <input type="text" id="armor-name" class="field-input" placeholder="es. Corazza di Piastre Flessibile +1" />
+            </div>
+            <div class="field-group">
+              <label>Tipo</label>
+              <select id="armor-type" class="field-input">
+                <option value="">Nessuna</option>
+                <option>Leggera</option><option>Media</option><option>Pesante</option><option>Scudo</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Bonus</label>
+              <input type="number" id="armor-bonus" class="field-input field-narrow" />
+            </div>
+            <div class="field-group">
+              <label>Des Max</label>
+              <input type="number" id="armor-maxdex" class="field-input field-narrow" placeholder="—" />
+            </div>
+            <div class="field-group">
+              <label>PPA</label>
+              <input type="number" id="armor-acp" class="field-input field-narrow" placeholder="0" />
+            </div>
+            <div class="field-group">
+              <label>FIA%</label>
+              <input type="number" id="armor-asf" class="field-input field-narrow" placeholder="0" />
+            </div>
+            <div class="field-group">
+              <label>Velocità</label>
+              <input type="number" id="armor-speed" class="field-input field-narrow" placeholder="0" />
+            </div>
+            <div class="field-group">
+              <label>Peso (kg)</label>
+              <input type="number" id="armor-weight" class="field-input field-narrow" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Iniziativa, BAB, Velocità -->
+        <div class="section-block">
+          <div class="field-row">
+            <div class="stat-box-medium">
+              <span class="stat-label">Iniziativa</span>
+              <span class="stat-value" id="initiative-total">+0</span>
+              <div class="stat-breakdown">Des <input type="number" id="initiative-misc" class="field-narrow-inline" value="0" /> misc</div>
+            </div>
+            <div class="stat-box-medium">
+              <span class="stat-label">BAB</span>
+              <input type="number" id="bab-input" class="stat-value-input" min="0" value="0" />
+            </div>
+            <div class="stat-box-medium">
+              <span class="stat-label">Velocità</span>
+              <span class="stat-value" id="speed-total">9 m</span>
+              <div class="stat-breakdown"><input type="number" id="speed-base" class="field-narrow-inline" value="9" /> base</div>
+            </div>
+          </div>
+          <div class="field-row" style="margin-top:0.4rem">
+            <div class="field-group" title="Velocità di nuoto (0 = nessuna)">
+              <label>Nuoto (m)</label>
+              <input type="number" id="speed-swim" class="field-input field-narrow" value="0" min="0" />
+            </div>
+            <div class="field-group" title="Velocità di volo (0 = nessuna)">
+              <label>Volo (m)</label>
+              <input type="number" id="speed-fly" class="field-input field-narrow" value="0" min="0" />
+            </div>
+            <div class="field-group" title="Velocità di scalata (0 = nessuna)">
+              <label>Scalata (m)</label>
+              <input type="number" id="speed-climb" class="field-input field-narrow" value="0" min="0" />
+            </div>
+            <div class="field-group" title="Velocità di scavo (0 = nessuna)">
+              <label>Scavo (m)</label>
+              <input type="number" id="speed-burrow" class="field-input field-narrow" value="0" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CMB / CMD -->
+        <div class="section-block">
+          <h3>Manovre in Combattimento</h3>
+          <div class="field-row">
+            <div class="stat-box-medium">
+              <span class="stat-label">CMB</span>
+              <span class="stat-value" id="cmb-total">+0</span>
+              <div class="stat-breakdown">BAB + FOR + taglia <input type="number" id="cmb-misc" class="field-narrow-inline" value="0" /> misc</div>
+            </div>
+            <div class="stat-box-medium">
+              <span class="stat-label">CMD</span>
+              <span class="stat-value" id="cmd-total">10</span>
+              <div class="stat-breakdown">10 + BAB + FOR + DES + taglia <input type="number" id="cmd-misc" class="field-narrow-inline" value="0" /> misc</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiri Salvezza -->
+        <div class="section-block">
+          <h3>Tiri Salvezza</h3>
+          <div class="saves-grid">
+            <div class="save-row">
+              <span class="save-name">Tempra</span>
+              <span class="save-total" id="save-fort">+0</span>
+              <label class="save-breakdown">Base <input type="number" id="save-fort-base" class="field-narrow-inline" value="0" /></label>
+              <label class="save-breakdown">Varie <input type="number" id="save-fort-misc" class="field-narrow-inline" value="0" /></label>
+            </div>
+            <div class="save-row">
+              <span class="save-name">Riflessi</span>
+              <span class="save-total" id="save-ref">+0</span>
+              <label class="save-breakdown">Base <input type="number" id="save-ref-base" class="field-narrow-inline" value="0" /></label>
+              <label class="save-breakdown">Varie <input type="number" id="save-ref-misc" class="field-narrow-inline" value="0" /></label>
+            </div>
+            <div class="save-row">
+              <span class="save-name">Volontà</span>
+              <span class="save-total" id="save-will">+0</span>
+              <label class="save-breakdown">Base <input type="number" id="save-will-base" class="field-narrow-inline" value="0" /></label>
+              <label class="save-breakdown">Varie <input type="number" id="save-will-misc" class="field-narrow-inline" value="0" /></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- RD e Resistenze -->
+        <div class="section-block">
+          <div class="field-row">
+            <div class="field-group">
+              <label>Riduzione Danno</label>
+              <input type="text" id="dr-input" class="field-input" placeholder="es. 5/argento o —" />
+            </div>
+            <div class="field-group">
+              <label title="Resistenza agli Incantesimi (RI): il lanciatore deve superare 1d20 + livello incantatore vs. questo valore">RI (Res. Incantesimi)</label>
+              <input type="number" id="sr-input" class="field-input field-narrow" min="0" value="0" placeholder="es. 15" />
+            </div>
+            <div class="field-group">
+              <label>Immunità</label>
+              <input type="text" id="immunities-input" class="field-input" placeholder="es. Elettricità, Veleno" />
+            </div>
+          </div>
+          <div class="field-row resistances-row">
+            <div class="field-group" title="Resistenza al Fuoco">
+              <label>Fuoco</label>
+              <input type="number" id="res-fire" class="field-input field-narrow" value="0" />
+            </div>
+            <div class="field-group" title="Resistenza al Freddo">
+              <label>Freddo</label>
+              <input type="number" id="res-cold" class="field-input field-narrow" value="0" />
+            </div>
+            <div class="field-group" title="Resistenza all'Elettricità">
+              <label>Elettr.</label>
+              <input type="number" id="res-elec" class="field-input field-narrow" value="0" />
+            </div>
+            <div class="field-group" title="Resistenza all'Acido">
+              <label>Acido</label>
+              <input type="number" id="res-acid" class="field-input field-narrow" value="0" />
+            </div>
+            <div class="field-group" title="Resistenza al Sonoro">
+              <label>Sonoro</label>
+              <input type="number" id="res-sonic" class="field-input field-narrow" value="0" />
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ TAB: ABILITÀ ══════════════════════════════════════════════ -->
+      <section id="tab-abilita" class="tab-panel">
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Abilità</h3>
+            <span id="skill-points-summary" class="skill-points-summary">Gradi: 0 / 0</span>
+          </div>
+          <div class="skills-filter-row">
+            <label>
+              <input type="checkbox" id="skills-filter-trained" />
+              Solo con gradi
+            </label>
+            <label>
+              <input type="checkbox" id="skills-filter-class" />
+              Solo di classe
+            </label>
+          </div>
+          <div class="skills-table-wrapper">
+            <table class="skills-table" id="skills-table">
+              <thead>
+                <tr>
+                  <th class="skill-col-cs" title="Abilità di Classe">C</th>
+                  <th class="skill-col-name">Abilità</th>
+                  <th class="skill-col-key">Car.</th>
+                  <th class="skill-col-ranks">Gradi</th>
+                  <th class="skill-col-bonus">Bonus</th>
+                  <th class="skill-col-total">Totale</th>
+                </tr>
+              </thead>
+              <tbody id="skills-tbody">
+                <!-- Generato da ui.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ TAB: ARMI ════════════════════════════════════════════════ -->
+      <section id="tab-armi" class="tab-panel">
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Armi e Attacchi</h3>
+            <button id="btn-add-weapon" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Arma</button>
+          </div>
+          <div id="weapons-list" class="weapons-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+        <!-- Attacco Poderoso helper (nascosto se non si possiede il talento) -->
+        <div class="section-block hidden" id="power-attack-block">
+          <div class="section-header">
+            <h3>Attacco Poderoso</h3>
+            <label class="toggle-label">
+              <input type="checkbox" id="power-attack-toggle" />
+              Attivo
+            </label>
+          </div>
+          <div id="power-attack-preview" class="power-attack-preview hidden">
+            <!-- Calcolato live da ui.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ TAB: EQUIPAGGIAMENTO ══════════════════════════════════════ -->
+      <section id="tab-equipaggiamento" class="tab-panel">
+        <!-- Monete -->
+        <div class="section-block">
+          <h3>Monete</h3>
+          <div class="currency-row">
+            <div class="currency-box">
+              <label>Platino</label>
+              <input type="number" id="currency-pp" class="field-input field-narrow" min="0" value="0" />
+            </div>
+            <div class="currency-box">
+              <label>Oro</label>
+              <input type="number" id="currency-gp" class="field-input field-narrow" min="0" value="0" />
+            </div>
+            <div class="currency-box">
+              <label>Argento</label>
+              <input type="number" id="currency-sp" class="field-input field-narrow" min="0" value="0" />
+            </div>
+            <div class="currency-box">
+              <label>Rame</label>
+              <input type="number" id="currency-cp" class="field-input field-narrow" min="0" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Peso -->
+        <div class="section-block">
+          <div class="weight-summary">
+            <div class="weight-box">
+              <span class="stat-label">Peso Portato</span>
+              <span class="stat-value" id="weight-carried">0 kg</span>
+            </div>
+            <div class="weight-box">
+              <span class="stat-label">Carico Leggero</span>
+              <span class="stat-value" id="weight-light">— kg</span>
+            </div>
+            <div class="weight-box">
+              <span class="stat-label">Carico Medio</span>
+              <span class="stat-value" id="weight-medium">— kg</span>
+            </div>
+            <div class="weight-box">
+              <span class="stat-label">Carico Pesante</span>
+              <span class="stat-value" id="weight-heavy">— kg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventario -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Inventario</h3>
+            <button id="btn-add-item" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Oggetto</button>
+          </div>
+          <div id="equipment-list" class="equipment-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ TAB: TALENTI ══════════════════════════════════════════════ -->
+      <section id="tab-talenti" class="tab-panel">
+
+        <!-- Talenti -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Talenti</h3>
+            <button id="btn-add-feat" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Talento</button>
+          </div>
+          <div id="feats-list" class="feats-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+
+        <!-- Capacità di Classe -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Capacità di Classe</h3>
+            <button id="btn-add-feature" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi</button>
+          </div>
+          <div id="features-list" class="features-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+
+        <!-- Tratti Razziali -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Tratti Razziali</h3>
+            <button id="btn-add-racial" class="btn btn-sm btn-secondary">+ Aggiungi</button>
+          </div>
+          <div id="racial-list" class="features-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ TAB: INCANTESIMI ══════════════════════════════════════════ -->
+      <section id="tab-incantesimi" class="tab-panel">
+
+        <!-- Setup caster -->
+        <div class="section-block">
+          <div class="field-row">
+            <div class="field-group">
+              <label>Classe Incantatrice</label>
+              <input type="text" id="spell-class" class="field-input" placeholder="es. Iracondo di Stirpe" />
+            </div>
+            <div class="field-group">
+              <label>Livello Incantatore</label>
+              <input type="number" id="spell-cl" class="field-input field-narrow" min="0" value="0" />
+            </div>
+            <div class="field-group">
+              <label>Caratteristica</label>
+              <select id="spell-ability" class="field-input">
+                <option value="cha">CAR</option>
+                <option value="int">INT</option>
+                <option value="wis">SAG</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="stat-box-small">
+              <span class="stat-label">CD base</span>
+              <span class="stat-value" id="spell-dc-base">10</span>
+              <small>10 + lv + mod car.</small>
+            </div>
+            <div class="stat-box-small">
+              <span class="stat-label">FIA armatura</span>
+              <span class="stat-value" id="spell-asf">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slot per livello -->
+        <div class="section-block">
+          <h3>Slot Incantesimi al Giorno</h3>
+          <div id="spells-per-day-grid" class="spells-per-day-grid">
+            <!-- Generato da ui.js: righe 0–9 con totale/usati -->
+          </div>
+        </div>
+
+        <!-- Lista incantesimi conosciuti -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Incantesimi Conosciuti</h3>
+            <button id="btn-add-spell" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi</button>
+          </div>
+          <div id="spells-list" class="spells-list">
+            <!-- Generato da ui.js -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══ TAB: NOTE ═════════════════════════════════════════════════ -->
+      <section id="tab-note" class="tab-panel">
+        <div class="section-block">
+          <h3>Note Generali</h3>
+          <textarea id="notes-textarea" class="field-textarea notes-area" rows="20"
+            placeholder="Annotazioni, obiettivi, segreti, legami..."></textarea>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== MODAL: Crea/Modifica personaggio ===== -->
+  <div id="modal-new-character" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <h2>Nuovo Personaggio</h2>
+      <div class="field-group">
+        <label>Nome</label>
+        <input type="text" id="modal-char-name" class="field-input" placeholder="Nome eroe..." autofocus />
+      </div>
+      <div class="field-group">
+        <label>Giocatore</label>
+        <input type="text" id="modal-player-name" class="field-input" placeholder="Il tuo nome..." />
+      </div>
+      <div class="field-group">
+        <label>Classe <small class="text-muted">(opzionale — si può modificare dopo)</small></label>
+        <select id="modal-char-class" class="field-input">
+          <option value="">— Scegli una classe —</option>
+          <optgroup label="Classi Base">
+            <option>Barbaro</option>
+            <option>Bardo</option>
+            <option>Chierico</option>
+            <option>Druido</option>
+            <option>Guerriero</option>
+            <option>Ladro</option>
+            <option>Mago</option>
+            <option>Monaco</option>
+            <option>Paladino</option>
+            <option>Ranger</option>
+            <option>Stregone</option>
+          </optgroup>
+          <optgroup label="Classi Avanzate">
+            <option>Alchimista</option>
+            <option>Cavaliere</option>
+            <option>Convocatore</option>
+            <option>Fattucchiera</option>
+            <option>Inquisitore</option>
+            <option>Magus</option>
+            <option>Morfico</option>
+            <option>Oracolo</option>
+            <option>Pistolero</option>
+            <option>Vigilante</option>
+          </optgroup>
+          <optgroup label="Classi Alternative">
+            <option>Antipaladino</option>
+            <option>Ninja</option>
+            <option>Samurai</option>
+          </optgroup>
+          <optgroup label="Classi Ibride">
+            <option>Arcanista</option>
+            <option>Attaccabrighe</option>
+            <option>Cacciatore</option>
+            <option>Iracondo di Stirpe</option>
+            <option>Guardiamarca</option>
+            <option>Schermagliatore</option>
+            <option>Sciamano</option>
+            <option>Skald</option>
+            <option>Spia</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="btn-modal-cancel" class="btn btn-ghost">Annulla</button>
+        <button id="btn-modal-confirm" class="btn btn-primary">Crea Personaggio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: LEVEL UP ===== -->
+  <div id="modal-level-up" class="modal hidden">
+    <div class="modal-overlay" id="modal-lu-overlay"></div>
+    <div class="modal-content modal-lu-content">
+      <h2><i class="fa-solid fa-arrow-trend-up"></i> Avanzamento di Livello</h2>
+      <div class="level-up-body">
+
+        <div class="lu-section">
+          <h3 class="lu-section-title"><i class="fa-solid fa-graduation-cap"></i> Classe</h3>
+          <div id="lu-class-picker"><p class="text-muted" style="font-size:.85rem">Caricamento...</p></div>
+        </div>
+
+        <div class="lu-section">
+          <h3 class="lu-section-title"><i class="fa-solid fa-heart-pulse"></i> Punti Ferita</h3>
+          <div id="lu-hp-section"><p class="text-muted" style="font-size:.85rem">Seleziona una classe.</p></div>
+        </div>
+
+        <div class="lu-section">
+          <h3 class="lu-section-title"><i class="fa-solid fa-chart-line"></i> Progressione Automatica</h3>
+          <div id="lu-changes-preview"><p class="text-muted" style="font-size:.85rem">Seleziona una classe.</p></div>
+        </div>
+
+        <div class="lu-section hidden" id="lu-feat-section">
+          <h3 class="lu-section-title"><i class="fa-solid fa-star"></i> Talento (livello dispari)</h3>
+          <div class="field-group" style="margin-bottom:0">
+            <label>Nome talento <span class="text-muted">(facoltativo — verrà aggiunto ai Talenti)</span></label>
+            <input type="text" id="lu-feat-name" class="field-input" placeholder="Es. Attacco Poderoso..." />
+          </div>
+        </div>
+
+        <div class="lu-section hidden" id="lu-ability-section">
+          <h3 class="lu-section-title"><i class="fa-solid fa-dumbbell"></i> Aumento Caratteristica (+1)</h3>
+          <div class="field-group" style="margin-bottom:0">
+            <label>Aumenta di +1</label>
+            <select id="lu-ability-select" class="field-input">
+              <option value="str">Forza (FOR)</option>
+              <option value="dex">Destrezza (DES)</option>
+              <option value="con">Costituzione (COS)</option>
+              <option value="int">Intelligenza (INT)</option>
+              <option value="wis">Saggezza (SAG)</option>
+              <option value="cha">Carisma (CAR)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-actions">
+        <button id="btn-lu-cancel" class="btn btn-ghost">Annulla</button>
+        <button id="btn-lu-confirm" class="btn btn-primary">
+          <i class="fa-solid fa-arrow-trend-up"></i> Conferma Avanzamento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST notifiche ===== -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Script (ordine rilevante: dati → logica → UI) -->
+  <script src="js/data/skills-list.js"></script>
+  <script src="js/data/spells-list.js"></script>
+  <script src="js/data/classes-config.js"></script>
+  <!-- Autocomplete classi: opzioni popolate da JS al caricamento -->
+  <datalist id="class-datalist"></datalist>
+  <datalist id="spell-name-datalist"></datalist>
+  <script src="js/storage.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/skills.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

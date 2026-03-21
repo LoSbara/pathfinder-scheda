@@ -1,0 +1,1150 @@
+/* ==========================================================
+   character.css — Scheda personaggio: header, tab, sezioni
+   ========================================================== */
+
+/* ── Sticky top bar wrapper (header + banner + nav) ───────────── */
+.char-top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ── Char header ───────────────────────────────────────────── */
+.char-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-gold);
+}
+.char-header-name {
+  flex: 1;
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.char-header-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ── Condizioni banner ─────────────────────────────────────── */
+.conditions-banner {
+  background: var(--rage-bg);
+  border-bottom: 1px solid var(--crimson-light);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  color: #ff8a80;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+.condition-tag {
+  background: var(--crimson-dark);
+  border: 1px solid var(--crimson-light);
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  font-size: 0.78rem;
+}
+
+/* ── Tab nav ───────────────────────────────────────────────── */
+.tab-nav {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-gold);
+  position: relative; /* anchor for dropdown */
+}
+
+/* ── Tab menu (horizontal scroll on desktop) ───────────────── */
+.tab-menu {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-menu::-webkit-scrollbar { display: none; }
+
+/* ── Burger + label (hidden on desktop) ────────────────────── */
+.tab-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0 0.85rem;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 44px;
+}
+.tab-burger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.tab-active-label {
+  display: none;
+  align-items: center;
+  flex: 1;
+  padding: 0 0.75rem;
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tab-btn:hover  { color: var(--gold); }
+.tab-btn.active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+}
+
+/* ── Tab content ───────────────────────────────────────────── */
+.tab-content { padding: 0.5rem; max-width: 960px; margin: 0 auto; }
+.tab-panel   { display: none; }
+.tab-panel.active { display: block; }
+
+/* Tab visivamente primaria (classe del personaggio) */
+.tab-btn.tab-primary {
+  color: var(--gold);
+  font-weight: 700;
+}
+.tab-btn.tab-primary.active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold-light);
+}
+
+/* Tab nascosta per classe (non-spellcaster ecc.) */
+.tab-btn.tab-class-hidden  { display: none !important; }
+.tab-panel.tab-class-hidden { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: SOMMARIO
+   ══════════════════════════════════════════════════════════════ */
+.sommario-layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+@media (max-width: 640px) {
+  .sommario-layout { grid-template-columns: 1fr; }
+}
+
+/* Immagine personaggio */
+.sommario-image-col { display: flex; flex-direction: column; gap: var(--gap-sm); align-items: center; }
+.char-image-wrapper {
+  width: 160px;
+  height: 200px;
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg-card);
+  transition: border-color 0.2s;
+}
+.char-image-wrapper:hover { border-color: var(--gold); }
+.char-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+.char-image-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 2.5rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+.char-image-placeholder small { font-size: 0.75rem; line-height: 1.3; }
+
+/* Classi */
+.classes-list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.5rem; }
+.class-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.6rem;
+}
+.class-row .field-input { flex: 2; }
+/* Classe duplicata: bordo arancio di avviso */
+input.input-warning { border-color: #e07c00 !important; background: #2a1800 !important; }
+.class-row .field-narrow { flex: 0 0 70px; }
+.class-row-hd { flex: 0 0 60px; }
+.summary-row {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding-top: 0.4rem;
+}
+.summary-row strong { color: var(--gold-light); }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: CARATTERISTICHE
+   ══════════════════════════════════════════════════════════════ */
+.abilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+.ability-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  position: relative;
+}
+.ability-name {
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  color: var(--text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.ability-score-input {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  width: 70px;
+  text-align: center;
+  padding: 0.1em;
+  transition: border-color 0.15s;
+}
+.ability-score-input:focus { outline: none; border-color: var(--gold); }
+.ability-mod {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--gold);
+  background: var(--bg-deep);
+  border: 1px solid var(--border-gold);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+.ability-mod.positive { color: #66bb6a; border-color: #2e7d32; }
+.ability-mod.negative { color: #ef9a9a; border-color: #8b1a1a; }
+
+.ability-bonuses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  width: 100%;
+  margin-top: 0.2rem;
+}
+.ability-bonus-field { display: flex; flex-direction: column; align-items: center; }
+.ability-bonus-field label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin: 0;
+}
+.ability-bonus-input {
+  width: 52px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--gold-light);
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.1em;
+}
+.ability-bonus-input:focus { outline: none; border-color: var(--gold); }
+
+.ability-effective {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.ability-card.rage-boosted { border-color: var(--crimson-light); }
+.ability-card.rage-boosted .ability-mod { border-color: var(--crimson-light); color: #ff8a80; }
+
+/* Condizioni */
+.conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.4rem;
+}
+.condition-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+.condition-checkbox-label:hover { border-color: var(--border-light); color: var(--text-main); }
+.condition-checkbox-label input { accent-color: var(--crimson-light); }
+.condition-checkbox-label.active { border-color: var(--crimson-light); color: #ff8a80; background: var(--rage-bg); }
+
+/* Ira */
+.rage-block { border-color: var(--crimson-dark); }
+.rage-block.active { border-color: var(--crimson-light); background: var(--rage-bg); }
+.rage-stats { display: flex; gap: var(--gap-sm); flex-wrap: wrap; margin-bottom: 0.6rem; }
+
+/* Blocchi risorse di classe (Bardo, Ki, Canale, Furtivo) */
+.class-resource-block { border-color: var(--border-gold); }
+.class-resource-block .section-header { margin-bottom: 0.5rem; }
+.class-resource-block h3 { color: var(--gold); }
+.field-select-sm {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  border-radius: 4px;
+  padding: 0.15rem 0.3rem;
+  width: 100%;
+}
+.field-select-sm:focus { outline: none; border-color: var(--gold); }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: COMBATTIMENTO
+   ══════════════════════════════════════════════════════════════ */
+.hp-row {
+  display: flex;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.hp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 80px;
+}
+.hp-box label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-label);
+  margin: 0;
+}
+.hp-current { color: #66bb6a !important; border-color: #2e7d32 !important; }
+
+/* Stato vitale */
+.hp-status-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.4rem;
+}
+.hp-status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.hp-status-normal   { background: #1b5e2044; color: #66bb6a; border-color: #2e7d32; }
+.hp-status-disabled { background: #f57f1744; color: #ffb74d; border-color: #e65100; }
+.hp-status-dying    { background: #b71c1c44; color: #ef9a9a; border-color: #c62828; }
+.hp-status-dead     { background: #21212199; color: #9e9e9e; border-color: #616161; }
+
+/* Etichetta Preparato negli incantesimi */
+.spell-prepared-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.spell-prepared-label input[type="checkbox"] {
+  accent-color: var(--gold);
+  width: 14px;
+  height: 14px;
+}
+
+.ca-summary {
+  display: flex;
+  gap: var(--gap-sm);
+  margin-bottom: 0.8rem;
+}
+.ca-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+}
+.ca-box-main {
+  border-color: var(--border-gold);
+  background: var(--bg-deep);
+}
+.ca-label {
+  font-size: 0.7rem;
+  color: var(--text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.ca-value {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--gold-light);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.saves-grid { display: flex; flex-direction: column; gap: 0.4rem; }
+.save-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.3rem 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.save-name {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--text-label);
+  text-transform: uppercase;
+  width: 70px;
+  flex-shrink: 0;
+}
+.save-total {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--gold-light);
+  width: 48px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.save-breakdown {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.resistances-row { flex-wrap: nowrap; overflow-x: auto; }
+.resistances-row .field-group { flex: 1; min-width: 60px; }
+.resistances-row .field-narrow { width: 60px; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: ABILITÀ
+   ══════════════════════════════════════════════════════════════ */
+.skill-points-summary {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.skill-points-summary.overflow { color: var(--red-light); font-weight: 600; }
+
+.skills-filter-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.skills-filter-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: none;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin: 0;
+}
+.skills-filter-row input { accent-color: var(--gold); }
+
+.skills-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.skills-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.skills-table th {
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-label);
+  padding: 0.3rem 0.4rem;
+  border-bottom: 1px solid var(--border-gold);
+  text-align: left;
+}
+.skills-table td {
+  padding: 0.2rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  color: var(--text-main);
+}
+.skills-table tr:hover td { background: var(--bg-card); }
+.skills-table tr.skill-trained td { }
+.skills-table tr.skill-unusable td { color: var(--text-muted); font-style: italic; }
+.skills-table tr.skill-rage-locked td { color: #ff8a8066; }
+/* Abilità di classe per la classe selezionata — bordo gold a sinistra */
+.skills-table tr.skill-from-class td:first-child { border-left: 3px solid var(--gold); }
+.skills-table tr.skill-from-class td.skill-col-name { color: var(--gold-light, #e8c060); font-weight: 600; }
+
+.skill-col-cs    { width: 28px; text-align: center; }
+.skill-col-name  { min-width: 140px; }
+.skill-col-key   { width: 40px; text-align: center; font-size: 0.78rem; color: var(--text-muted); }
+.skill-col-ranks { width: 60px; text-align: center; }
+.skill-col-bonus { width: 50px; text-align: center; }
+.skill-col-total { width: 55px; text-align: center; font-family: var(--font-title); font-weight: 600; color: var(--gold-light); }
+
+.skill-cs-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: background 0.15s, border-color 0.15s;
+}
+.skill-cs-btn.active {
+  background: var(--green);
+  border-color: var(--green-light);
+  color: #fff;
+}
+.skill-ranks-input {
+  width: 48px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.1em;
+  display: block;
+  margin: 0 auto;
+}
+.skill-ranks-input:focus { outline: none; border-color: var(--gold); }
+.skill-total.positive { color: #66bb6a; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: ARMI
+   ══════════════════════════════════════════════════════════════ */
+.weapons-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.weapon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+}
+.weapon-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.weapon-name-input {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--gold-light);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  outline: none;
+  flex: 1;
+  padding: 0.1em;
+}
+.weapon-name-input:focus { border-color: var(--gold); }
+.weapon-stats-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.weapon-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.5rem;
+  min-width: 65px;
+}
+.weapon-stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+.weapon-stat-value {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  font-weight: 600;
+}
+.weapon-detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+.weapon-detail-row .field-group label { font-size: 0.65rem; }
+
+.power-attack-preview {
+  background: var(--rage-bg);
+  border: 1px solid var(--crimson-dark);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  color: #ff8a80;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: EQUIPAGGIAMENTO
+   ══════════════════════════════════════════════════════════════ */
+.currency-row {
+  display: flex;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+}
+.currency-box {
+  flex: 1;
+  min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+}
+.currency-box label {
+  font-size: 0.7rem;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  margin: 0 0 0.2em;
+}
+.currency-box .field-narrow { width: 70px; text-align: center; }
+
+.weight-summary { display: flex; gap: var(--gap-sm); flex-wrap: wrap; }
+.weight-box {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+}
+
+.equipment-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.equip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.6rem;
+}
+.equip-item .field-input { flex: 2; min-width: 120px; }
+.equip-item .field-narrow { flex: 0 0 65px; }
+.equip-worn {
+  accent-color: var(--green-light);
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: TALENTI
+   ══════════════════════════════════════════════════════════════ */
+.feats-list, .features-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.feat-card, .feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.6rem 0.8rem;
+}
+.feat-card-header, .feature-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.feat-name, .feature-name {
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  color: var(--gold-light);
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  outline: none;
+  padding: 0.1em;
+}
+.feat-name:focus, .feature-name:focus { border-color: var(--gold); }
+.feat-type {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+  white-space: nowrap;
+}
+.feat-desc, .feature-desc {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.3em 0.5em;
+  resize: vertical;
+}
+.feat-desc:focus, .feature-desc:focus { outline: none; border-color: var(--border-light); color: var(--text-main); }
+.feature-level-badge {
+  font-size: 0.7rem;
+  color: var(--gold-dark);
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  white-space: nowrap;
+}
+
+/* Capacità con slot/usi giornalieri */
+.feature-uses {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.feature-uses input { width: 48px; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: INCANTESIMI
+   ══════════════════════════════════════════════════════════════ */
+.spells-per-day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: var(--gap-sm);
+}
+.spell-level-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.spell-level-box.has-slots { border-color: var(--blue-light); }
+.spell-level-label { font-size: 0.7rem; color: var(--text-label); text-transform: uppercase; }
+.spell-slots-row { display: flex; align-items: center; gap: 0.2rem; font-size: 0.85rem; }
+.spell-slots-used { color: var(--red-light); }
+.spell-slots-total { color: var(--text-muted); }
+.spell-slot-input { width: 40px; padding: 0.25em 0.3em; }
+
+.spells-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.spell-entry {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 0.75rem;
+}
+.spell-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.spell-level-badge {
+  font-size: 0.7rem;
+  background: var(--blue);
+  border: 1px solid var(--blue-light);
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  color: #90caf9;
+  white-space: nowrap;
+}
+.spell-name-input {
+  flex: 1;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  color: var(--gold-light);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  outline: none;
+  padding: 0.1em;
+}
+.spell-name-input:focus { border-color: var(--gold); }
+.spell-details {
+  display: none;
+  margin-top: 0.4rem;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+.spell-entry.expanded .spell-details { display: block; }
+.spell-detail-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.3rem; }
+.spell-detail-row .field-group label { font-size: 0.65rem; }
+
+/* ══════════════════════════════════════════════════════════════
+   TAB: NOTE
+   ══════════════════════════════════════════════════════════════ */
+.notes-area { min-height: 60vh; }
+
+/* ── Poteri di Stirpe ────────────────────────────────────────── */
+.bloodline-powers-section { margin-top: 0.75rem; }
+.section-subheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-gold);
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.4rem;
+}
+.bloodline-power-entry {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.6rem;
+  margin-bottom: 0.3rem;
+}
+.bloodline-power-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.bloodline-power-header .bp-name { flex: 2; min-width: 120px; }
+.bloodline-power-header .field-narrow { flex: 0 0 58px; }
+.bp-details { display: none; margin-top: 0.4rem; }
+.bloodline-power-entry.expanded .bp-details { display: block; }
+.bp-expand i, .spell-expand i { transition: transform 0.2s; }
+.bp-expand.expanded i, .spell-expand.expanded i { transform: rotate(180deg); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — mobile-first, breakpoints 768 / 540 / 480 / 400 / 360
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── ≤ 768px: tablet/phablet ───────────────────────────────── */
+@media (max-width: 768px) {
+  /* Header */
+  .char-header { padding: 0.45rem 0.6rem; gap: 0.4rem; }
+  .char-header-name { font-size: 0.9rem; }
+  .char-header-actions .btn { padding: 0.3em 0.5em; font-size: 0.78rem; }
+  .char-header-actions .btn-text { display: none; }
+
+  /* Tab nav: scroll orizzontale */
+  .tab-btn { padding: 0.5rem 0.7rem; font-size: 0.72rem; }
+
+  /* Sommario */
+  .sommario-layout { grid-template-columns: 130px 1fr; }
+  .char-image-wrapper { width: 120px; height: 150px; }
+
+  /* Abilità: 3 colonne, nomi più compatti */
+  .abilities-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .ability-name { font-size: 0.7rem; letter-spacing: 0.04em; }
+
+  /* Stat boxes */
+  .stat-box-medium { padding: 0.4rem 0.6rem; min-width: 90px; }
+  .stat-value { font-size: 1.3rem; }
+  .field-narrow { width: 70px; }
+
+  /* Armi */
+  .weapon-detail-row { gap: 0.35rem; }
+  .weapon-detail-row .field-group { min-width: 80px; }
+
+  /* Salvataggi: etichetta più stretta */
+  .save-name { width: 60px; font-size: 0.78rem; }
+  .save-total { font-size: 1.15rem; width: 42px; }
+}
+
+/* ── ≤ 540px: BURGER MENU attivo ───────────────────────────── */
+@media (max-width: 540px) {
+  /* Mostra burger + etichetta sezione attiva */
+  .tab-burger       { display: flex; }
+  .tab-active-label { display: flex; }
+
+  /* Tab-menu: nascosto, diventa dropdown assoluto */
+  .tab-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    flex-direction: column;
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border-gold);
+    border-bottom: 2px solid var(--border-gold);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    z-index: 200;
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .tab-nav.open .tab-menu { display: flex; }
+
+  /* Tab buttons nel dropdown */
+  .tab-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.88rem;
+    font-family: var(--font-title);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    white-space: normal;
+    color: var(--text-muted);
+    background: none;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .tab-btn:last-child  { border-bottom: none; }
+  .tab-btn:hover       { color: var(--gold); border-left-color: var(--gold-dark); background: rgba(212,175,55,0.05); }
+  .tab-btn.active      {
+    color: var(--gold-light);
+    border-left-color: var(--gold);
+    border-bottom-color: transparent;
+    background: rgba(212,175,55,0.1);
+  }
+  .tab-btn.tab-primary        { color: var(--gold); font-weight: 700; }
+  .tab-btn.tab-primary.active { border-left-width: 5px; color: var(--gold-light); }
+
+  /* Burger animazione → X */
+  .tab-nav.open .tab-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .tab-nav.open .tab-burger span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .tab-nav.open .tab-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Contenuto tab leggermente più stretto */
+  .tab-content { padding: 0.5rem 0.4rem; }
+}
+
+/* ── ≤ 480px: smartphone medio-grande ──────────────────────── */
+@media (max-width: 480px) {
+  .tab-content { padding: 0.4rem; }
+  .section-block { padding: 0.65rem 0.6rem; margin-bottom: 0.65rem; }
+
+  /* ── Sommario ── */
+  .sommario-layout { grid-template-columns: 1fr; }
+  .sommario-image-col { flex-direction: row; align-items: flex-start; gap: 0.7rem; }
+  .char-image-wrapper { width: 90px; height: 110px; flex-shrink: 0; }
+  .char-header-name { font-size: 0.85rem; }
+  .char-header-actions { gap: 0.25rem; }
+
+  /* Classi */
+  .class-row { flex-wrap: wrap; gap: 0.35rem; }
+  .class-row > .field-input { min-width: 120px; }
+  .class-row > .field-narrow { flex: 0 0 58px; }
+  .class-row-hd { flex: 0 0 52px; }
+
+  /* ── Caratteristiche ── */
+  .abilities-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .ability-card { padding: 0.55rem 0.4rem; gap: 0.2rem; }
+  .ability-name {
+    font-size: 0.62rem;
+    letter-spacing: 0;
+    line-height: 1.25;
+    word-break: break-word;
+    text-align: center;
+  }
+  .ability-score-input { font-size: 1.5rem; width: 55px; }
+  .ability-mod { width: 32px; height: 32px; font-size: 0.88rem; }
+  .ability-bonus-input { width: 44px; font-size: 0.82rem; }
+
+  /* Condizioni: 2 colonne */
+  .conditions-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* ── Combattimento ── */
+  .hp-row { gap: 0.3rem; }
+  .hp-box { min-width: 72px; }
+  .stat-value-input { font-size: 1.3rem; width: 68px; }
+
+  .ca-summary { gap: 0.3rem; }
+  .ca-value { font-size: 1.5rem; }
+  .ca-label { font-size: 0.62rem; }
+
+  /* Salvataggi */
+  .save-row { gap: 0.4rem; padding: 0.25rem 0.5rem; }
+  .save-name { width: 56px; font-size: 0.75rem; }
+  .save-total { font-size: 1.2rem; width: 38px; }
+  .save-breakdown { font-size: 0.74rem; flex-wrap: wrap; }
+
+  /* Resistenze: scroll invece di overflow */
+  .resistances-row { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Stat box */
+  .stat-box-medium { padding: 0.35rem 0.4rem; min-width: 75px; }
+  .stat-value { font-size: 1.2rem; }
+  .stat-breakdown { font-size: 0.68rem; }
+
+  /* ── Armi ── */
+  .weapon-stats-row { gap: 0.3rem; }
+  .weapon-stat { min-width: 55px; padding: 0.25rem 0.35rem; }
+  .weapon-stat-label { font-size: 0.6rem; }
+  .weapon-stat-value { font-size: 1rem; }
+  .weapon-detail-row .field-group { min-width: 70px; }
+  .weapon-detail-row .field-group label { font-size: 0.6rem; }
+
+  /* ── Equipaggiamento ── */
+  .equip-item { gap: 0.35rem; }
+  .equip-item > .field-input { min-width: 100px; flex: 1 1 100px; }
+  .equip-item > .field-narrow { flex: 0 0 58px; }
+
+  /* ── Abilità (skill table) ── */
+  .skills-table th:last-child,
+  .skills-table td:last-child { display: none; }
+  .skill-col-name { min-width: 100px; }
+
+  /* ── Incantesimi ── */
+  .spells-per-day-grid { grid-template-columns: repeat(4, 1fr); }
+  .spell-level-box { padding: 0.25rem 0.1rem; }
+  .spell-level-label { font-size: 0.65rem; }
+  .spell-slots-row { gap: 0.1rem; }
+  .spell-slot-input { width: 30px; padding: 0.1em 0.12em; font-size: 0.8rem; }
+  .spell-detail-row .field-group label { font-size: 0.6rem; }
+
+  /* ── Ira / Bloodline ── */
+  .rage-stats { gap: 0.35rem; }
+  .rage-stats .stat-box { min-width: 70px; padding: 0.3rem 0.5rem; }
+  #rage-block .field-row { flex-direction: column; gap: 0.4rem; }
+
+  /* Modal */
+  .modal-content { padding: 1.2rem; }
+}
+
+/* ── ≤ 400px: smartphone piccolo ────────────────────────────── */
+@media (max-width: 400px) {
+  /* Abilità: 2 colonne — evita overflow nomi lunghi tipo "COSTITUZIONE (COS)" */
+  .abilities-grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+  .ability-card { padding: 0.6rem 0.5rem; }
+  .ability-name { font-size: 0.68rem; letter-spacing: 0.02em; word-break: normal; }
+  .ability-score-input { font-size: 1.6rem; width: 60px; }
+  .ability-mod { width: 34px; height: 34px; font-size: 0.92rem; }
+
+  /* Condizioni: 1 colonna */
+  .conditions-grid { grid-template-columns: 1fr; }
+
+  /* CA: riduci font */
+  .ca-value { font-size: 1.35rem; }
+
+  /* HP boxes: riduci label dimensione */
+  .hp-box label { font-size: 0.62rem; letter-spacing: 0; }
+
+  /* Armi: stat più compatti */
+  .weapon-stat { min-width: 50px; }
+  .weapon-stat-label { font-size: 0.58rem; }
+}
+
+/* ── ≤ 360px: smartphone molto piccolo ────────────────────────── */
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+
+  .tab-btn { padding: 0.7rem 1rem; font-size: 0.84rem; }
+  .tab-content { padding: 0.25rem; }
+  .section-block { padding: 0.45rem; margin-bottom: 0.6rem; }
+
+  /* Abilità: mantieni 2 colonne (già impostato a ≤400px) */
+  .ability-card { padding: 0.4rem; gap: 0.2rem; }
+  .ability-score-input { font-size: 1.35rem; width: 52px; }
+
+  /* CA */
+  .ca-summary { flex-wrap: nowrap; }
+  .ca-value { font-size: 1.2rem; }
+
+  /* HP */
+  .hp-box { min-width: 60px; }
+  .stat-value-input { width: 60px; font-size: 1.1rem; }
+
+  /* Stat box */
+  .stat-box-medium { min-width: 65px; }
+  .stat-value { font-size: 1.1rem; }
+
+  /* Armi */
+  .weapon-stat { min-width: 46px; }
+
+  /* Campi */
+  .field-narrow { width: 56px; }
+  .field-narrow-inline { width: 42px; }
+}
