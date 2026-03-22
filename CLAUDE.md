@@ -1,7 +1,28 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-21
+> Last updated: 2026-03-22 (sessione 2)
+
+---
+
+## 0. Stato corrente — aggiornare ad ogni sessione
+
+> ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
+
+### Ultima sessione: 2026-03-22 (sessione 3)
+
+**Modifiche non committate (6 file):**
+- `js/data/classes-config.js` — Sistema archetipi: `ARCHETYPES` dict, `getArchetypes()`, `getMergedProfile` aggiornato
+- `js/ui.js` — Righe classe a due livelli (`.class-row-main` + `.cls-archetype` con datalist)
+- `styles/character.css` — Stili `.class-row`, `.class-row-main`, `.cls-archetype`
+- `js/data/feats-list.js` — `PF1_FEATS_DB` **339 talenti** (espanso da 151 in sessione 2)
+- `js/data/spells-list.js` — `PF1_SPELLS_DB` **251 incantesimi** (espanso da 66 in questa sessione; livelli 0–9 per tutte le classi principali)
+- `CLAUDE.md` — Sessione 3: aggiornamenti stato
+
+**Prossimo lavoro prioritario:**
+1. Autocomplete talenti in `renderTalenti` in `ui.js` — usa `PF1_FEATS_DB`
+2. Autocomplete incantesimi nel tab Incantesimi — usa `PF1_SPELLS_DB`
+3. Commit quando c\'è abbastanza roba nuova (utente preferisce aspettare)
 
 ---
 
@@ -40,7 +61,8 @@ pathfinder-scheda/
 ├── js/
 │   ├── data/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
-│   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (currently EMPTY — TODO)
+│   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (251 incantesimi, livelli 0–9)
+│   │   ├── feats-list.js  ← Global PF1_FEATS_DB array (339 talenti PF1)
 │   │   └── classes-config.js ← Global ClassConfig: tutte le classi PF1 con feature flags
 │   ├── storage.js          ← Storage namespace: read/write/export/import via localStorage
 │   ├── character.js        ← Character namespace: data model, validate, migrate
@@ -56,6 +78,7 @@ pathfinder-scheda/
 ```html
 <script src="js/data/skills-list.js"></script>   <!-- PF1_SKILLS global -->
 <script src="js/data/spells-list.js"></script>   <!-- PF1_SPELLS_DB global -->
+<script src="js/data/feats-list.js"></script>    <!-- PF1_FEATS_DB global -->
 <script src="js/data/classes-config.js"></script> <!-- ClassConfig global -->
 <script src="js/storage.js"></script>             <!-- Storage global -->
 <script src="js/character.js"></script>           <!-- Character global (needs nothing) -->
@@ -77,7 +100,8 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 | Global | File | Purpose |
 |---|---|---|
 | `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions |
-| `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (empty) |
+| `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (251 incantesimi, livelli 0–9) |
+| `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (339 talenti) |
 | `Storage` | `storage.js` | CRUD for characters in localStorage |
 | `Character` | `character.js` | Data model factory + utilities |
 | `Combat` | `combat.js` | Pure math functions for PF1 rules |
@@ -509,46 +533,17 @@ Fantasy dark theme. Key CSS custom properties:
 
 ---
 
-## 10. Known TODOs / incomplete features
+## 10. Open TODOs
 
-1. **`PF1_SPELLS_DB`** is an empty array in `js/data/spells-list.js`. Autocomplete for spells is not yet implemented.
-2. **Bloodline powers** (`rage.bloodlinePowers`) are stored in the data model but have no dedicated UI section yet.
-3. **`armor.speedArmor` / `combat.speedArmor`** field exists but is not wired to `calcSpeed()` — speed reduction from armor is not subtracted automatically (the user would need to adjust the base speed manually to reflect armor penalties).
-4. ~~**`character.homeland`** is stored in `meta` but has no input field in the Sommario tab.~~ ✅ **IMPLEMENTED** — `#meta-homeland` input added in Sommario tab.
-5. ~~**Multiple attack sequences** (iterative attacks)~~ ✅ **IMPLEMENTED** — `calcIterativeAttacks()` returns all attack bonuses; weapon cards display `+X/+Y/+Z`.
-6. **`calcFort` rage bonus** in `combat.js` has a logic bug: `rageMor = char.rage?.active ? (char.rage.willBonus ? 0 : 2) : 0` always returns 0 because `willBonus` is truthy (default 2). Fortitude should not get the rage bonus in base PF1; this was intentional but the ternary is confusing and worth clarifying.
-7. **`equipment.location`** field exists but is not shown/editable in the UI (only `worn` checkbox is shown).
-8. ~~**Spell details** `prepared` missing from UI~~ ✅ **IMPLEMENTED** — `prepared` checkbox added to each spell entry header. Other fields (`subschool`, `descriptor`, `components`, `target`, `spellResistance`) still not in UI.
+1. **`PF1_SPELLS_DB`** — **251 incantesimi** livello 0–9, buona copertura classi principali. Autocomplete UI non implementato. Vedi Sezione 19.
+2. **`PF1_FEATS_DB`** — **339 talenti**, copertura completa MdG + supplementi principali. Autocomplete in `renderTalenti` non implementato. Vedi Sezione 19.
+3. **Bloodline powers** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
+4. **`armor.speedArmor`** — campo presente in `combat`, non collegato a `calcSpeed()`. La riduzione di velocità per armatura NON viene sottratta automaticamente.
+5. **`calcFort` rage bonus** — `rageMor = char.rage?.active ? (char.rage.willBonus ? 0 : 2) : 0` restituisce sempre 0 perché `willBonus` è truthy (default: 2). Comportamento corretto per PF1, ma il codice è fuorviante.
+6. **`equipment.location`** — campo nel model, non visibile/modificabile in UI (solo `worn` checkbox).
+7. **Spell details UI** — campi `subschool`, `descriptor`, `components`, `target`, `spellResistance` presenti nel model ma senza input nella scheda.
 
-### Medium priority (now implemented)
 
-- ✅ **Skills list** — removed `Concentrazione` (not a PF1 skill) and `Falsificare` (absorbed into Linguistica); added `Esibizione`, `Travestimento`, `Conoscenze (ingegneria)`. Old entries in saved character `skills` arrays remain stored but won't render.
-- ✅ **Patria** — `char.meta.homeland` now has input `#meta-homeland` in the Sommario tab.
-- ✅ **Velocità extra** — `char.combat.speedExtra` object with `nuoto`, `volo`, `scalare`, `scavare` (all 0 = inactive). Four numeric inputs in the combat tab below BAB/Initiative/Speed. Not used in calculations — reference only.
-- ✅ **Stato vitale** — colored badge `#hp-status` below the HP row: Normale (verde) / Disabilitato a 0 PF (arancio) / Morente < 0 PF (rosso) / Morto ≤ -CON (grigio). `hp-current` input now allows negative values. Updated in `refreshCalculated`.
-- ✅ **Preparato** — `prepared: boolean` checkbox in each spell entry header; bound in `_bindSpells` via `e.target.checked`.
-
-- ✅ **Resistenza agli Incantesimi (RI)** — `char.combat.sr` (number, 0 = nessuna). UI field `#sr-input` in the DR/immunities section of the combat tab. Stored in `calcAll()` output as `sr`.
-- ✅ **Livelli Negativi** — `char.negativeLevels` (number, root level). UI field `#negative-levels` in the HP section. Each level applies a cumulative `-1` penalty to attack rolls (via `calcWeaponAttack` and `calcIterativeAttacks`), CMB, CMD, all three saving throws, and initiative. Implemented via `negLvlPenalty(char)` helper in `combat.js`.
-- ✅ **Attacchi Iterativi** — `Combat.calcIterativeAttacks(char, weapon, powerAttack)` returns an array of total attack bonuses for each iterative attack (BAB 1-5 → 1 attack, 6-10 → 2, 11-15 → 3, 16+ → 4). Off-hand and natural secondary weapons return only one value. Weapon cards display the full sequence as `+13/+8/+3`.
-- ✅ **Adattamento UI per classe** — `ClassConfig` global (33 classi PF1 con profili UI) in `js/data/classes-config.js`. Selezione classe nel modal di creazione. `applyClassProfile(char)` in `ui.js` nasconde/mostra tab Incantesimi, blocco Ira, e tab primarie in base alla classe. Supporto multiclasse via `getMergedProfile`. Vedi Sezione 16 per dettagli completi.
-- ✅ **Blocchi risorse di classe** — Implementati i 4 blocchi ad alta priorità nel tab Sommario:
-  - `#bard-block` (Bardo, Skald): round esibizione rimasti/totali (auto-calc: `4 + (lvl−1)×2 + CHA`), bonus manuale, testo esibizione attiva, pulsante ripristino
-  - `#ki-block` (Monaco, Ninja): ki attuali/totali (auto-calc: Monaco→`⌊lvl/2⌋+SAG`, Ninja→`⌊lvl/2⌋+CAR`), bonus manuale, pulsante ripristino
-  - `#channel-block` (Chierico, Paladino, Inquisitore, Guardiamarca): tipo (positiva/negativa), dado Xd6, usi rimasti/totali manuali, pulsante ripristino
-  - `#sneak-block` (Ladro, Ninja, Spia, Inquisitore, Vigilante, Attaccabrighe, Schermagliatore): dado auto-calc (`⌈livelli_furtivo/2⌉d6`), bonus manuale d6
-  - Nuove funzioni in `combat.js`: `calcBardPerfMax`, `calcKiMax`, `calcSneakDice` (tutte esportate e incluse in `calcAll`)
-  - Nuovi campi dati in `character.js` `createDefault()`: `bardPerf`, `ki`, `channel`, `sneak`
-- ✅ **Autocompletamento nome classe** — Il campo `cls-name` (tab Sommario, lista classi) ha `list="class-datalist"`. Il `<datalist id="class-datalist">` viene popolato con tutti i 33 nomi classe all'avvio via `_initClassDatalist()`. Quando l'utente sceglie una classe riconosciuta, il campo `Dado Vita` si auto-compila con il hitDie corretto da ClassConfig.
-- ✅ **Abilità di classe evidenziate** — `ClassConfig.CLASS_SKILLS` mappa ogni classe ai suoi skill IDs standard PF1. `getMergedProfile` calcola `classSkillIds: string[]` (unione per multiclasse). `applyClassProfile` aggiorna `_classSkillIds` e chiama `_applySkillHighlights()`. Le righe matching nel tab Abilità ricevono `.skill-from-class`: bordo gold a sinistra + nome in grassetto dorato. `renderAbilita` richiama `_applySkillHighlights()` ad ogni re-render. Tutti i pulsanti usano `<i class="fa-solid fa-*">`. Regola: `.btn i { pointer-events: none }`. Espansione spell con animazione chevron.
-- ✅ **Burger menu** — Tab navigation diventa dropdown burger a `≤540px`. Mostra label del tab attivo. Chiude al click esterno.
-- ✅ **Mobile responsiveness** — `main.css` responsive breakpoints a 768px/480px; `character.css` adattamenti mobile; `.skills-table-wrapper` overflow-x scroll.
-- ✅ **skillPts in ClassConfig** — tutte le 33 classi hanno `skillPts: N` (punti abilità base per livello prima del mod INT). Valori: Barbaro 4, Bardo 6, Chierico 2, Druido 4, Guerriero 2, Ladro 8, Mago 2, Monaco 4, Paladino 2, Ranger 6, Stregone 2, Alchimista 4, Cavaliere 4, Convocatore 2, Fattucchiera 2, Inquisitore 6, Magus 2, Morfico 4, Oracolo 4, Pistolero 4, Vigilante 4, Antipaladino 2, Ninja 8, Samurai 4, Arcanista 2, Attaccabrighe 4, Cacciatore 6, Iracondo di Stirpe 4, Guardiamarca 4, Schermagliatore 4, Sciamano 4, Skald 6, Spia 6.
-- ✅ **skills.js usa ClassConfig.skillPts** — `calcSkillPointsSummary` richiama `_skillPtsForClass(className)` che usa `ClassConfig.findByName(cls).skillPts`; fallback su un dict statico interno con tutti i 33 valori nel caso ClassConfig non sia disponibile.
-- ✅ **BAB auto-fill** — `_autoFillBab(char)` in `ui.js` somma la progressione BAB di ogni classe: `full`→+1/livello, `3_4`→`⌊lvl×3/4⌋`, `half`→`⌊lvl/2⌋`. Imposta `char.combat.bab`, aggiorna `bab-input`, chiama `refreshCalculated` e `renderArmi`. Viene chiamato dentro `applyClassProfile` se almeno una classe è riconosciuta.
-- ✅ **Spell ability/class auto-fill** — `_autoFillSpellAbility(char)` in `ui.js` legge `spellAbility` dalla prima classe che ha incantesimi e imposta il select `spell-ability` e il campo `spell-class`. Il riempimento avviene solo se i campi sono correntemente vuoti (nessuna sovrascrittura dei valori inseriti dall'utente).
-- ✅ **Channel uses auto-calc** — `_autoFillChannelUses(char)` in `ui.js` calcola `usesMax = max(1, 3 + modCHA)` e aggiorna `channel-uses-left` solo se non è stato modificato manualmente (check conservativo: `usesMax === usesLeft || usesMax === 3`). Viene chiamato solo se `profile.features.channel` è truthy.
-- ✅ **Prevenzione duplicati classi** — Il handler `cls-name change` in `ui.js` confronta (case-insensitive) il nome inserito con tutte le altre righe classe. Se trova un duplicato, applica la CSS class `.input-warning` al campo e imposta un tooltip con messaggio d'avviso. `input.input-warning` in `character.css`: bordo arancio `#e07c00` + sfondo scuro `#2a1800`.
 
 ---
 
@@ -631,11 +626,8 @@ File: `js/data/classes-config.js` — definisce **33 classi PF1** raggruppate pe
 - Se UNA QUALSIASI classe usa rage → mostra blocco Ira
 - I `primaryTabs` sono l'unione di tutte le tab primarie di tutte le classi
 
-### Sviluppi futuri per classi:
-- ~~Sezioni specifiche per classe (es. Esibizione Bardica, Canalizzare Energia, Ki Pool, Patti del Paladino)~~ ✅ **IMPLEMENTATO** — 4 blocchi risorsa nel tab Sommario
-- ~~Auto-completamento del nome classe nell'input `cls-name` con lookup da ClassConfig~~ ✅ **IMPLEMENTATO** — datalist + auto-hitDie
-- ~~Filtro abilità di classe automatico basato sulla classe del personaggio~~ ✅ **IMPLEMENTATO** — evidenziazione `.skill-from-class`
-- **Icona classe nel header del personaggio** — `ClassConfig.CLASSES[].icon` è già presente ma non usata nell'header
+### Sviluppi futuri per classi (open):
+- **Icona classe nel header del personaggio** — `ClassConfig.CLASSES[].icon` già presente ma non usata nell'header
 - **Patti del Paladino** — `features.paladin` non ancora implementato come blocco UI
 - **Language of UI**: Italian
 - **Language of code/comments**: Italian comments for PF1 rule references, otherwise mixed Italian/English
@@ -708,7 +700,7 @@ Skills.calcSkillPointsSummary(char)    // → { spent, available, overflow }
 - **Italian UI**: all user-visible text (labels, placeholders, button labels, messages) must remain in Italian.
 - **XSS**: always use `_e(string)` (the XSS-escape helper in `ui.js`) before inserting user data into `innerHTML`. For `textContent` assignments this is not needed.
 - **localStorage quota**: the app handles `QuotaExceededError` gracefully — always keep this check when saving.
-- **Icons**: use **Font Awesome 6 Free Solid** (`fa-solid fa-*`) for all new buttons and UI elements. The CDN link is in `index.html`. Do NOT use emoji or HTML entity characters for UI icons. Icon reference: home=`fa-house`, save=`fa-floppy-disk`, export=`fa-file-export`, import=`fa-file-import`, add=`fa-plus`, delete/remove=`fa-trash` or `fa-xmark`, expand=`fa-chevron-down`.
+- **Icons**: use **Font Awesome 6 Free Solid** (`fa-solid fa-*`) for all new buttons and UI elements. The CDN link is in `index.html`. Do NOT use emoji or HTML entity characters for UI icons. Icon reference: home=`fa-house`, save=`fa-floppy-disk`, export=`fa-file-export`, import=`fa-file-import`, add=`fa-plus`, delete/remove=`fa-trash` or `fa-xmark`, expand=`fa-chevron-down`. **Important**: `.btn i` has `pointer-events: none` in CSS — click events always bubble to the parent button, never bind events to the `<i>` element.
 - **Mobile responsiveness**: the app is fully usable on phones. Breakpoints defined in both CSS files:
   - `768px` — tablet/phablet: toolbar wrapping, reduced padding, touch target min 40px
   - `540px` — burger menu dropdown replaces tab-nav
@@ -723,16 +715,108 @@ Skills.calcSkillPointsSummary(char)    // → { spent, available, overflow }
 
 ## 17. Bug fixes history (most recent first)
 
-### 2026-03-21
+### 2026-03-22
+- **Sistema Archetipi** — campo `archetype` in `meta.classes[]`, `ARCHETYPES` dict in `classes-config.js`, UI a due livelli per riga classe, `getMergedProfile` aggiornato. Vedi Sezione 18.
 
-- **Spell slot grid horizontal overflow** — At ≤480px the `spells-per-day-grid` used `repeat(5, 1fr)` but the inputs forced each cell to ≥90px, causing the page to overflow and appear scrolled. Fix: (a) removed inline `style="width:40px"` from both inputs in `renderIncantesimi`, replaced with class `spell-slot-input`; (b) in character.css added `.spell-slot-input { width: 40px; padding: 0.25em 0.3em; }` as base style; (c) at ≤480px: `repeat(4, 1fr)`, `.spell-slot-input { width: 30px; padding: 0.1em 0.12em; font-size: 0.8rem; }`, reduced box padding and row gap.
+### 2026-03-21 (riepilogo — dettagli in git history)
+- **Spell slot grid overflow mobile**: slot-input usa class `.spell-slot-input`, non `style="width:40px"` inline; grid `repeat(4,1fr)` su ≤480px.
+- **Power Attack block**: `#power-attack-block` inizia `hidden`; visibile solo se `char.feats` contiene "Attacco Poderoso" (feat, NON automatico a BAB+1).
+- **`getMergedProfile([])`**: ora restituisce profilo neutro (era `{ rage: true }`); `rage-block` inizia `hidden`.
+- **Sticky nav mobile**: wrapper `<div class="char-top-bar">` per header + conditions banner + tab-nav.
+- **`Storage.getStorageUsage()`**: restituisce `{ usedKB, totalKB, percent }` — non `.used`/`.total`.
+- **`_classSkillIds`**: dichiarato `let _classSkillIds = []` a livello modulo in `ui.js`.
 
-- **Power Attack block** (`#power-attack-block`) — Was hardcoded visible in `index.html`. Fixed: added `id="power-attack-block"` and `hidden` class; `renderArmi()` in `ui.js` shows the block only when `char.feats` contains a feat with name "Attacco Poderoso" (case-insensitive, whitespace-normalized). Power Attack is NOT automatically granted at BAB +1 — it must be explicitly chosen as a feat.
+---
 
-- **Class profile residue** (rage-block, wrong sections on Fattucchiera) — `getMergedProfile([])` returned `{ rage: true }` as default. Fixed: returns `{ hasSpellsTab: false, primaryTabs: [], features: {}, classSkillIds: [] }` for empty or blank class name arrays. Also `rage-block` now starts `hidden` in HTML.
+## 18. Sistema Archetipi
 
-- **Sticky nav on mobile** — `position: sticky` was only on `.char-header`, not including conditions banner and tab-nav. Fixed: new wrapper `<div class="char-top-bar">` containing all three elements; sticky rule moved to `.char-top-bar`.
+File: `js/data/classes-config.js`
 
-- **`updateStorageBar` TypeError** — `u.used` and `u.total` don't exist; `Storage.getStorageUsage()` returns `{ usedKB, totalKB, percent }`. Fixed in `app.js`.
+### Modello dati
+Ogni voce in `char.meta.classes` ora ha un campo opzionale:
+```js
+{ className: 'Guerriero', level: 5, hitDie: 10, archetype: 'Arciere' }
+```
+`archetype: ''` = nessun archetipo selezionato. Nessuna migrazione necessaria: i valori mancanti vengono trattati come `''` con fallback `|| ''`.
 
-- **`_classSkillIds` ReferenceError** — Variable used in `_applySkillHighlights()` but never declared at module level. Fixed: added `let _classSkillIds = [];` to ui.js module state section.
+### Dati in ClassConfig
+`ClassConfig.ARCHETYPES` — oggetto `{ [classId]: archetype[] }` con N archetipi per ognuna delle 33 classi.
+
+Ogni archetipo ha:
+```js
+{
+  id: string,              // es. 'iracondo_invulnerabile'
+  name: string,            // es. 'Iracondo Invulnerabile' (usato per autocomplete + lookup)
+  classSkillAdd?: string[],    // skill IDs aggiunti come abilità di classe
+  classSkillRemove?: string[], // skill IDs rimossi dalle abilità di classe
+  featureOverrides?: object,   // override dei feature flags (es. { bardPerf: false })
+}
+```
+
+`ClassConfig.getArchetypes(classId)` — restituisce `ARCHETYPES[classId] || []`.
+
+### UI
+- Le righe classe nel tab Sommario ora hanno struttura a due livelli:
+  - `.class-row-main` — flex row con [nome classe] [livello] [dado vita] [rimuovi]
+  - `.cls-archetype` — input di testo sotto la riga principale, con `<datalist id="arch-list-N">` popolato con gli archetipi della classe selezionata
+- Quando l'utente cambia il nome classe, la datalist degli archetipi si aggiorna automaticamente e il campo archetipo viene resettato a vuoto
+- Il campo archetipo è opzionale e accetta testo libero (archetipi non catalogati)
+
+### getMergedProfile — aggiornamento
+Accetta ora sia `string[]` (backward compat) che `{ name, archetype }[]`:
+- Dopo aver calcolato `classSkillIds` base, applica `classSkillAdd/Remove` dall'archetipo selezionato
+- Dopo aver calcolato `features`, applica `featureOverrides` dall'archetipo (es. `{ bardPerf: false }` per "Possessore di Segreti")
+
+### applyClassProfile — aggiornamento
+Ora passa `{ name: c.className, archetype: c.archetype || '' }` invece di semplici string al `getMergedProfile`.
+
+### Aggiungere nuovi archetipi
+Modificare `ARCHETYPES` in `classes-config.js`. Solo i campi che differiscono dalla classe base devono essere specificati. Archetipi senza override funzionano solo come etichette (autocomplete, visualizzazione).
+
+---
+
+## 19. Architettura Dati — Database di Riferimento PF1
+
+### Strategia scelta
+Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globali** caricati come `<script>` in `index.html`. Nessun backend, nessun database cloud per i dati di regola. Questa scelta è motivata da:
+- L'app è statica (GitHub Pages, nessun server)
+- I dati di riferimento PF1 non cambiano mai
+- Un database cloud (Supabase, Turso, ecc.) richiederebbe auth token nel client JS → rischio sicurezza
+
+### Dati personaggio (caratterizzazione futura)
+- **Per ora**: `localStorage` (già implementato)
+- **In futuro (opzionale)**: Supabase per sincronizzazione cross-device se il giocatore lo richiede
+
+### File dati presenti
+
+#### `js/data/feats-list.js` — `PF1_FEATS_DB`
+- **Fonte**: https://golarion.altervista.org/wiki/Database_Talenti (scraping effettuato in sessione 2)
+- **Contenuto**: **339 talenti** PF1 in italiano, organizzati per tipo
+- **Schema**:
+  ```js
+  { name: string, type: string, prerequisites: string, benefit: string, source: string }
+  ```
+- **Tipi inclusi**: Generali, Combattimento, Metamagia, Critico, Stile, Incanalare Energia, Squadra, Eroici, Trama
+- **Abbreviazioni source**: MdG=Manuale di Gioco | GdG=Guida del Giocatore | GC=Guida al Combattimento | GM=Guida alla Magia | GCl=Guida alle Classi | GR=Guida alle Razze | UI=Ultimate Intrigue | AO=Avventure Occulte | GCa=Guida alla Campagna | VC=Villain Codex | AG=Adventurer\'s Guide | AM=Avventure Mitiche | UW=Ultimate Wilderness
+- **Stato**: 339/~700+ PF1. Buona copertura del MdG e dei supplementi principali. Sufficiente per la campagna.
+- **Da fare**: implementare autocomplete UI nel tab Talenti (usa `PF1_FEATS_DB`).
+
+#### `js/data/spells-list.js` — `PF1_SPELLS_DB`
+- **Fonte**: Dati scritti da conoscenza PF1 in sessione 3 (golarion.altervista.org/wiki/Database_Incantesimi — fetch fallito; d20pfsrd.com/magic/tools/spells-db — bloccato da Google Sheets)
+- **Stato**: **251 incantesimi** livelli 0–9, tutte le classi principali (Mago, Stregone, Arcanista, Chierico, Oracolo, Sciamano, Druido, Bardo, Paladino, Ranger, Inquisitore, Alchimista, Magus, Skald).
+- **Schema**: `{ name, level, school, subschool, descriptor, components, castingTime, range, target, duration, savingThrow, spellResistance, description }`
+- **`level`** è un oggetto `{ classId: livello }` es. `{ mago:3, stregone:3, arcanista:3 }`
+- **Da fare**: implementare autocomplete UI nel tab Incantesimi (usa `PF1_SPELLS_DB`)
+
+#### `js/data/skills-list.js` — `PF1_SKILLS`
+- Completo. Lista di tutte le abilità PF1 con metadati.
+
+### Ordine di caricamento script
+Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
+
+### TODO dati
+- [x] Completare `PF1_FEATS_DB` — FATTO (339 talenti in sessione 2)
+- [x] Completare `PF1_SPELLS_DB` — FATTO (251 incantesimi in sessione 3; livelli 0–9)
+- [ ] Implementare autocomplete nel tab Talenti (usa `PF1_FEATS_DB`)
+- [ ] Implementare autocomplete nel tab Incantesimi (usa `PF1_SPELLS_DB`)
+- [ ] Fetch Database_Incantesimi/Database_Talenti per aggiornare dati (attualmente bloccati)

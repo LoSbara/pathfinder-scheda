@@ -140,11 +140,20 @@ const UI = (() => {
         const row = document.createElement('div');
         row.className = 'class-row';
         row.dataset.index = i;
+        // Popola datalist archetipi per questa classe
+        const classCfg = (typeof ClassConfig !== 'undefined') ? ClassConfig.findByName(cls.className || '') : null;
+        const archOptions = (classCfg ? ClassConfig.getArchetypes(classCfg.id) : [])
+          .map(a => `<option value="${_e(a.name)}">`).join('');
         row.innerHTML = `
-          <input type="text"   class="field-input cls-name"  list="class-datalist" placeholder="Classe"   value="${_e(cls.className || '')}" />
-          <input type="number" class="field-input field-narrow cls-level" min="1" max="20" value="${cls.level || 1}" title="Livello" />
-          <input type="number" class="field-input class-row-hd cls-hd"   min="4" max="12" value="${cls.hitDie || 8}"  title="Dado Vita" />
-          <button class="btn btn-danger btn-sm cls-remove" title="Rimuovi"><i class="fa-solid fa-xmark"></i></button>
+          <div class="class-row-main">
+            <input type="text"   class="field-input cls-name"  list="class-datalist" placeholder="Classe"   value="${_e(cls.className || '')}" />
+            <input type="number" class="field-input field-narrow cls-level" min="1" max="20" value="${cls.level || 1}" title="Livello" />
+            <input type="number" class="field-input class-row-hd cls-hd"   min="4" max="12" value="${cls.hitDie || 8}"  title="Dado Vita" />
+            <button class="btn btn-danger btn-sm cls-remove" title="Rimuovi"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <datalist id="arch-list-${i}">${archOptions}</datalist>
+          <input type="text" class="field-input cls-archetype" list="arch-list-${i}"
+                 placeholder="Archetipo (opzionale)" value="${_e(cls.archetype || '')}" />
         `;
         list.appendChild(row);
       });
@@ -605,12 +614,12 @@ const UI = (() => {
   // ── Talenti ───────────────────────────────────────────────────────────────
 
   function renderTalenti(char) {
-    _renderFeatsList(char.feats       || [], el('feats-list'));
+    _renderFeatsList(char.feats       || [], el('feats-list'), false, 'feat-name-datalist');
     _renderFeatsList(char.classFeatures|| [], el('features-list'), true);
     _renderFeatsList(char.racialTraits || [], el('racial-list'));
   }
 
-  function _renderFeatsList(items, container, isFeature = false) {
+  function _renderFeatsList(items, container, isFeature = false, nameListId = null) {
     if (!container) return;
     container.innerHTML = '';
     if (items.length === 0) {
@@ -641,7 +650,7 @@ const UI = (() => {
       card.innerHTML = `
         <div class="${isFeature ? 'feature-card-header' : 'feat-card-header'}">
           <input type="text" class="${isFeature ? 'feature-name' : 'feat-name'}"
-                 placeholder="Nome" value="${_e(item.name||'')}" />
+                 placeholder="Nome" value="${_e(item.name||'')}"${nameListId ? ` list="${nameListId}"` : ''} />
           ${levelBadge}
           ${typeInput}
           <button class="btn btn-danger btn-sm feat-remove" title="Rimuovi"><i class="fa-solid fa-xmark"></i></button>
@@ -877,6 +886,7 @@ const UI = (() => {
   function _bindAll() {
     _initClassDatalist();
     _initSpellDatalist();
+    _initFeatDatalist();
     _bindTabNav();
     _bindSommario();
     _bindAbilities();
@@ -897,6 +907,18 @@ const UI = (() => {
     ClassConfig.CLASSES.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.name;
+      dl.appendChild(opt);
+    });
+  }
+
+  // Popola il datalist con tutti i nomi talento da PF1_FEATS_DB
+  function _initFeatDatalist() {
+    const dl = document.getElementById('feat-name-datalist');
+    if (!dl || typeof PF1_FEATS_DB === 'undefined') return;
+    dl.innerHTML = '';
+    PF1_FEATS_DB.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.name;
       dl.appendChild(opt);
     });
   }
@@ -962,12 +984,12 @@ const UI = (() => {
    * @param {object} char
    */
   function applyClassProfile(char) {
-    const classNames = (char.meta?.classes || [])
-      .map(c => c.className)
-      .filter(Boolean);
+    const classEntries = (char.meta?.classes || [])
+      .map(c => ({ name: c.className || '', archetype: c.archetype || '' }))
+      .filter(e => e.name);
 
     const profile = (typeof ClassConfig !== 'undefined')
-      ? ClassConfig.getMergedProfile(classNames)
+      ? ClassConfig.getMergedProfile(classEntries)
       : { hasSpellsTab: true, primaryTabs: [], features: { rage: true } };
 
     // 1. Tab Incantesimi: nascosta per classi senza incantesimi
@@ -1159,7 +1181,23 @@ const UI = (() => {
           _char.meta.classes[i].hitDie = cfg.hitDie;
           const hdInput = row.querySelector('.cls-hd');
           if (hdInput) hdInput.value = cfg.hitDie;
+          // Aggiorna la datalist degli archetipi per questa riga
+          const datalist = row.querySelector('datalist');
+          if (datalist) {
+            datalist.innerHTML = ClassConfig.getArchetypes(cfg.id)
+              .map(a => `<option value="${_e(a.name)}">`) .join('');
+          }
+        } else {
+          // Classe non riconosciuta: svuota la datalist archetipi
+          const datalist = row.querySelector('datalist');
+          if (datalist) datalist.innerHTML = '';
         }
+        // Reset archetipo se la classe cambia
+        const archInput = row.querySelector('.cls-archetype');
+        if (archInput) { archInput.value = ''; _char.meta.classes[i].archetype = ''; }
+      }
+      if (e.target.classList.contains('cls-archetype')) {
+        _char.meta.classes[i].archetype = e.target.value;
       }
       if (e.target.classList.contains('cls-level')) _char.meta.classes[i].level = toInt(e.target.value, 1);
       if (e.target.classList.contains('cls-hd'))    _char.meta.classes[i].hitDie = toInt(e.target.value, 8);
@@ -1183,7 +1221,7 @@ const UI = (() => {
     });
     el('btn-add-class')?.addEventListener('click', () => {
       if (!_char) return;
-      _char.meta.classes.push({ className:'', level:1, hitDie:8 });
+      _char.meta.classes.push({ className:'', level:1, hitDie:8, archetype:'' });
       _renderClassesList(_char);
       applyClassProfile(_char);  // ricalcola dopo aggiunta classe
       _dirty();
@@ -1507,12 +1545,12 @@ const UI = (() => {
       _char.racialTraits.push({id:Character.generateId(),name:'',description:''});
       renderTalenti(_char); _dirty();
     });
-    _delegateFeatContainer('feats-list',    () => _char?.feats,          false);
-    _delegateFeatContainer('features-list', () => _char?.classFeatures, true);
-    _delegateFeatContainer('racial-list',   () => _char?.racialTraits,  false);
+    _delegateFeatContainer('feats-list',    () => _char?.feats,          false, true);
+    _delegateFeatContainer('features-list', () => _char?.classFeatures, true,  false);
+    _delegateFeatContainer('racial-list',   () => _char?.racialTraits,  false, false);
   }
 
-  function _delegateFeatContainer(containerId, arrFn, isFeature) {
+  function _delegateFeatContainer(containerId, arrFn, isFeature, withAutoFill = false) {
     const container = el(containerId);
     if (!container) return;
     container.addEventListener('change', e => {
@@ -1524,6 +1562,16 @@ const UI = (() => {
       if (i < 0 || !arr || !arr[i]) return;
       if (e.target.classList.contains('feat-name')    || e.target.classList.contains('feature-name'))
         arr[i].name = e.target.value;
+      // Auto-fill da PF1_FEATS_DB quando il nome corrisponde esattamente
+      if (withAutoFill && e.target.classList.contains('feat-name') && typeof PF1_FEATS_DB !== 'undefined') {
+        const match = PF1_FEATS_DB.find(f => f.name.toLowerCase() === arr[i].name.toLowerCase());
+        if (match) {
+          if (!arr[i].type)          arr[i].type          = match.type          || '';
+          if (!arr[i].prerequisites) arr[i].prerequisites = match.prerequisites || '';
+          if (!arr[i].description)   arr[i].description   = match.benefit       || '';
+          renderTalenti(_char); _dirty(); return;
+        }
+      }
       if (e.target.classList.contains('feat-type'))
         arr[i].type = e.target.value;
       if (e.target.classList.contains('feat-desc')    || e.target.classList.contains('feature-desc'))
@@ -1599,6 +1647,13 @@ const UI = (() => {
             if (!s.savingThrow)     s.savingThrow     = match.savingThrow     || '';
             if (!s.spellResistance) s.spellResistance = match.spellResistance || 'no';
             if (!s.description)     s.description     = match.description     || '';
+            // Auto-fill livello incantesimo dalla classe incantatrice del personaggio
+            if (match.level && typeof ClassConfig !== 'undefined') {
+              const casterConf = ClassConfig.findByName(_char.spells.casterClass || '');
+              if (casterConf && match.level[casterConf.id] !== undefined) {
+                s.spellLevel = match.level[casterConf.id];
+              }
+            }
             renderIncantesimi(_char); return;
           }
         }

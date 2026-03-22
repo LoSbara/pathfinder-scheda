@@ -195,14 +195,28 @@
 .classes-list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.5rem; }
 .class-row {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.3rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.3rem 0.6rem;
 }
-.class-row .field-input { flex: 2; }
+.class-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.class-row-main .field-input { flex: 2; }
+.cls-archetype {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: transparent;
+  padding: 0.2em 0.5em;
+}
+.cls-archetype:focus { border-color: var(--gold); color: var(--text-main); }
+.cls-archetype::placeholder { font-style: italic; }
 /* Classe duplicata: bordo arancio di avviso */
 input.input-warning { border-color: #e07c00 !important; background: #2a1800 !important; }
 .class-row .field-narrow { flex: 0 0 70px; }
@@ -1014,10 +1028,12 @@ input.input-warning { border-color: #e07c00 !important; background: #2a1800 !imp
   .char-header-actions { gap: 0.25rem; }
 
   /* Classi */
-  .class-row { flex-wrap: wrap; gap: 0.35rem; }
-  .class-row > .field-input { min-width: 120px; }
-  .class-row > .field-narrow { flex: 0 0 58px; }
+  .class-row { gap: 0.25rem; padding: 0.3rem 0.4rem; }
+  .class-row-main { flex-wrap: wrap; gap: 0.35rem; }
+  .class-row-main > .field-input { min-width: 120px; }
+  .class-row-main > .field-narrow { flex: 0 0 58px; }
   .class-row-hd { flex: 0 0 52px; }
+  .cls-archetype { font-size: 0.78rem; }
 
   /* ── Caratteristiche ── */
   .abilities-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }

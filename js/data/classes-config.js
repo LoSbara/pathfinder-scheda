@@ -536,6 +536,201 @@ const ClassConfig = (() => {
     },
   ];
 
+  // ══════════════════════════════════════════════════════════════════════
+  // ARCHETIPI per classe (id → array di { id, name, [classSkillAdd], [classSkillRemove], [featureOverrides] })
+  // classSkillAdd / classSkillRemove usano gli stessi skill IDs di CLASS_SKILLS.
+  // featureOverrides sostituisce flag specifici del profilo UI (es. { bardPerf: false }).
+  // ══════════════════════════════════════════════════════════════════════
+  const ARCHETYPES = {
+    barbaro: [
+      { id: 'iracondo_invulnerabile',  name: 'Iracondo Invulnerabile' },
+      { id: 'barbaro_urbano',          name: 'Barbaro Urbano',
+        classSkillAdd: ['bluff','diplomazia','conoscenze_locale','senso_moti','travestimento'],
+        classSkillRemove: ['nuotare','sopravvivenza'] },
+      { id: 'seguace_totem',           name: 'Seguace del Totem' },
+      { id: 'cantastorie_tribale',     name: 'Cantastorie Tribale' },
+      { id: 'sciamano_polvere',        name: 'Sciamano della Polvere' },
+      { id: 'cavaliere_barbaro',       name: 'Cavaliere Barbaro' },
+    ],
+    bardo: [
+      { id: 'arcano_duellante',        name: 'Arcano Duellante' },
+      { id: 'trovatore',               name: 'Trovatore' },
+      { id: 'menestello',              name: 'Menestello' },
+      { id: 'coreuta',                 name: 'Coreuta' },
+      { id: 'possessore_segreti',      name: 'Possessore di Segreti',
+        featureOverrides: { bardPerf: false } },
+      { id: 'veggente_arcano',         name: 'Veggente Arcano' },
+      { id: 'maestro_strumenti',       name: 'Maestro degli Strumenti' },
+    ],
+    chierico: [
+      { id: 'crociato',                name: 'Crociato' },
+      { id: 'curatore',                name: 'Curatore' },
+      { id: 'pontefice',               name: 'Pontefice' },
+      { id: 'sacerdote_combattente',   name: 'Sacerdote Combattente' },
+      { id: 'esorcista',               name: 'Esorcista' },
+    ],
+    druido: [
+      { id: 'custode_natura',          name: 'Custode della Natura' },
+      { id: 'animale_battaglia',       name: 'Animale da Battaglia' },
+      { id: 'pastore_selvaggio',       name: 'Pastore Selvaggio' },
+      { id: 'druido_viaggio',          name: 'Druido del Viaggio' },
+      { id: 'scolpitore_elementi',     name: 'Scolpitore di Elementi' },
+      { id: 'signore_tempesta',        name: 'Signore della Tempesta' },
+    ],
+    guerriero: [
+      { id: 'arciere',                 name: 'Arciere' },
+      { id: 'due_armi',                name: 'Combattente a Due Armi' },
+      { id: 'torre',                   name: 'Specialista dello Scudo a Torre' },
+      { id: 'rovina_mostri',           name: 'Rovina dei Mostri' },
+      { id: 'campione_popolo',         name: 'Campione del Popolo' },
+      { id: 'tattico',                 name: 'Tattico' },
+      { id: 'bruto',                   name: 'Bruto' },
+      { id: 'cavaliere_stellato',      name: 'Cavaliere Stellato' },
+    ],
+    ladro: [
+      { id: 'maestro_coltelli',        name: 'Maestro dei Coltelli' },
+      { id: 'esploratore',             name: 'Esploratore' },
+      { id: 'acrobatico',              name: 'Assassino Acrobatico' },
+      { id: 'stalker',                 name: 'Stalker' },
+      { id: 'collezionista_taglie',    name: 'Collezionista di Taglie' },
+      { id: 'spia_ladro',              name: 'Spia' },
+    ],
+    mago: [
+      { id: 'legato_libro',            name: 'Mago Legato al Libro' },
+      { id: 'mago_elementale',         name: 'Mago Elementale' },
+      { id: 'magister',                name: 'Magister' },
+      { id: 'universalista',           name: 'Universalista' },
+      { id: 'negromanzia',             name: 'Specialista di Negromanzia' },
+    ],
+    monaco: [
+      { id: 'pugno_ferro',             name: 'Monaco del Pugno di Ferro' },
+      { id: 'mano_vuota',              name: 'Monaco della Mano Vuota' },
+      { id: 'studioso_forma',          name: 'Studioso della Forma Interna' },
+      { id: 'kata_maestro',            name: 'Kata Maestro' },
+    ],
+    paladino: [
+      { id: 'mezza_luna',              name: 'Cavaliere della Mezza Luna' },
+      { id: 'protettore_divino',       name: 'Protettore Divino' },
+      { id: 'difensore_fede',          name: 'Difensore della Vera Fede' },
+      { id: 'campione_altare',         name: 'Campione dell\'Altare' },
+    ],
+    ranger: [
+      { id: 'cacciatore_mostri',       name: 'Cacciatore di Mostri' },
+      { id: 'arciere_foresta',         name: 'Arciere della Foresta' },
+      { id: 'segugio',                 name: 'Segugio' },
+      { id: 'cavalcatore_cielo',       name: 'Cavalcatore del Cielo' },
+      { id: 'nomade',                  name: 'Nomade' },
+    ],
+    stregone: [
+      { id: 'mago_arcano',             name: 'Mago Arcano' },
+      { id: 'sanguemisto',             name: 'Sanguemisto' },
+      { id: 'elementalista',           name: 'Elementalista' },
+    ],
+    alchimista: [
+      { id: 'bombardiere',             name: 'Bombardiere' },
+      { id: 'chirurgo',                name: 'Chirurgo' },
+      { id: 'formulista',              name: 'Formulista' },
+      { id: 'veleniere',               name: 'Veleniere' },
+      { id: 'trasformatore',           name: 'Trasformatore' },
+    ],
+    cavaliere: [
+      { id: 'signore_cavallo',         name: 'Signore del Cavallo' },
+      { id: 'comandante',              name: 'Comandante' },
+      { id: 'cavaliere_errante',       name: 'Cavaliere Errante' },
+    ],
+    convocatore: [
+      { id: 'bestia_convocatore',      name: 'Convocatore della Bestia' },
+      { id: 'summoner_patto',          name: 'Convocatore del Patto' },
+    ],
+    fattucchiera: [
+      { id: 'fattucchiera_cacciatrice',name: 'Fattucchiera Cacciatrice' },
+      { id: 'fattucchiera_natura',     name: 'Fattucchiera della Natura' },
+      { id: 'fattucchiera_carnevale',  name: 'Fattucchiera Carnevalesca' },
+      { id: 'strega_fate',             name: 'Ostetrica delle Fate' },
+    ],
+    inquisitore: [
+      { id: 'esaminatore',             name: 'Esaminatore' },
+      { id: 'cacciatore_inquisitore',  name: 'Cacciatore di Mostri' },
+      { id: 'segugio_inquisitore',     name: 'Segugio' },
+      { id: 'incorrotto',              name: 'Incorrotto' },
+    ],
+    magus: [
+      { id: 'magus_kensai',            name: 'Kensai' },
+      { id: 'magus_anime',             name: 'Magus Anime' },
+      { id: 'magus_lame',              name: 'Danzatore di Lame' },
+      { id: 'magus_arcano',            name: 'Stregone Arcano' },
+    ],
+    morfico: [
+      { id: 'mannaro_benedetto',       name: 'Mannaro Benedetto' },
+      { id: 'esploratore_bestiale',    name: 'Esploratore Bestiale' },
+      { id: 'shifter_elementale',      name: 'Trasmutatore Elementale' },
+    ],
+    oracolo: [
+      { id: 'oracolo_battito',         name: 'Oracolo del Battito del Cuore' },
+      { id: 'cavaliere_oracolo',       name: 'Cavaliere dell\'Oracolo' },
+    ],
+    pistolero: [
+      { id: 'tiratore_scelto',         name: 'Tiratore Scelto' },
+      { id: 'cacciatore_pistola',      name: 'Cacciatore Pistolero' },
+      { id: 'pistolero_pellegrino',    name: 'Pistolero Pellegrino' },
+    ],
+    vigilante: [
+      { id: 'avventuriero_identita',   name: 'Vigilante Avventuriero' },
+      { id: 'cacciatore_identita',     name: 'Vigilante Cacciatore' },
+    ],
+    antipaladino: [
+      { id: 'signore_morte',           name: 'Signore della Morte' },
+      { id: 'terrore_armate',          name: 'Terrore delle Armate' },
+    ],
+    ninja: [
+      { id: 'shinobi_ombre',           name: 'Shinobi delle Ombre' },
+      { id: 'ninja_veleno',            name: 'Ninja Veleniere' },
+    ],
+    samurai: [
+      { id: 'ronin',                   name: 'Ronin' },
+      { id: 'guerriero_vincolo',       name: 'Guerriero del Vincolo' },
+    ],
+    arcanista: [
+      { id: 'mago_esplosivo',          name: 'Mago Esplosivo' },
+      { id: 'sangue_arcano',           name: 'Sangue Arcano' },
+    ],
+    attaccabrighe: [
+      { id: 'pugno_urbano',            name: 'Pugno di Ferro Urbano' },
+      { id: 'totem_brawler',           name: 'Seguace del Totem' },
+    ],
+    cacciatore: [
+      { id: 'seguace_animali',         name: 'Seguace degli Animali' },
+      { id: 'cacciatore_orde',         name: 'Cacciatore delle Orde' },
+    ],
+    iracondo_stirpe: [
+      { id: 'iracondo_urbano',         name: 'Iracondo Urbano',
+        classSkillAdd: ['bluff','diplomazia','conoscenze_locale','senso_moti'],
+        classSkillRemove: ['sopravvivenza'] },
+      { id: 'iracondo_rovi',           name: 'Iracondo dei Rovi' },
+      { id: 'iracondo_invulnerabile',  name: 'Iracondo Invulnerabile' },
+    ],
+    guardiamarca: [
+      { id: 'guardia_sacra',           name: 'Guardia Sacra' },
+      { id: 'patrugliatore',           name: 'Pattugliatore' },
+    ],
+    schermagliatore: [
+      { id: 'duellante_lama',          name: 'Duellante della Lama' },
+      { id: 'tiratore_accurato',       name: 'Tiratore Accurato' },
+    ],
+    sciamano: [
+      { id: 'sciamano_corpo',          name: 'Sciamano del Corpo' },
+      { id: 'sciamano_natura',         name: 'Sciamano della Natura' },
+    ],
+    skald: [
+      { id: 'bardo_battaglia',         name: 'Bardo di Battaglia' },
+      { id: 'cantore_guerriero',       name: 'Cantore Guerriero' },
+    ],
+    spia: [
+      { id: 'stalker_corte',           name: 'Spia della Corte' },
+      { id: 'agente_doppio',           name: 'Agente Doppio' },
+    ],
+  };
+
   // ══════════════════════════════════════════════════════════════════════  // ABILITÀ DI CLASSE per id (vedi skills-list.js)
   // ══════════════════════════════════════════════════════════════════
   const CLASS_SKILLS = {
@@ -589,25 +784,40 @@ const ClassConfig = (() => {
   }
 
   /**
-   * Calcola il profilo UI unificato per un array di nomi classe (multiclasse).
+   * Restituisce l'array di archetipi per una classe dato il suo id.
+   * @param {string} classId
+   * @returns {Array}
+   */
+  function getArchetypes(classId) {
+    return ARCHETYPES[classId] || [];
+  }
+
+  /**
+   * Calcola il profilo UI unificato per un array di classi (multiclasse).
+   * Accetta sia string[] che { name, archetype }[] (backward compatible).
    * Se nessuna classe è riconosciuta, restituisce il profilo di default (mostra tutto).
    *
-   * @param {string[]} classNames — array di nomi classe
-   * @returns {{ hasSpellsTab: boolean, primaryTabs: string[], features: object }}
+   * @param {Array<string|{name:string,archetype:string}>} classNamesOrEntries
+   * @returns {{ hasSpellsTab: boolean, primaryTabs: string[], features: object, classSkillIds: string[] }}
    */
-  function getMergedProfile(classNames) {
+  function getMergedProfile(classNamesOrEntries) {
     // Nessuna classe: personaggio vuoto — non mostrare nulla di class-specific
-    if (!classNames || classNames.length === 0) {
+    if (!classNamesOrEntries || classNamesOrEntries.length === 0) {
       return { hasSpellsTab: false, primaryTabs: [], features: {}, classSkillIds: [] };
     }
+
+    // Normalizza a { name, archetype } objects (backward compat con string[])
+    const entries = classNamesOrEntries.map(item =>
+      typeof item === 'string' ? { name: item, archetype: '' } : item
+    );
 
     // Filtra i nomi vuoti (righe classe appena aggiunte ma non ancora compilate)
-    const validNames = classNames.filter(n => n && n.trim() !== '');
-    if (validNames.length === 0) {
+    const validEntries = entries.filter(e => e.name && e.name.trim() !== '');
+    if (validEntries.length === 0) {
       return { hasSpellsTab: false, primaryTabs: [], features: {}, classSkillIds: [] };
     }
 
-    const configs = validNames.map(n => findByName(n)).filter(Boolean);
+    const configs = validEntries.map(e => findByName(e.name)).filter(Boolean);
     // Classe(i) non riconosciute → mostra tutto per retrocompatibilità
     if (configs.length === 0) return _defaultProfile();
 
@@ -623,6 +833,33 @@ const ClassConfig = (() => {
       Object.entries(c.features || {}).forEach(([k, v]) => {
         if (v) merged.features[k] = true;
       });
+    });
+
+    // Applica override dalle selezioni di archetipo
+    validEntries.forEach(entry => {
+      if (!entry.archetype || !entry.archetype.trim()) return;
+      const cfg = findByName(entry.name);
+      if (!cfg) return;
+      const archName = entry.archetype.toLowerCase().trim();
+      const arch = (ARCHETYPES[cfg.id] || []).find(a =>
+        a.name.toLowerCase() === archName
+      );
+      if (!arch) return;
+      // Override abilità di classe
+      if (arch.classSkillAdd) {
+        arch.classSkillAdd.forEach(s => {
+          if (!merged.classSkillIds.includes(s)) merged.classSkillIds.push(s);
+        });
+      }
+      if (arch.classSkillRemove) {
+        merged.classSkillIds = merged.classSkillIds.filter(s => !arch.classSkillRemove.includes(s));
+      }
+      // Override feature flags (es. { bardPerf: false })
+      if (arch.featureOverrides) {
+        Object.entries(arch.featureOverrides).forEach(([k, v]) => {
+          merged.features[k] = v;
+        });
+      }
     });
 
     return merged;
@@ -642,5 +879,5 @@ const ClassConfig = (() => {
     };
   }
 
-  return { CLASSES, CLASS_SKILLS, findByName, getMergedProfile };
+  return { CLASSES, CLASS_SKILLS, ARCHETYPES, findByName, getArchetypes, getMergedProfile };
 })();
