@@ -827,7 +827,7 @@ const Creation = (() => {
     const selected   = _draft.feats.some(x => x.name === f.name);
     const searchStr  = `${f.name} ${f.type ?? ''} ${f.benefit ?? ''}`.toLowerCase();
     const typeLabels = {
-      'Combattimento': 'Comb.', 'Generali': 'Gen.', 'Metamagia': 'Meta',
+      'Combattimento': 'Comb.', 'Generali': 'Gen.', 'Metamagia': 'Meta', 'Creazione Oggetti': 'Craft.',
       'Critico': 'Crit.', 'Squadra': 'Squadra', 'Stile': 'Stile',
       'Eroici': 'Eroico', 'Trama': 'Trama', 'Incanalare Energia': 'Incanalare',
     };

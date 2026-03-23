@@ -180,7 +180,7 @@ const SearchModal = (() => {
 
     } else {
       const FEAT_TYPES = ['', 'Generali', 'Combattimento', 'Metamagia', 'Critico', 'Stile',
-                          'Incanalare Energia', 'Squadra', 'Eroici', 'Trama'];
+                          'Incanalare Energia', 'Squadra', 'Eroici', 'Trama', 'Creazione Oggetti'];
       const typeOptions = FEAT_TYPES.map(t =>
         `<option value="${_esc(t)}"${t === _fType ? ' selected' : ''}>${_esc(t) || '— Tutti —'}</option>`
       ).join('');
@@ -267,10 +267,11 @@ const SearchModal = (() => {
     _filtered = PF1_FEATS_DB.filter(ft => {
       if (_fType && ft.type !== _fType) return false;
       if (txt) {
-        const n = (ft.name          || '').toLowerCase();
-        const p = (ft.prerequisites || '').toLowerCase();
-        const b = (ft.benefit       || '').toLowerCase();
-        if (!n.includes(txt) && !p.includes(txt) && !b.includes(txt)) return false;
+        const n  = (ft.name          || '').toLowerCase();
+        const en = (ft.nameEN        || '').toLowerCase();
+        const p  = (ft.prerequisites || '').toLowerCase();
+        const b  = (ft.benefit       || '').toLowerCase();
+        if (!n.includes(txt) && !en.includes(txt) && !p.includes(txt) && !b.includes(txt)) return false;
       }
       return true;
     });
