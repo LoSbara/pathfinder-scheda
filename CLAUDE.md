@@ -1,7 +1,7 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-22 (sessione 2)
+> Last updated: 2026-03-23 (sessione 4)
 
 ---
 
@@ -9,20 +9,27 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-22 (sessione 3)
+### Ultima sessione: 2026-03-23 (sessione 4)
 
-**Modifiche non committate (6 file):**
+**Tutto committato e pushato (commit `55437f4`).**
+
+**Modifiche committate in questa sessione:**
+- `js/data/feats-list.js` — `PF1_FEATS_DB` **339 talenti** (creato in sessione 4)
+- `js/data/spells-list.js` — `PF1_SPELLS_DB` **2927 incantesimi** (246 IT + 2681 EN, deduplicati in sessioni 3–4)
 - `js/data/classes-config.js` — Sistema archetipi: `ARCHETYPES` dict, `getArchetypes()`, `getMergedProfile` aggiornato
-- `js/ui.js` — Righe classe a due livelli (`.class-row-main` + `.cls-archetype` con datalist)
+- `js/ui.js` — Autocomplete talenti (datalist + auto-fill tipo/prerequisiti/descrizione) + autocomplete incantesimi (datalist + auto-fill tutti i campi + livello dalla classe); righe classe a due livelli
 - `styles/character.css` — Stili `.class-row`, `.class-row-main`, `.cls-archetype`
-- `js/data/feats-list.js` — `PF1_FEATS_DB` **339 talenti** (espanso da 151 in sessione 2)
-- `js/data/spells-list.js` — `PF1_SPELLS_DB` **251 incantesimi** (espanso da 66 in questa sessione; livelli 0–9 per tutte le classi principali)
-- `CLAUDE.md` — Sessione 3: aggiornamenti stato
+- `index.html` — Aggiunta `<datalist id="feat-name-datalist">`
+- `CLAUDE.md` — Aggiornato
 
-**Prossimo lavoro prioritario:**
-1. Autocomplete talenti in `renderTalenti` in `ui.js` — usa `PF1_FEATS_DB`
-2. Autocomplete incantesimi nel tab Incantesimi — usa `PF1_SPELLS_DB`
-3. Commit quando c\'è abbastanza roba nuova (utente preferisce aspettare)
+**Prossimo lavoro prioritario (in ordine):**
+1. Modal ricerca incantesimi/talenti con filtro per classe/livello/prerequisiti (sostituisce autocomplete semplice)
+2. Wizard creazione personaggio step-by-step a livello 1
+3. Importare talenti da documentazione inglese (d20pfsrd.com)
+4. Aggiungere tutti gli archetipi PF1 in `classes-config.js`
+5. Aggiungere tutte le razze PF1 disponibili (`PF1_RACES_DB`)
+6. Aggiungere lingue disponibili (`PF1_LANGUAGES`)
+7. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
 
 ---
 
@@ -61,8 +68,8 @@ pathfinder-scheda/
 ├── js/
 │   ├── data/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
-│   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (251 incantesimi, livelli 0–9)
-│   │   ├── feats-list.js  ← Global PF1_FEATS_DB array (339 talenti PF1)
+│   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (2927 incantesimi: 246 IT + 2681 EN)
+│   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (339 talenti PF1)
 │   │   └── classes-config.js ← Global ClassConfig: tutte le classi PF1 con feature flags
 │   ├── storage.js          ← Storage namespace: read/write/export/import via localStorage
 │   ├── character.js        ← Character namespace: data model, validate, migrate
@@ -100,7 +107,7 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 | Global | File | Purpose |
 |---|---|---|
 | `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions |
-| `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (251 incantesimi, livelli 0–9) |
+| `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (2927: 246 IT + 2681 EN) |
 | `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (339 talenti) |
 | `Storage` | `storage.js` | CRUD for characters in localStorage |
 | `Character` | `character.js` | Data model factory + utilities |
@@ -535,13 +542,30 @@ Fantasy dark theme. Key CSS custom properties:
 
 ## 10. Open TODOs
 
-1. **`PF1_SPELLS_DB`** — **251 incantesimi** livello 0–9, buona copertura classi principali. Autocomplete UI non implementato. Vedi Sezione 19.
-2. **`PF1_FEATS_DB`** — **339 talenti**, copertura completa MdG + supplementi principali. Autocomplete in `renderTalenti` non implementato. Vedi Sezione 19.
-3. **Bloodline powers** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
-4. **`armor.speedArmor`** — campo presente in `combat`, non collegato a `calcSpeed()`. La riduzione di velocità per armatura NON viene sottratta automaticamente.
-5. **`calcFort` rage bonus** — `rageMor = char.rage?.active ? (char.rage.willBonus ? 0 : 2) : 0` restituisce sempre 0 perché `willBonus` è truthy (default: 2). Comportamento corretto per PF1, ma il codice è fuorviante.
-6. **`equipment.location`** — campo nel model, non visibile/modificabile in UI (solo `worn` checkbox).
-7. **Spell details UI** — campi `subschool`, `descriptor`, `components`, `target`, `spellResistance` presenti nel model ma senza input nella scheda.
+### Completati ✅
+- ~~Autocomplete talenti~~ — **FATTO** (sessione 4): datalist `feat-name-datalist`, auto-fill tipo/prerequisiti/descrizione da `PF1_FEATS_DB` al cambio nome
+- ~~Autocomplete incantesimi~~ — **FATTO** (sessione 4): datalist `spell-name-datalist` (2927 nomi), auto-fill tutti i campi + livello dalla classe incantatrice del PG
+- ~~`PF1_FEATS_DB`~~ — **FATTO** 339 talenti
+- ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
+- ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`, UI a due livelli in Sommario
+
+### Priorità alta 🔴
+1. **Modal ricerca incantesimi** — sostituire l'autocomplete semplice con una schermata modale che chieda il livello dell'incantesimo e filtri `PF1_SPELLS_DB` per: classe incantatrice del PG (o le sue classi), livello spell selezionato. Il giocatore sceglie dall'elenco filtrato e l'incantesimo viene aggiunto automaticamente con tutti i campi compilati. Vedi Sezione 20.
+2. **Modal ricerca talenti** — analoga alla ricerca incantesimi: filtro per tipo talento e prerequisiti che il PG rispetta (confrontando automaticamente). Vedi Sezione 20.
+3. **Wizard creazione personaggio** — interfaccia step-by-step per la creazione di un PG di livello 1 seguendo le regole PF1 standard (scelta razza → scelta classe → distribuzione punti caratteristica → scelta abilità di classe → scelta talenti iniziali → lingue → equipaggiamento iniziale). Vedi Sezione 21.
+
+### Priorità media 🟡
+4. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 339 IT; il totale PF1 è ~700+). Schema: aggiungere campo `nameEN` o creare file separato `feats-list-en.js`.
+5. **Tutti gli archetipi PF1** — `classes-config.js` ha già la struttura `ARCHETYPES`; popolare con tutti gli archetipi ufficiali per ogni classe (attualmente solo un sottoinsieme). Fonte: golarion.altervista.org o d20pfsrd.com/classes.
+6. **Razze PF1** — creare `js/data/races-list.js` con `PF1_RACES_DB`: tutte le razze standard (Core + Advanced Race Guide + supplementi). Schema: `{ id, name, abilityMods: {str,dex,...}, size, speed, traits: [], languages: [], bonusLanguages: [], source }`. Integrare con wizard creazione e campo Razza nel Sommario (autocomplete + auto-fill modificatori razziali).
+7. **Lingue PF1** — creare `js/data/languages-list.js` con `PF1_LANGUAGES`: array di stringhe (Comune, Nano, Elfico, Orchesco, ecc.) + lingue segrete/rare. Usare come datalist nel campo lingue del Sommario.
+8. **Mega archivio equipaggiamento** — creare `js/data/equipment-db.js` con `PF1_EQUIPMENT_DB`: armi, armature, oggetti generali, oggetti magici (IT + EN). Schema: `{ name, nameEN, category, cost, weight, damage, critRange, critMult, type, properties, source }`. Usare per autocomplete/modal nel tab Equipaggiamento e Armi.
+
+### Priorità bassa 🟢
+9. **Bloodline powers UI** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
+10. **`armor.speedArmor`** — campo presente in `combat`, non collegato a `calcSpeed()`.
+11. **`calcFort` rage bonus** — codice fuorviante (restituisce sempre 0, ma è il comportamento corretto PF1; il commento è confuso).
+12. **`equipment.location`** — campo nel model, non visibile/modificabile in UI (solo `worn` checkbox).
 
 
 
@@ -715,6 +739,12 @@ Skills.calcSkillPointsSummary(char)    // → { spent, available, overflow }
 
 ## 17. Bug fixes history (most recent first)
 
+### 2026-03-23 (sessione 4)
+- **Autocomplete talenti** — `_initFeatDatalist()` popola `<datalist id="feat-name-datalist">` con i 339 nomi di `PF1_FEATS_DB`. Il campo nome nei feat card ha `list="feat-name-datalist"`. Auto-fill tipo/prerequisiti/descrizione quando il nome corrisponde esattamente.
+- **Autocomplete incantesimi** — `_initSpellDatalist()` già esistente (2927 nomi). Aggiunto auto-fill del livello spell dalla classe incantatrice del PG tramite `ClassConfig.findByName` → `match.level[casterConf.id]`.
+- **Deduplicazione `PF1_SPELLS_DB`** — 225 entry EN rimosse in 2 sessioni: 3152 → 3047 → 2927. File valido (`node --check`).
+- **Commit + push** `55437f4`.
+
 ### 2026-03-22
 - **Sistema Archetipi** — campo `archetype` in `meta.classes[]`, `ARCHETYPES` dict in `classes-config.js`, UI a due livelli per riga classe, `getMergedProfile` aggiornato. Vedi Sezione 18.
 
@@ -797,16 +827,17 @@ Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globa
   { name: string, type: string, prerequisites: string, benefit: string, source: string }
   ```
 - **Tipi inclusi**: Generali, Combattimento, Metamagia, Critico, Stile, Incanalare Energia, Squadra, Eroici, Trama
-- **Abbreviazioni source**: MdG=Manuale di Gioco | GdG=Guida del Giocatore | GC=Guida al Combattimento | GM=Guida alla Magia | GCl=Guida alle Classi | GR=Guida alle Razze | UI=Ultimate Intrigue | AO=Avventure Occulte | GCa=Guida alla Campagna | VC=Villain Codex | AG=Adventurer\'s Guide | AM=Avventure Mitiche | UW=Ultimate Wilderness
+- **Abbreviazioni source**: MdG=Manuale di Gioco | GdG=Guida del Giocatore | GC=Guida al Combattimento | GM=Guida alla Magia | GCl=Guida alle Classi | GR=Guida alle Razze | UI=Ultimate Intrigue | AO=Avventure Occulte | GCa=Guida alla Campagna | VC=Villain Codex | AG=Adventurer's Guide | AM=Avventure Mitiche | UW=Ultimate Wilderness
 - **Stato**: 339/~700+ PF1. Buona copertura del MdG e dei supplementi principali. Sufficiente per la campagna.
-- **Da fare**: implementare autocomplete UI nel tab Talenti (usa `PF1_FEATS_DB`).
+- **Autocomplete**: ✅ implementato (`feat-name-datalist`, auto-fill tipo/prerequisiti/descrizione)
 
 #### `js/data/spells-list.js` — `PF1_SPELLS_DB`
-- **Fonte**: Dati scritti da conoscenza PF1 in sessione 3 (golarion.altervista.org/wiki/Database_Incantesimi — fetch fallito; d20pfsrd.com/magic/tools/spells-db — bloccato da Google Sheets)
-- **Stato**: **251 incantesimi** livelli 0–9, tutte le classi principali (Mago, Stregone, Arcanista, Chierico, Oracolo, Sciamano, Druido, Bardo, Paladino, Ranger, Inquisitore, Alchimista, Magus, Skald).
+- **Fonte**: Import da HTML golarion.altervista.org (sessioni 3–4) + deduplicazione manuale con confronto descrizioni
+- **Stato**: **2927 incantesimi** — 246 IT + 2681 EN. Livelli 0–9, tutte le classi principali.
+- **Deduplicazione**: 225 EN rimossi su 2 sessioni (3152 → 2927). File validato con `node --check`.
 - **Schema**: `{ name, level, school, subschool, descriptor, components, castingTime, range, target, duration, savingThrow, spellResistance, description }`
 - **`level`** è un oggetto `{ classId: livello }` es. `{ mago:3, stregone:3, arcanista:3 }`
-- **Da fare**: implementare autocomplete UI nel tab Incantesimi (usa `PF1_SPELLS_DB`)
+- **Autocomplete**: ✅ implementato (`spell-name-datalist` con 2927 nomi, auto-fill tutti i campi + livello dal classId del PG)
 
 #### `js/data/skills-list.js` — `PF1_SKILLS`
 - Completo. Lista di tutte le abilità PF1 con metadati.
@@ -815,8 +846,68 @@ Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globa
 Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 
 ### TODO dati
-- [x] Completare `PF1_FEATS_DB` — FATTO (339 talenti in sessione 2)
-- [x] Completare `PF1_SPELLS_DB` — FATTO (251 incantesimi in sessione 3; livelli 0–9)
-- [ ] Implementare autocomplete nel tab Talenti (usa `PF1_FEATS_DB`)
-- [ ] Implementare autocomplete nel tab Incantesimi (usa `PF1_SPELLS_DB`)
-- [ ] Fetch Database_Incantesimi/Database_Talenti per aggiornare dati (attualmente bloccati)
+- [x] Completare `PF1_FEATS_DB` — FATTO (339 talenti IT in sessione 2)
+- [x] Completare `PF1_SPELLS_DB` — FATTO (2927 incantesimi IT+EN in sessioni 3–4)
+- [x] Autocomplete talenti — FATTO (sessione 4)
+- [x] Autocomplete incantesimi — FATTO (sessione 4)
+- [ ] Modal ricerca incantesimi (filtro per classe+livello) — vedi Sezione 20
+- [ ] Modal ricerca talenti (filtro per tipo+prerequisiti) — vedi Sezione 20
+- [ ] Wizard creazione personaggio livello 1 — vedi Sezione 21
+- [ ] Importare talenti EN da d20pfsrd.com (~700+ totali)
+- [ ] Aggiungere tutti gli archetipi PF1 in `classes-config.js`
+- [ ] Creare `PF1_RACES_DB` in `js/data/races-list.js`
+- [ ] Creare `PF1_LANGUAGES` in `js/data/languages-list.js`
+- [ ] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` (armi, armature, oggetti)
+
+---
+
+## 20. Modal Ricerca Incantesimi e Talenti (TODO)
+
+### Comportamento atteso — Incantesimi
+- Bottone "Cerca incantesimo" nel tab Incantesimi (al posto o accanto ad "Aggiungi")
+- Si apre un modal con:
+  - Selezione livello incantesimo (0–9) — filtro principale
+  - Campo ricerca testuale (nome, scuola, descrizione)
+  - Lista risultati filtrata per: **classe incantatrice del PG** (usa `_char.spells.casterClass` → `ClassConfig.findByName` → `casterConf.id` → solo le spell che hanno `spell.level[casterConf.id] === livelloScelto`)
+  - Ogni risultato mostra: nome, scuola, componenti, gittata, durata
+  - Click su un risultato → aggiunge lo spell alla lista con tutti i campi pre-compilati e chiude il modal
+- Per multiclasse: mostrare dropdown per scegliere quale classe usare come filtro, oppure l'unione di tutte le classi del PG
+
+### Comportamento atteso — Talenti
+- Bottone "Cerca talento" nel tab Talenti
+- Si apre un modal con:
+  - Filtro per tipo (Combattimento, Generale, Metamagia, ecc.)
+  - Campo ricerca testuale (nome, prerequisiti, beneficio)
+  - Lista risultati da `PF1_FEATS_DB`
+  - Ogni risultato mostra: nome, tipo, prerequisiti
+  - Click → aggiunge il talento con nome/tipo/prerequisiti/descrizione pre-compilati
+
+### Implementazione suggerita
+- Modal riutilizzabile (un solo elemento HTML `#modal-search`) con contenuto generato dinamicamente
+- Stile: stesso tema dark fantasy, simile ai modal esistenti (`#modal-new-character`)
+- Filtro in tempo reale (input `oninput`) su array in memoria — nessuna chiamata HTTP
+- Per incantesimi: virtualizzazione se la lista è lunga (o paginazione semplice a 20 risultati)
+
+---
+
+## 21. Wizard Creazione Personaggio a Livello 1 (TODO)
+
+### Obiettivo
+Sostituire o affiancare il modal "Nuovo Personaggio" con una procedura guidata step-by-step che segua le regole PF1 ufficiali per la creazione personaggio a livello 1.
+
+### Passi wizard (ordine regole PF1 standard)
+1. **Concept** — Nome PG, nome giocatore, allineamento
+2. **Razza** — Scelta da `PF1_RACES_DB` (con preview dei bonus razziali, tratti, lingue bonus, velocità, taglia)
+3. **Classe** — Scelta da `ClassConfig.CLASSES` (con preview dado vita, BAB, TS, punti abilità, capacità di classe livello 1) + eventuale archetipo
+4. **Punteggi Caratteristica** — Metodo: punto acquisto (15/20/25 punti) o lancio dadi (4d6 scarta il minimo × 6). Distribuzione interattiva.
+5. **Abilità** — Distribuzione punti abilità (classe + INT mod, ×4 al livello 1). Highlight abilità di classe. Rank 0 o 1 per ogni abilità.
+6. **Talenti** — Scelta del/dei talenti iniziali (livello 1 = 1 talento + eventuali bonus razziali/di classe). Usa modal ricerca talenti (Sezione 20) con filtro prerequisiti rispettati.
+7. **Equipaggiamento iniziale** — Scelta equipaggiamento di partenza (gold di partenza per classe oppure kit predefinito)
+8. **Riepilogo** — Preview scheda completa, conferma e salvataggio
+
+### Note tecniche
+- Il wizard crea un oggetto `char` via `Character.createDefault(name)` e lo popola progressivamente
+- Ogni step valida i propri input prima di permettere di andare avanti
+- Il PG può essere salvato solo al passo 8 (riepilogo)
+- UI: schermata separata `#screen-wizard` (terza screen oltre home e character sheet) oppure modal multi-step con progress bar
+- I punteggi caratteristica devono pre-compilare `abilities.strRacial` ecc. dai bonus razziali scelti
