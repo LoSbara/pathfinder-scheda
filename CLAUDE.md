@@ -1,7 +1,7 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-23 (sessione 9)
+> Last updated: 2026-03-24 (sessione 10)
 
 > ⚠ **DOCUMENTAZIONE UFFICIALE DISPONIBILE** — Tutti i dati di gioco (incantesimi, talenti, equipaggiamento, razze, classi, ecc.) devono essere tratti dalla documentazione ufficiale elencata nella Sezione 11, NON inventati o dedotti dall'addestramento del modello. Quando si creano o aggiornano file `data/*.js`, consultare sempre le fonti ufficiali.
 
@@ -11,19 +11,25 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-23 (sessione 8)
+### Ultima sessione: 2026-03-24 (sessione 10)
 
-**Nuovo (non ancora committato):**
-- `js/creation.js` — wizard creazione PG livello 1 (7 passi). Vedi Sezione 21.
-- `styles/creation.css` — stili completi per il wizard
-- `js/search-modal.js` — **NUOVO** modal riutilizzabile `SearchModal` per ricerca incantesimi (`openSpells`) e talenti (`openFeats`). Paginazione 20 risultati/pagina. Filtra `PF1_SPELLS_DB` per classe+livello+testo; filtra `PF1_FEATS_DB` per tipo+testo. Aggiunge l'elemento selezionato con tutti i campi pre-compilati.
-- `index.html` — rimosso `#btn-add-caster-class` + `.add-caster-block-row`; aggiunto `#modal-search`, bottone "Cerca" in tab Talenti, bottone "Cerca" per ogni blocco incantatrice; script tag `search-modal.js` (prima di app.js)
-- `js/ui.js` — rimosso listener `btn-add-caster-class`; aggiunto `btn-search-feat` listener (chiama `SearchModal.openFeats`); aggiunto `.caster-search-spell-btn` listener (chiama `SearchModal.openSpells`); aggiornato messaggio empty-state del tab Incantesimi
-- `styles/main.css` — aggiunto stile per `.modal-search-content`, `.ms-result-item`, paginazione, etc.
-- `js/data/classes-config.js` — **AGGIORNATO** `ARCHETYPES`: copertura completa con ~10-20 archetipi per classe (tutte e 33 le classi), inclusi APG + UC + UM + ACG; featureOverrides e classSkill changes dove rilevanti
-- `js/app.js` — `handleNewCharacter()` ora chiama `Creation.start()` con fallback al vecchio modal
+**Tutto committato.** Ultimo commit: `ccabff5`
+
+**Modifiche sessione 10:**
+- `js/data/equipment-db.js` — **ESPANSO** da 349 → **501 items** (commit `ccabff5`). Aggiunte:
+  - **Armi magiche** (`category:'weapon'`, ~62 voci): Spada Lunga/Corta/Grande, Ascia da Battaglia/Grande, Pugnale, Stocco, Scimitarra, Mazza da Guerra, Alabarda, Falcione, Arco Lungo, Arco Composito, Baleste, Lancia — bonus +1→+5 + proprietà speciali (Fiammeggiante, Gelida, Elettrica, Affilata, Sacra, Funesta, Tocco Fantasma, Disgregante, Vorticosa). Le armi magiche usano `category:'weapon'` per apparire nella ricerca armi.
+  - **Armature magiche** (`category:'armor'`, 19 voci): Cuoio +1→+3, Cuoio Borchiato +1→+3, Giaco di Maglia +1→+5, Cotta di Maglia +1→+3, Corazza di Piastre +1→+3, Armatura Completa +1→+5
+  - **Scudi magici** (`category:'shield'`, 9 voci): Buckler, Leggero, Pesante con bonus +1→+5
+  - **Bastoni** (`category:'magic'`, `subcategory:'bastoni'`, 15 voci): tutti i bastoni CRB con cariche/incantesimi nel campo `special`
+  - **Bracciali** (`category:'magic'`, `subcategory:'bracciali'`, 10 voci): Armatura +1→+8, Archeria Leggeri/Standard
+  - **Pietre Ioun** (`category:'magic'`, `subcategory:'ioun_stone'`, 12 voci): CRB completo
+  - **Oggetti meravigliosi aggiuntivi** (~20 voci): Amuleti dei Pugni +3/4/5, Collana di Adattamento, 6 anelli, Cappello del Travestimento, Elmo della Brillanza, Guanti dell'Orco, Mantello dell'Aracnide, Collane di Palle di Fuoco II–VII, Pietra Fortunata, Sfera dell'Annientamento, Mano della Gloria
+- `js/search-modal.js` — `_SUBCAT_LABELS` aggiornato con `bastoni`, `bracciali`, `ioun_stone`; campo `special` ora visibile nei risultati degli oggetti magici
 
 **Commit storici rilevanti (tutto il resto è già committato):**
+- `ccabff5` — Archivio equipaggiamento magico completo (349→501 items) + search-modal updates
+- `2ce31ab` — `PF1_FEATS_DB`: 339→398 talenti (Creazione Oggetti, Combattimento, Metamagia, Squadra)
+- `52c24fe` — `PF1_EQUIPMENT_DB`: 349 items base
 - `be40d76` — `PF1_RACES_DB`: alternativeTraits + variants per tutte e 29 le razze
 - `95a538d` — Aggiunge `PF1_RACES_DB` (29 razze) e `PF1_LANGUAGES`
 - `d78d24c` — Supabase configurata con credenziali reali (progetto `eozugrzsifdpwxmsjqud`)
@@ -31,10 +37,9 @@
 - `95c5414` — `char.spells` refactored ad array di blocchi multi-classe
 
 **Prossimo lavoro prioritario (in ordine):**
-1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 339 IT)
-2. ~~Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)~~ — **FATTO** (300 item, session 9)
-3. Bloodline powers UI (`rage.bloodlinePowers`)
-4. `armor.speedArmor` → `calcSpeed()` wiring
+1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 398 IT)
+2. Bloodline powers UI (`rage.bloodlinePowers`)
+3. `armor.speedArmor` → `calcSpeed()` wiring
 
 ---
 
@@ -75,8 +80,8 @@ pathfinder-scheda/
 │   ├── data/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
 │   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (2927 incantesimi: 246 IT + 2681 EN)
-│   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (339 talenti PF1)
-│   │   ├── equipment-db.js ← Global PF1_EQUIPMENT_DB array (300 item: armi, armature, oggetti, magia)
+│   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (398 talenti PF1)
+│   │   ├── equipment-db.js ← Global PF1_EQUIPMENT_DB array (501 item: armi, armature, oggetti, magia+incantata)
 │   │   ├── races-list.js   ← Global PF1_RACES_DB array (29 razze con tratti, lingue, mod, alt traits)
 │   │   ├── languages-list.js ← Global PF1_LANGUAGES array (lingue del mondo di Golarion)
 │   │   └── classes-config.js ← Global ClassConfig: tutte e 33 le classi PF1 con feature flags
@@ -126,7 +131,7 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 |---|---|---|
 | `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions (35 skills) |
 | `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (2927: 246 IT + 2681 EN) |
-| `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (339 talenti) |
+| `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (398 talenti) |
 | `PF1_EQUIPMENT_DB` | `data/equipment-db.js` | Array of equipment (300 item: armi/armature/oggetti/magia) |
 | `SearchModal` | `search-modal.js` | Modal ricerca incantesimi/talenti/equipaggiamento (openSpells, openFeats, openEquipment) |
 | `PF1_RACES_DB` | `data/races-list.js` | Array of race definitions (29 razze, with altTraits) |
@@ -579,7 +584,7 @@ Fantasy dark theme. Key CSS custom properties:
 ### Completati ✅
 - ~~Autocomplete talenti~~ — **FATTO** (sessione 4)
 - ~~Autocomplete incantesimi~~ — **FATTO** (sessione 4)
-- ~~`PF1_FEATS_DB`~~ — **FATTO** 339 talenti
+- ~~`PF1_FEATS_DB`~~ — **FATTO** 398 talenti (IT, campo nameEN, Creazione Oggetti inclusa)
 - ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
 - ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`
 - ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` = array di blocchi per classe incantatrice
@@ -587,23 +592,22 @@ Fantasy dark theme. Key CSS custom properties:
 - ~~`PF1_RACES_DB`~~ — **FATTO** (sessione 5–6): 29 razze con tratti, lingue, modificatori, tratti alternativi e varianti (commit `95a538d`, `be40d76`)
 - ~~`PF1_LANGUAGES`~~ — **FATTO** (sessione 5–6): file `languages-list.js` con tutte le lingue di Golarion (commit `95a538d`)
 - ~~Wizard creazione personaggio livello 1~~ — **FATTO** (sessione 7): `js/creation.js` + `styles/creation.css`, 7 passi guidati
+- ~~Bug `#btn-add-caster-class`~~ — **CORRETTO** (sessione 8)
+- ~~Modal ricerca incantesimi~~ — **FATTO** (sessione 8): `js/search-modal.js`, `SearchModal.openSpells(char, blockIdx, onSelect)`
+- ~~Modal ricerca talenti~~ — **FATTO** (sessione 8): `SearchModal.openFeats(onSelect)`
+- ~~Archetipi completi~~ — **FATTO** (sessione 8): ~10-20 archetipi per classe in `ARCHETYPES` (tutte e 33 classi), APG + UC + UM + ACG
+- ~~`PF1_EQUIPMENT_DB` base~~ — **FATTO** (sessione 9): 349 item armi/armature/oggetti/magia; `SearchModal.openEquipment()` (commit `52c24fe`)
+- ~~Equipaggiamento magico completo~~ — **FATTO** (sessione 10): 501 item totali; +152 armi/armature/scudi magici +1→+5, bastoni, bracciali, Pietre Ioun, nuovi meravigliosi (commit `ccabff5`)
+- ~~Talenti Creazione Oggetti + Metamagia + Squadra~~ — **FATTO** (sessione 9–10): 339→398 talenti (commit `2ce31ab`)
 
 ### Bug noti / Correzioni necessarie 🐛
 _(nessun bug noto aperto — tutti corretti)_
-
-### Completati (sessione 8) ✅
-- ~~Bug `#btn-add-caster-class`~~ — **CORRETTO** (sessione 8): bottone e listener rimossi; messaggio empty-state aggiornato
-- ~~Modal ricerca incantesimi~~ — **FATTO** (sessione 8): `js/search-modal.js`, `SearchModal.openSpells(char, blockIdx, onSelect)`
-- ~~Modal ricerca talenti~~ — **FATTO** (sessione 8): `SearchModal.openFeats(onSelect)`
-- ~~Wizard creazione personaggio livello 1~~ — **FATTO** (sessione 7): `js/creation.js` + `styles/creation.css`, 7 passi guidati
-- ~~Archetipi completi~~ — **FATTO** (sessione 8): ~10-20 archetipi per classe in `ARCHETYPES` (tutte e 33 classi), APG + UC + UM + ACG
 
 ### Priorità alta 🔴
 _(vedi sezione 0 per la lista aggiornata)_
 
 ### Priorità media 🟡
-1. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 339 IT; il totale PF1 è ~700+). Schema: aggiungere campo `nameEN` o creare file separato `feats-list-en.js`.
-2. **Mega archivio equipaggiamento** — creare `js/data/equipment-db.js` con `PF1_EQUIPMENT_DB`: armi, armature, oggetti generali, oggetti magici (IT + EN). Schema: `{ name, nameEN, category, cost, weight, damage, critRange, critMult, type, properties, source }`. Usare per autocomplete/modal nel tab Equipaggiamento e Armi.
+1. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 398 IT con nameEN; il totale PF1 è ~700+).
 
 ### Priorità bassa 🟢
 9. **Bloodline powers UI** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
@@ -875,14 +879,15 @@ Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globa
 
 #### `js/data/feats-list.js` — `PF1_FEATS_DB`
 - **Fonte**: https://golarion.altervista.org/wiki/Database_Talenti (scraping effettuato in sessione 2)
-- **Contenuto**: **339 talenti** PF1 in italiano, organizzati per tipo
+- **Contenuto**: **398 talenti** PF1 in italiano, organizzati per tipo
 - **Schema**:
   ```js
   { name: string, type: string, prerequisites: string, benefit: string, source: string }
   ```
-- **Tipi inclusi**: Generali, Combattimento, Metamagia, Critico, Stile, Incanalare Energia, Squadra, Eroici, Trama
+- **Tipi inclusi**: Generali, Combattimento, Metamagia, Critico, Stile, Incanalare Energia, Squadra, Eroici, Trama, Creazione Oggetti
+- **Aggiunte sessione 9**: 59 nuovi talenti — 11 Creazione Oggetti, 28 Combattimento/Generali CRB mancanti, 9 Metamagia, 7 Squadra; campo `nameEN` aggiunto
 - **Abbreviazioni source**: MdG=Manuale di Gioco | GdG=Guida del Giocatore | GC=Guida al Combattimento | GM=Guida alla Magia | GCl=Guida alle Classi | GR=Guida alle Razze | UI=Ultimate Intrigue | AO=Avventure Occulte | GCa=Guida alla Campagna | VC=Villain Codex | AG=Adventurer's Guide | AM=Avventure Mitiche | UW=Ultimate Wilderness
-- **Stato**: 339/~700+ PF1. Buona copertura del MdG e dei supplementi principali. Sufficiente per la campagna.
+- **Stato**: 398/~700+ PF1. Buona copertura del MdG e dei supplementi principali. Sufficiente per la campagna.
 - **Autocomplete**: ✅ implementato (`feat-name-datalist`, auto-fill tipo/prerequisiti/descrizione)
 
 #### `js/data/spells-list.js` — `PF1_SPELLS_DB`
@@ -904,14 +909,15 @@ Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 - [x] Completare `PF1_SPELLS_DB` — FATTO (2927 incantesimi IT+EN in sessioni 3–4)
 - [x] Autocomplete talenti — FATTO (sessione 4)
 - [x] Autocomplete incantesimi — FATTO (sessione 4)
-- [ ] Modal ricerca incantesimi (filtro per classe+livello) — vedi Sezione 20
-- [ ] Modal ricerca talenti (filtro per tipo+prerequisiti) — vedi Sezione 20
+- [x] Modal ricerca incantesimi (filtro per classe+livello) — **FATTO** (sessione 8)
+- [x] Modal ricerca talenti (filtro per tipo+prerequisiti) — **FATTO** (sessione 8)
 - [x] Wizard creazione personaggio livello 1 — **FATTO** (sessione 7): `js/creation.js`
 - [ ] Importare talenti EN da d20pfsrd.com (~700+ totali)
-- [ ] Aggiungere tutti gli archetipi PF1 in `classes-config.js`
+- [x] Aggiungere tutti gli archetipi PF1 in `classes-config.js` — **FATTO** (sessione 8): ~10-20 archetipi per classe
 - [x] Creare `PF1_RACES_DB` in `js/data/races-list.js` — **FATTO** (29 razze)
 - [x] Creare `PF1_LANGUAGES` in `js/data/languages-list.js` — **FATTO**
-- [x] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` — **FATTO** (300 item: armi/armature/oggetti/magia; SearchModal.openEquipment() con pulsanti Cerca in tab armi/armatura/inventario)
+- [x] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` — **FATTO** (501 item: armi/armature/oggetti/magia+incantata; bastoni, bracciali, Pietre Ioun, armi/armature magiche +1→+5; SearchModal.openEquipment())
+- [x] Completare `PF1_FEATS_DB` con talenti EN e Creazione Oggetti — **FATTO** (398 IT, campo nameEN aggiunto)
 
 ---
 
