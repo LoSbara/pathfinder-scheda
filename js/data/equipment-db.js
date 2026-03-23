@@ -626,7 +626,7 @@ const PF1_EQUIPMENT_DB = [
   { id:'backpack',          name:'Zaino',                         nameEN:'Backpack',
     category:'gear', subcategory:'avventura', weight:0.9, cost:'2 mo', source:'CRB' },
 
-  { id:'bedroll',           name:'Sacco a Pelo',                  nameEN:'Bedroll',
+  { id:'bedroll',           name:'Giaciglio',                      nameEN:'Bedroll',
     category:'gear', subcategory:'avventura', weight:2.25, cost:'1 ma', source:'CRB' },
 
   { id:'blanket',           name:'Coperta',                       nameEN:'Blanket',
@@ -715,6 +715,65 @@ const PF1_EQUIPMENT_DB = [
 
   { id:'everburning_torch', name:'Torcia Perenne',                nameEN:'Everburning Torch',
     category:'gear', subcategory:'avventura', weight:0.45, cost:'110 mo', source:'CRB' },
+  { id:'agrifoglio_vischio',  name:'Agrifoglio e Vischio',          nameEN:'Holly and Mistletoe',
+    category:'gear', subcategory:'avventura', weight:0, cost:'1 mo', source:'CRB' },
+
+  { id:'borsa_componenti',    name:'Borsa per Componenti di Incantesimi', nameEN:'Spell Component Pouch',
+    category:'gear', subcategory:'avventura', weight:1, cost:'5 mo', source:'CRB' },
+
+  { id:'borsa_impermeabile',  name:'Borsa Impermeabile',            nameEN:'Waterproof Bag',
+    category:'gear', subcategory:'avventura', weight:0.25, cost:'5 ma', source:'UE' },
+
+  { id:'catena',              name:'Catena (3 m)',                   nameEN:'Chain (3 m)',
+    category:'gear', subcategory:'avventura', weight:1, cost:'30 mo', source:'CRB' },
+
+  { id:'lampada',             name:'Lampada',                        nameEN:'Lamp',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'1 ma', source:'CRB' },
+
+  { id:'libro_incantesimi',   name:'Libro degli Incantesimi',        nameEN:'Spellbook',
+    category:'gear', subcategory:'avventura', weight:1.5, cost:'15 mo', source:'CRB' },
+
+  { id:'sapone',              name:'Sapone',                         nameEN:'Soap',
+    category:'gear', subcategory:'avventura', weight:0.25, cost:'1 mr', source:'UE' },
+
+  { id:'scala_pioli',         name:'Scala a Pioli (3 m)',            nameEN:'Ladder (3m)',
+    category:'gear', subcategory:'avventura', weight:10, cost:'2 ma', source:'CRB' },
+
+  { id:'simbolo_sacro_legno', name:'Simbolo Sacro di Legno',         nameEN:'Holy Symbol, Wooden',
+    category:'gear', subcategory:'avventura', weight:0, cost:'1 mo', source:'CRB' },
+
+  { id:'simbolo_sacro_ferro', name:'Simbolo Sacro di Ferro',         nameEN:'Holy Symbol, Iron',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'5 mo', source:'UE' },
+
+  { id:'simbolo_sacro_argento', name:"Simbolo Sacro d'Argento",      nameEN:'Holy Symbol, Silver',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'25 mo', source:'CRB' },
+
+  { id:'simbolo_sacro_oro',   name:"Simbolo Sacro d'Oro",            nameEN:'Holy Symbol, Gold',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'100 mo', source:'UE' },
+
+  { id:'simbolo_sacrilego_legno', name:'Simbolo Sacrilego di Legno', nameEN:'Unholy Symbol, Wooden',
+    category:'gear', subcategory:'avventura', weight:0, cost:'1 mo', source:'CRB' },
+
+  { id:'simbolo_sacrilego_argento', name:"Simbolo Sacrilego d'Argento", nameEN:'Unholy Symbol, Silver',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'25 mo', source:'CRB' },
+
+  { id:'tenda_piccola',       name:'Tenda (piccola)',                 nameEN:'Tent, Small',
+    category:'gear', subcategory:'avventura', weight:10, cost:'10 mo', source:'CRB' },
+
+  { id:'tenda_media',         name:'Tenda (media)',                   nameEN:'Tent, Medium',
+    category:'gear', subcategory:'avventura', weight:15, cost:'15 mo', source:'CRB' },
+
+  { id:'tenda_grande',        name:'Tenda (grande)',                  nameEN:'Tent, Large',
+    category:'gear', subcategory:'avventura', weight:20, cost:'30 mo', source:'CRB' },
+
+  { id:'tenda_padiglione',    name:'Tenda (padiglione)',              nameEN:'Tent, Pavilion',
+    category:'gear', subcategory:'avventura', weight:25, cost:'100 mo', source:'CRB' },
+
+  { id:'testo_sacro_economico', name:'Testo Sacro (economico)',       nameEN:'Religious Text, Cheap',
+    category:'gear', subcategory:'avventura', weight:0.5, cost:'1 mo', source:'CRB' },
+
+  { id:'testo_sacro',         name:'Testo Sacro',                     nameEN:'Religious Text',
+    category:'gear', subcategory:'avventura', weight:1, cost:'25 mo', source:'CRB' },
 
   // ── Contenitori ──────────────────────────────────────────────────────────
   { id:'belt_pouch',        name:'Borsa da Cintura',              nameEN:'Belt Pouch',
@@ -778,14 +837,17 @@ const PF1_EQUIPMENT_DB = [
   { id:'musical_instr_mw',  name:'Strumento Musicale Sopraffino', nameEN:'Masterwork Musical Instrument',
     category:'gear', subcategory:'strumenti', weight:1.35, cost:'100 mo', source:'CRB' },
 
-  { id:'lock_average',      name:'Lucchetto (medio)',             nameEN:'Lock, Average',
-    category:'gear', subcategory:'strumenti', weight:0.45, cost:'25 mo', source:'CRB' },
+  { id:'lock_simple',      name:'Lucchetto (semplice, CD 20)',    nameEN:'Lock, Simple',
+    category:'gear', subcategory:'strumenti', weight:0.5, cost:'20 mo', source:'UE' },
 
-  { id:'lock_good',         name:'Lucchetto (buono)',             nameEN:'Lock, Good',
-    category:'gear', subcategory:'strumenti', weight:0.45, cost:'40 mo', source:'CRB' },
+  { id:'lock_average',      name:'Lucchetto (media, CD 25)',      nameEN:'Lock, Average',
+    category:'gear', subcategory:'strumenti', weight:0.5, cost:'40 mo', source:'CRB' },
 
-  { id:'lock_superior',     name:'Lucchetto (superiore)',         nameEN:'Lock, Superior',
-    category:'gear', subcategory:'strumenti', weight:0.45, cost:'85 mo', source:'CRB' },
+  { id:'lock_good',         name:'Lucchetto (buona, CD 30)',      nameEN:'Lock, Good',
+    category:'gear', subcategory:'strumenti', weight:0.5, cost:'80 mo', source:'CRB' },
+
+  { id:'lock_superior',     name:'Lucchetto (superiore, CD 40)', nameEN:'Lock, Superior',
+    category:'gear', subcategory:'strumenti', weight:0.5, cost:'150 mo', source:'CRB' },
 
   { id:'spring_sheath',     name:'Fodero a Molla da Polso',       nameEN:'Spring-loaded Wrist Sheath',
     category:'gear', subcategory:'strumenti', weight:0.23, cost:'5 mo', source:'UC' },
@@ -821,6 +883,9 @@ const PF1_EQUIPMENT_DB = [
   { id:'frozen_ammo',       name:'Proiettile Ghiacciato',         nameEN:'Frost Powder',
     category:'gear', subcategory:'alchemica', weight:0, cost:'25 mo', source:'APG' },
 
+  { id:'holy_water',       name:'Acqua Santa',                   nameEN:'Holy Water',
+    category:'gear', subcategory:'alchemica', weight:0.5, cost:'25 mo', source:'CRB' },
+
   // ── Trasporto ────────────────────────────────────────────────────────────
   { id:'horse_light',       name:'Cavallo Leggero',               nameEN:'Horse, Light',
     category:'gear', subcategory:'trasporto', weight:0, cost:'75 mo', source:'CRB' },
@@ -842,6 +907,21 @@ const PF1_EQUIPMENT_DB = [
 
   { id:'wagon',             name:'Carro Trainato',                nameEN:'Wagon',
     category:'gear', subcategory:'trasporto', weight:0, cost:'35 mo', source:'CRB' },
+
+  { id:'animal_feed',      name:'Nutrimento per Animali (giorno)', nameEN:'Feed (per day)',
+    category:'gear', subcategory:'trasporto', weight:5, cost:'5 mr', source:'CRB' },
+
+  { id:'bit_bridle',       name:'Morso e Briglie',                nameEN:'Bit and Bridle',
+    category:'gear', subcategory:'trasporto', weight:0.5, cost:'2 mo', source:'CRB' },
+
+  { id:'saddlebags',       name:'Sacche da Sella',                nameEN:'Saddlebags',
+    category:'gear', subcategory:'trasporto', weight:4, cost:'4 mo', source:'CRB' },
+
+  { id:'saddle_exotic',    name:'Sella da Cavalcatura Esotica',   nameEN:'Exotic Saddle',
+    category:'gear', subcategory:'trasporto', weight:7, cost:'30 mo', source:'CRB' },
+
+  { id:'rowboat',          name:'Barca a Remi',                   nameEN:'Rowboat',
+    category:'gear', subcategory:'trasporto', weight:0, cost:'50 mo', source:'CRB' },
 
   // ══════════════════════════════════════════════════════════════════════════
   // OGGETTI MAGICI
