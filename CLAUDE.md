@@ -9,27 +9,31 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-23 (sessione 4)
+### Ultima sessione: 2026-03-23 (sessioni 5–6)
 
-**Tutto committato e pushato (commit `55437f4`).**
+**Da committare: cloud sync + refactor incantesimi multi-classe.**
 
-**Modifiche committate in questa sessione:**
-- `js/data/feats-list.js` — `PF1_FEATS_DB` **339 talenti** (creato in sessione 4)
-- `js/data/spells-list.js` — `PF1_SPELLS_DB` **2927 incantesimi** (246 IT + 2681 EN, deduplicati in sessioni 3–4)
-- `js/data/classes-config.js` — Sistema archetipi: `ARCHETYPES` dict, `getArchetypes()`, `getMergedProfile` aggiornato
-- `js/ui.js` — Autocomplete talenti (datalist + auto-fill tipo/prerequisiti/descrizione) + autocomplete incantesimi (datalist + auto-fill tutti i campi + livello dalla classe); righe classe a due livelli
-- `styles/character.css` — Stili `.class-row`, `.class-row-main`, `.cls-archetype`
-- `index.html` — Aggiunta `<datalist id="feat-name-datalist">`
-- `CLAUDE.md` — Aggiornato
+**Modifiche apportate (non ancora committate):**
+- `js/sync.js` — **NUOVO** modulo `Sync`: sincronizzazione cloud pubblica via Supabase REST API (senza autenticazione — tutti i personaggi del gruppo visibili a tutti). Da configurare con URL + anon key. Vedi Sezione 22.
+- `js/app.js` — `showHome` resa asincrona con `Sync.pull()` all'apertura, `handleSave` con `Sync.upsert()` fire-and-forget, delete con `Sync.remove()`, `_confirmNewCharacter` con `Sync.upsert()`, nuova `updateCloudStatus(state, count)`
+- `index.html` — Aggiunto `#cloud-status` nella home toolbar, tag `<script src="js/sync.js">` prima di `app.js`
+- `styles/main.css` — Stili `.cloud-status`, `.cloud-ok`, `.cloud-syncing`, `.cloud-error`, `@keyframes spin`
+- **Sessione 5**: `char.spells` refactored da oggetto singolo ad array di blocchi per classe incantatrice (commit `95c5414`); bug documentato (commit `99c6d15`)
+
+**⚠ CONFIGURAZIONE RICHIESTA prima che il sync funzioni:**
+1. Creare progetto gratuito su https://supabase.com
+2. SQL Editor → eseguire lo script in Sezione 22
+3. Sostituire `YOUR_SUPABASE_URL` e `YOUR_SUPABASE_ANON_KEY` in `js/sync.js`
 
 **Prossimo lavoro prioritario (in ordine):**
-1. Modal ricerca incantesimi/talenti con filtro per classe/livello/prerequisiti (sostituisce autocomplete semplice)
-2. Wizard creazione personaggio step-by-step a livello 1
-3. Importare talenti da documentazione inglese (d20pfsrd.com)
-4. Aggiungere tutti gli archetipi PF1 in `classes-config.js`
-5. Aggiungere tutte le razze PF1 disponibili (`PF1_RACES_DB`)
-6. Aggiungere lingue disponibili (`PF1_LANGUAGES`)
-7. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
+1. Correggere bug: rimuovere `#btn-add-caster-class` e il listener da `ui.js` (vedi Sezione 10 → Bug noti)
+2. Modal ricerca incantesimi/talenti con filtro per classe/livello/prerequisiti (sostituisce autocomplete semplice)
+3. Wizard creazione personaggio step-by-step a livello 1
+4. Importare talenti da documentazione inglese (d20pfsrd.com)
+5. Aggiungere tutti gli archetipi PF1 in `classes-config.js`
+6. Aggiungere tutte le razze PF1 disponibili (`PF1_RACES_DB`)
+7. Aggiungere lingue disponibili (`PF1_LANGUAGES`)
+8. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
 
 ---
 
@@ -550,12 +554,13 @@ Fantasy dark theme. Key CSS custom properties:
 ## 10. Open TODOs
 
 ### Completati ✅
-- ~~Autocomplete talenti~~ — **FATTO** (sessione 4): datalist `feat-name-datalist`, auto-fill tipo/prerequisiti/descrizione da `PF1_FEATS_DB` al cambio nome
-- ~~Autocomplete incantesimi~~ — **FATTO** (sessione 4): datalist `spell-name-datalist` (2927 nomi), auto-fill tutti i campi + livello dalla classe incantatrice del PG
+- ~~Autocomplete talenti~~ — **FATTO** (sessione 4)
+- ~~Autocomplete incantesimi~~ — **FATTO** (sessione 4)
 - ~~`PF1_FEATS_DB`~~ — **FATTO** 339 talenti
 - ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
-- ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`, UI a due livelli in Sommario
-- ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` refactored da oggetto singolo ad array di blocchi per classe incantatrice
+- ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`
+- ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` = array di blocchi per classe incantatrice
+- ~~Cloud sync cross-device~~ — **FATTO** (sessione 6): `js/sync.js` + `app.js` aggiornato. Da configurare con credenziali Supabase (vedi Sezione 22 + Sezione 0)
 
 ### Bug noti / Correzioni necessarie 🐛
 1. **⚠ Blocchi incantatrici non devono essere aggiunti manualmente** — Il tab Incantesimi mostra un bottone "Aggiungi classe incantatrice" (`#btn-add-caster-class`) che è concettualmente sbagliato. In PF1, le classi incantatrici derivano dalle classi scelte del personaggio: si ottengono alla creazione del PG (livello 1) o scegliendo il multiclasse durante il level-up, non aggiungendole a mano nel tab Incantesimi. La correzione prevede:
@@ -829,8 +834,8 @@ Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globa
 - Un database cloud (Supabase, Turso, ecc.) richiederebbe auth token nel client JS → rischio sicurezza
 
 ### Dati personaggio (caratterizzazione futura)
-- **Per ora**: `localStorage` (già implementato)
-- **In futuro (opzionale)**: Supabase per sincronizzazione cross-device se il giocatore lo richiede
+- **localStorage**: già implementato, continua a funzionare anche offline
+- **Cloud sync (Supabase)**: **IMPLEMENTATO** in `js/sync.js` — vedi Sezione 22 per setup e architettura
 
 ### File dati presenti
 
@@ -926,3 +931,63 @@ Sostituire o affiancare il modal "Nuovo Personaggio" con una procedura guidata s
 - Il PG può essere salvato solo al passo 8 (riepilogo)
 - UI: schermata separata `#screen-wizard` (terza screen oltre home e character sheet) oppure modal multi-step con progress bar
 - I punteggi caratteristica devono pre-compilare `abilities.strRacial` ecc. dai bonus razziali scelti
+
+---
+
+## 22. Cloud Sync — Supabase (IMPLEMENTATO, DA CONFIGURARE)
+
+### Concetto
+Database **completamente pubblico** per il gruppo de La Torre di Jacob: nessuna autenticazione, tutti i personaggi visibili e modificabili da tutti. Ogni giocatore vede l'avanzamento dei compagni. Ideale per un gruppo ridotto e fidato.
+
+### File coinvolti
+| File | Ruolo |
+|---|---|
+| `js/sync.js` | Modulo `Sync` — tutte le chiamate REST a Supabase |
+| `js/app.js` | Orchestratore: chiama `Sync.pull()` su home load, `Sync.upsert()` al salvataggio, `Sync.remove()` alla cancellazione |
+| `index.html` | `#cloud-status` (indicatore nella toolbar), `<script src="js/sync.js">` |
+| `styles/main.css` | `.cloud-status`, `.cloud-ok`, `.cloud-syncing`, `.cloud-error` |
+
+### Setup Supabase (istruzioni per l'utente)
+1. Creare account gratuito su **https://supabase.com** (Free tier: 500 MB DB, 2 GB file storage, 50K MAU)
+2. Creare un nuovo progetto (scegliere regione EU West per latenza minima)
+3. Nel **SQL Editor** del progetto, eseguire:
+   ```sql
+   CREATE TABLE characters (
+     id          TEXT        PRIMARY KEY,
+     data        JSONB       NOT NULL,
+     updated_at  TIMESTAMPTZ DEFAULT now()
+   );
+   -- Accesso pubblico totale (senza autenticazione)
+   ALTER TABLE characters ENABLE ROW LEVEL SECURITY;
+   CREATE POLICY "gruppo_pubblico" ON characters
+     FOR ALL USING (true) WITH CHECK (true);
+   ```
+4. Andare su **Settings → API** e copiare:
+   - **Project URL** (es. `https://abcdefgh.supabase.co`)
+   - **anon / public key** (la chiave pubblica, non il service role)
+5. Aprire `js/sync.js` e sostituire le due costanti:
+   ```js
+   const SUPABASE_URL      = 'https://abcdefgh.supabase.co';
+   const SUPABASE_ANON_KEY = 'eyJ...la-tua-chiave...';
+   ```
+
+### Comportamento a runtime
+- **Home load**: `showHome()` fa `Sync.pull()` → scarica tutti i personaggi cloud in localStorage → ri-renderizza la lista (i personaggi dei compagni appaiono automaticamente)
+- **Salvataggio**: `handleSave()` scrive in localStorage + `Sync.upsert()` fire-and-forget. Analogamente per la creazione di un nuovo personaggio.
+- **Cancellazione**: `Storage.deleteCharacter()` + `Sync.remove()` fire-and-forget
+- **Conflitti**: il cloud vince al pull (sovrascrive sempre il locale). Logica: chi salva per ultimo vince. Adeguata per un piccolo gruppo.
+- **Offline**: se `Sync.isConfigured()` è false (chiavi placeholder) o la chiamata fallisce, l'app funziona normalmente in locale senza messaggi di errore bloccanti.
+
+### API pubblica (`js/sync.js`)
+```js
+Sync.isConfigured()   // → bool: false se le chiavi non sono state configurate
+Sync.upsert(char)     // → Promise: POST con upsert (merge-duplicates)
+Sync.remove(id)       // → Promise: DELETE ?id=eq.<id>
+Sync.pull()           // → Promise<number>: fetchAll + saveCharacter per ogni riga, ritorna count
+```
+
+### Indicatore UI (`#cloud-status`)
+- **Nascosto** se non configurato
+- **Grigio + animazione spin** durante il pull (`cloud-syncing`)
+- **Verde + icona cloud-arrow-up** dopo pull riuscito (`cloud-ok`)
+- **Rosso + icona cloud-exclamation** in caso di errore (`cloud-error`)

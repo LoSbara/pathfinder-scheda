@@ -29,11 +29,24 @@ function _esc(s) {
 
 // ── Navigazione ───────────────────────────────────────────────────────────
 
-function showHome() {
+async function showHome() {
   screenCharacter.classList.remove('active');
   screenHome.classList.add('active');
-  renderCharacterList();
+  renderCharacterList();   // mostra subito i dati locali
   updateStorageBar();
+
+  if (typeof Sync !== 'undefined' && Sync.isConfigured()) {
+    updateCloudStatus('syncing');
+    try {
+      const count = await Sync.pull();
+      renderCharacterList();  // aggiorna con i dati cloud
+      updateStorageBar();
+      updateCloudStatus('ok', count);
+    } catch (e) {
+      console.warn('[Sync] Pull fallito:', e.message);
+      updateCloudStatus('error');
+    }
+  }
 }
 
 function showCharacterSheet(character) {
@@ -124,6 +137,11 @@ function _confirmNewCharacter() {
     return;
   }
 
+  // Sincronizzazione cloud del nuovo personaggio
+  if (typeof Sync !== 'undefined' && Sync.isConfigured()) {
+    Sync.upsert(char).catch(e => console.warn('[Sync] Upsert fallito:', e.message));
+  }
+
   _closeModal();
   showToast(`"${name}" creato!`, 'success');
   showCharacterSheet(char);
@@ -139,6 +157,48 @@ function handleSave() {
     showToast('Salvato!', 'success');
   } catch (e) {
     showToast('Errore nel salvataggio: ' + e.message, 'error');
+    return;
+  }
+  // Sincronizzazione cloud (fire-and-forget)
+  if (typeof Sync !== 'undefined' && Sync.isConfigured()) {
+    Sync.upsert(activeCharacter).catch(e =>
+      console.warn('[Sync] Upsert fallito:', e.message)
+    );
+  }
+}
+
+// ── Cloud status ─────────────────────────────────────────────────────────
+
+/**
+ * Aggiorna l'indicatore cloud nella home toolbar.
+ * @param {'ok'|'syncing'|'error'|'off'} state
+ * @param {number} [count] numero personaggi sincronizzati (solo per 'ok')
+ */
+function updateCloudStatus(state, count) {
+  const el   = document.getElementById('cloud-status');
+  const icon = document.getElementById('cloud-icon');
+  const text = document.getElementById('cloud-status-text');
+  if (!el || !icon || !text) return;
+
+  el.classList.remove('hidden', 'cloud-ok', 'cloud-syncing', 'cloud-error');
+
+  if (state === 'off' || (typeof Sync !== 'undefined' && !Sync.isConfigured())) {
+    el.classList.add('hidden');
+    return;
+  }
+
+  if (state === 'syncing') {
+    el.classList.add('cloud-syncing');
+    icon.className = 'fa-solid fa-cloud';
+    text.textContent = 'Sincronizzazione…';
+  } else if (state === 'ok') {
+    el.classList.add('cloud-ok');
+    icon.className = 'fa-solid fa-cloud-arrow-up';
+    text.textContent = count != null ? `Cloud — ${count} personagg${count === 1 ? 'io' : 'i'}` : 'Cloud attivo';
+  } else if (state === 'error') {
+    el.classList.add('cloud-error');
+    icon.className = 'fa-solid fa-cloud-exclamation';
+    text.textContent = 'Sync non disponibile';
   }
 }
 
@@ -204,6 +264,10 @@ characterList.addEventListener('click', e => {
     renderCharacterList();
     updateStorageBar();
     showToast('Personaggio eliminato', 'info');
+    // Rimuovi anche dal cloud
+    if (typeof Sync !== 'undefined' && Sync.isConfigured()) {
+      Sync.remove(id).catch(e => console.warn('[Sync] Remove fallito:', e.message));
+    }
   }
   if (action === 'export') {
     Storage.exportCharacter(id);

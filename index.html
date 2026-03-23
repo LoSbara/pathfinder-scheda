@@ -29,6 +29,10 @@
           <i class="fa-solid fa-file-import"></i> Importa
           <input type="file" id="input-import" accept=".json,.pf1.json" hidden />
         </label>
+        <div id="cloud-status" class="cloud-status hidden">
+          <i class="fa-solid fa-cloud" id="cloud-icon"></i>
+          <span id="cloud-status-text"></span>
+        </div>
       </div>
 
       <div id="character-list" class="character-list">
@@ -935,6 +939,7 @@
   <script src="js/combat.js"></script>
   <script src="js/skills.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/sync.js"></script>  <!-- Sync: cloud condiviso del gruppo -->
   <script src="js/app.js"></script>
 </body>
 </html>
