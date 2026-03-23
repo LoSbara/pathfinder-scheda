@@ -132,7 +132,8 @@ const SearchModal = (() => {
     pozioni:'Pozioni', bacchette:'Bacchette', pergamene:'Pergamene',
     anelli:'Anelli', amuleti:'Amuleti', mantelli:'Mantelli', cinture:'Cinture',
     fasce:'Fasce', stivali:'Stivali', guanti:'Guanti', occhiali:'Occhiali',
-    verghe:'Verghe', oggetti_meravigliosi:'Oggetti Meravigliosi',
+    verghe:'Verghe', bastoni:'Bastoni', bracciali:'Bracciali', ioun_stone:'Pietre Ioun',
+    oggetti_meravigliosi:'Oggetti Meravigliosi',
   };
 
   function _renderFilters() {
@@ -359,7 +360,8 @@ const SearchModal = (() => {
           badge = _esc(it.cost || '—');
           const wt = it.weight ? `${it.weight} kg` : '';
           const sc = _SUBCAT_LABELS[it.subcategory] || it.subcategory || '';
-          sub = [sc, wt].filter(Boolean).join(' · ');
+          const sp = it.special || '';
+          sub = [sc, wt, sp ? _esc(sp) : ''].filter(Boolean).join(' · ');
         }
         const en = it.nameEN ? `<span class="ms-result-school">${_esc(it.nameEN)}</span>` : '';
         return `

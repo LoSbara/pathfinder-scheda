@@ -1353,4 +1353,791 @@ const PF1_EQUIPMENT_DB = [
   { id:'tome_understanding_1',name:'Tomo della Comprensione +1',  nameEN:'Tome of Understanding +1',
     category:'magic', subcategory:'oggetti_meravigliosi', weight:1.35, cost:'27500 mo', source:'CRB' },
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // ARMI MAGICHE  (category:'weapon' — compaiono nella ricerca armi)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Spada Lunga (Longsword) ───────────────────────────────────────────────
+  { id:'mw_longsword_1', name:'Spada Lunga +1', nameEN:'Longsword +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'2315 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longsword_2', name:'Spada Lunga +2', nameEN:'Longsword +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longsword_3', name:'Spada Lunga +3', nameEN:'Longsword +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'18315 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longsword_4', name:'Spada Lunga +4', nameEN:'Longsword +4',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'32315 mo',
+    special:'+4 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longsword_5', name:'Spada Lunga +5', nameEN:'Longsword +5',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'50315 mo',
+    special:'+5 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longsword_1_flaming', name:'Spada Lunga +1 Fiammeggiante', nameEN:'Longsword +1 Flaming',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+1 TxC/danni; Fiammeggiante: +1d6 danni fuoco', source:'CRB' },
+
+  { id:'mw_longsword_2_flaming', name:'Spada Lunga +2 Fiammeggiante', nameEN:'Longsword +2 Flaming',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'18315 mo',
+    special:'+2 TxC/danni; Fiammeggiante: +1d6 danni fuoco', source:'CRB' },
+
+  { id:'mw_longsword_1_frost', name:'Spada Lunga +1 Gelida', nameEN:'Longsword +1 Frost',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+1 TxC/danni; Gelida: +1d6 danni freddo', source:'CRB' },
+
+  { id:'mw_longsword_1_shock', name:'Spada Lunga +1 Elettrica', nameEN:'Longsword +1 Shocking',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+1 TxC/danni; Elettrica: +1d6 danni elettricità', source:'CRB' },
+
+  { id:'mw_longsword_1_keen', name:'Spada Lunga +1 Affilata', nameEN:'Longsword +1 Keen',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'17-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+1 TxC/danni; Affilata: raddoppia l\'intervallo critico (17–20)', source:'CRB' },
+
+  { id:'mw_longsword_1_holy', name:'Spada Lunga +1 Sacra', nameEN:'Longsword +1 Holy',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'18315 mo',
+    special:'+1 TxC/danni; Sacra: +2d6 danni vs creature malvagie', source:'CRB' },
+
+  { id:'mw_longsword_2_holy', name:'Spada Lunga +2 Sacra', nameEN:'Longsword +2 Holy',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'32315 mo',
+    special:'+2 TxC/danni; Sacra: +2d6 danni vs creature malvagie', source:'CRB' },
+
+  { id:'mw_longsword_1_unholy', name:'Spada Lunga +1 Funesta', nameEN:'Longsword +1 Unholy',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'18315 mo',
+    special:'+1 TxC/danni; Funesta: +2d6 danni vs creature buone', source:'CRB' },
+
+  { id:'mw_longsword_1_ghost', name:'Spada Lunga +1 Tocco Fantasma', nameEN:'Longsword +1 Ghost Touch',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'8315 mo',
+    special:'+1 TxC/danni; Tocco Fantasma: colpisce creature incorporee', source:'CRB' },
+
+  { id:'mw_longsword_1_vorpal', name:'Spada Lunga +5 Vorticosa', nameEN:'Longsword +5 Vorpal',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.8, cost:'98315 mo',
+    special:'+5 TxC/danni; Vorticosa: tiro naturale 20 conferma decapitazione istantanea (TS Tempra CD 31 nega)', source:'CRB' },
+
+  // ── Spada Corta (Shortsword) ──────────────────────────────────────────────
+  { id:'mw_shortsword_1', name:'Spada Corta +1', nameEN:'Shortsword +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:1.35, cost:'2310 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_shortsword_2', name:'Spada Corta +2', nameEN:'Shortsword +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:1.35, cost:'8310 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_shortsword_3', name:'Spada Corta +3', nameEN:'Shortsword +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:1.35, cost:'18310 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  // ── Grande Spada (Greatsword) ─────────────────────────────────────────────
+  { id:'mw_greatsword_1', name:'Grande Spada +1', nameEN:'Greatsword +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:true, range:0, weight:3.2, cost:'2350 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_greatsword_2', name:'Grande Spada +2', nameEN:'Greatsword +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:true, range:0, weight:3.2, cost:'8350 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_greatsword_3', name:'Grande Spada +3', nameEN:'Greatsword +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:true, range:0, weight:3.2, cost:'18350 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_greatsword_1_flaming', name:'Grande Spada +1 Fiammeggiante', nameEN:'Greatsword +1 Flaming',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:true, range:0, weight:3.2, cost:'8350 mo',
+    special:'+1 TxC/danni; Fiammeggiante: +1d6 danni fuoco', source:'CRB' },
+
+  { id:'mw_greatsword_1_holy', name:'Grande Spada +1 Sacra', nameEN:'Greatsword +1 Holy',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:true, range:0, weight:3.2, cost:'18350 mo',
+    special:'+1 TxC/danni; Sacra: +2d6 danni vs creature malvagie', source:'CRB' },
+
+  // ── Ascia da Battaglia (Battleaxe) ────────────────────────────────────────
+  { id:'mw_battleaxe_1', name:'Ascia da Battaglia +1', nameEN:'Battleaxe +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:false, range:0, weight:2.25, cost:'2310 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_battleaxe_2', name:'Ascia da Battaglia +2', nameEN:'Battleaxe +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:false, range:0, weight:2.25, cost:'8310 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_battleaxe_3', name:'Ascia da Battaglia +3', nameEN:'Battleaxe +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:false, range:0, weight:2.25, cost:'18310 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  // ── Grande Ascia (Greataxe) ───────────────────────────────────────────────
+  { id:'mw_greataxe_1', name:'Grande Ascia +1', nameEN:'Greataxe +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d12', damageS:'1d10', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:true, range:0, weight:3.2, cost:'2320 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_greataxe_2', name:'Grande Ascia +2', nameEN:'Greataxe +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d12', damageS:'1d10', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:true, range:0, weight:3.2, cost:'8320 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_greataxe_3', name:'Grande Ascia +3', nameEN:'Greataxe +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d12', damageS:'1d10', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:true, range:0, weight:3.2, cost:'18320 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  // ── Pugnale (Dagger) ──────────────────────────────────────────────────────
+  { id:'mw_dagger_1', name:'Pugnale +1', nameEN:'Dagger +1',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:3, weight:0.5, cost:'2302 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_dagger_2', name:'Pugnale +2', nameEN:'Dagger +2',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:3, weight:0.5, cost:'8302 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_dagger_3', name:'Pugnale +3', nameEN:'Dagger +3',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:3, weight:0.5, cost:'18302 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_dagger_1_keen', name:'Pugnale +1 Affilato', nameEN:'Dagger +1 Keen',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'17-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:3, weight:0.5, cost:'8302 mo',
+    special:'+1 TxC/danni; Affilato: intervallo critico 17–20', source:'CRB' },
+
+  // ── Stocco (Rapier) ───────────────────────────────────────────────────────
+  { id:'mw_rapier_1', name:'Stocco +1', nameEN:'Rapier +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:0.9, cost:'2320 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_rapier_2', name:'Stocco +2', nameEN:'Rapier +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:0.9, cost:'8320 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_rapier_1_keen', name:'Stocco +1 Affilato', nameEN:'Rapier +1 Keen',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'15-20', critMult:2,
+    damageType:'P', twoHanded:false, range:0, weight:0.9, cost:'8320 mo',
+    special:'+1 TxC/danni; Affilato: intervallo critico 15–20', source:'CRB' },
+
+  // ── Scimitarra (Scimitar) ─────────────────────────────────────────────────
+  { id:'mw_scimitar_1', name:'Scimitarra +1', nameEN:'Scimitar +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:1.35, cost:'2315 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_scimitar_2', name:'Scimitarra +2', nameEN:'Scimitar +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:1.35, cost:'8315 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_scimitar_3', name:'Scimitarra +3', nameEN:'Scimitar +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:1.35, cost:'18315 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_scimitar_1_keen', name:'Scimitarra +1 Affilata', nameEN:'Scimitar +1 Keen',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'15-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:1.35, cost:'8315 mo',
+    special:'+1 TxC/danni; Affilata: intervallo critico 15–20', source:'CRB' },
+
+  // ── Mazza da Guerra (Warhammer) ───────────────────────────────────────────
+  { id:'mw_warhammer_1', name:'Mazza da Guerra +1', nameEN:'Warhammer +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'C', twoHanded:false, range:0, weight:2.25, cost:'2312 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_warhammer_2', name:'Mazza da Guerra +2', nameEN:'Warhammer +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'C', twoHanded:false, range:0, weight:2.25, cost:'8312 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_warhammer_1_disrupt', name:'Mazza da Guerra +1 Disgregante', nameEN:'Warhammer +1 Disrupting',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'C', twoHanded:false, range:0, weight:2.25, cost:'18312 mo',
+    special:'+1 TxC/danni; Disgregante: Non Morti devono superare TS Volontà (CD 14) al colpo o essere distrutti istantaneamente', source:'CRB' },
+
+  // ── Alabarda (Halberd) ────────────────────────────────────────────────────
+  { id:'mw_halberd_1', name:'Alabarda +1', nameEN:'Halberd +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:3,
+    damageType:'P/T', twoHanded:true, range:0, weight:2.7, cost:'2310 mo',
+    special:'+1 ai TxC e ai danni; braccia, afferrare', source:'CRB' },
+
+  { id:'mw_halberd_2', name:'Alabarda +2', nameEN:'Halberd +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:3,
+    damageType:'P/T', twoHanded:true, range:0, weight:2.7, cost:'8310 mo',
+    special:'+2 ai TxC e ai danni; braccia, afferrare', source:'CRB' },
+
+  // ── Falcione (Falchion) ───────────────────────────────────────────────────
+  { id:'mw_falchion_1', name:'Falcione +1', nameEN:'Falchion +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:true, range:0, weight:3.6, cost:'2375 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_falchion_2', name:'Falcione +2', nameEN:'Falchion +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:true, range:0, weight:3.6, cost:'8375 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_falchion_1_keen', name:'Falcione +1 Affilato', nameEN:'Falchion +1 Keen',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'15-20', critMult:2,
+    damageType:'T', twoHanded:true, range:0, weight:3.6, cost:'8375 mo',
+    special:'+1 TxC/danni; Affilato: intervallo critico 15–20', source:'CRB' },
+
+  // ── Arco Lungo (Longbow) ──────────────────────────────────────────────────
+  { id:'mw_longbow_1', name:'Arco Lungo +1', nameEN:'Longbow +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:30, weight:1.35, cost:'2375 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longbow_2', name:'Arco Lungo +2', nameEN:'Longbow +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:30, weight:1.35, cost:'8375 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longbow_3', name:'Arco Lungo +3', nameEN:'Longbow +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:30, weight:1.35, cost:'18375 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_longbow_1_shock', name:'Arco Lungo +1 Elettrico', nameEN:'Longbow +1 Shocking',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:30, weight:1.35, cost:'8375 mo',
+    special:'+1 TxC/danni; Elettrico: +1d6 danni elettricità', source:'CRB' },
+
+  // ── Arco Lungo Composito (Composite Longbow) ──────────────────────────────
+  { id:'mw_comp_longbow_1', name:'Arco Lungo Composito +1', nameEN:'Composite Longbow +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:33, weight:1.35, cost:'2400 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_comp_longbow_2', name:'Arco Lungo Composito +2', nameEN:'Composite Longbow +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:33, weight:1.35, cost:'8400 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_comp_longbow_3', name:'Arco Lungo Composito +3', nameEN:'Composite Longbow +3',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:33, weight:1.35, cost:'18400 mo',
+    special:'+3 ai TxC e ai danni', source:'CRB' },
+
+  // ── Balestra Pesante (Heavy Crossbow) ─────────────────────────────────────
+  { id:'mw_hcrossbow_1', name:'Balestra Pesante +1', nameEN:'Heavy Crossbow +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:true, range:24, weight:3.6, cost:'2350 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_hcrossbow_2', name:'Balestra Pesante +2', nameEN:'Heavy Crossbow +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:true, range:24, weight:3.6, cost:'8350 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  // ── Balestra Leggera (Light Crossbow) ────────────────────────────────────
+  { id:'mw_lcrossbow_1', name:'Balestra Leggera +1', nameEN:'Light Crossbow +1',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:false, range:24, weight:1.8, cost:'2335 mo',
+    special:'+1 ai TxC e ai danni', source:'CRB' },
+
+  { id:'mw_lcrossbow_2', name:'Balestra Leggera +2', nameEN:'Light Crossbow +2',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'P', twoHanded:false, range:24, weight:1.8, cost:'8335 mo',
+    special:'+2 ai TxC e ai danni', source:'CRB' },
+
+  // ── Lancia (Spear) ────────────────────────────────────────────────────────
+  { id:'mw_spear_1', name:'Lancia +1', nameEN:'Spear +1',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:6, weight:1.8, cost:'2302 mo',
+    special:'+1 ai TxC e ai danni; braccia; gittata 6 m', source:'CRB' },
+
+  { id:'mw_spear_2', name:'Lancia +2', nameEN:'Spear +2',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:6, weight:1.8, cost:'8302 mo',
+    special:'+2 ai TxC e ai danni; braccia; gittata 6 m', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ARMATURE MAGICHE  (category:'armor' — compaiono nella ricerca armature)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Armatura di Cuoio (Leather) ───────────────────────────────────────────
+  { id:'mw_leather_1', name:'Armatura di Cuoio +1', nameEN:'Leather Armor +1',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:3, maxDex:6, acp:0, asf:10, speed:0, weight:7.5, cost:'1160 mo', source:'CRB' },
+
+  { id:'mw_leather_2', name:'Armatura di Cuoio +2', nameEN:'Leather Armor +2',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:4, maxDex:6, acp:0, asf:10, speed:0, weight:7.5, cost:'4160 mo', source:'CRB' },
+
+  { id:'mw_leather_3', name:'Armatura di Cuoio +3', nameEN:'Leather Armor +3',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:5, maxDex:6, acp:0, asf:10, speed:0, weight:7.5, cost:'9160 mo', source:'CRB' },
+
+  // ── Armatura di Cuoio Borchiato (Studded Leather) ─────────────────────────
+  { id:'mw_studded_1', name:'Armatura di Cuoio Borchiato +1', nameEN:'Studded Leather +1',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:4, maxDex:5, acp:-1, asf:15, speed:0, weight:10, cost:'1175 mo', source:'CRB' },
+
+  { id:'mw_studded_2', name:'Armatura di Cuoio Borchiato +2', nameEN:'Studded Leather +2',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:5, maxDex:5, acp:-1, asf:15, speed:0, weight:10, cost:'4175 mo', source:'CRB' },
+
+  { id:'mw_studded_3', name:'Armatura di Cuoio Borchiato +3', nameEN:'Studded Leather +3',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:6, maxDex:5, acp:-1, asf:15, speed:0, weight:10, cost:'9175 mo', source:'CRB' },
+
+  // ── Giaco di Maglia (Chain Shirt) ─────────────────────────────────────────
+  { id:'mw_chain_shirt_1', name:'Giaco di Maglia +1', nameEN:'Chain Shirt +1',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:5, maxDex:4, acp:-2, asf:20, speed:0, weight:12.5, cost:'1250 mo', source:'CRB' },
+
+  { id:'mw_chain_shirt_2', name:'Giaco di Maglia +2', nameEN:'Chain Shirt +2',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:6, maxDex:4, acp:-2, asf:20, speed:0, weight:12.5, cost:'4250 mo', source:'CRB' },
+
+  { id:'mw_chain_shirt_3', name:'Giaco di Maglia +3', nameEN:'Chain Shirt +3',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:7, maxDex:4, acp:-2, asf:20, speed:0, weight:12.5, cost:'9250 mo', source:'CRB' },
+
+  { id:'mw_chain_shirt_4', name:'Giaco di Maglia +4', nameEN:'Chain Shirt +4',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:8, maxDex:4, acp:-2, asf:20, speed:0, weight:12.5, cost:'16250 mo', source:'CRB' },
+
+  { id:'mw_chain_shirt_5', name:'Giaco di Maglia +5', nameEN:'Chain Shirt +5',
+    category:'armor', subcategory:'leggera', armorType:'leggera',
+    bonus:9, maxDex:4, acp:-2, asf:20, speed:0, weight:12.5, cost:'25250 mo', source:'CRB' },
+
+  // ── Cotta di Maglia (Chainmail) ───────────────────────────────────────────
+  { id:'mw_chainmail_1', name:'Cotta di Maglia +1', nameEN:'Chainmail +1',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:7, maxDex:2, acp:-5, asf:30, speed:3, weight:20, cost:'1300 mo', source:'CRB' },
+
+  { id:'mw_chainmail_2', name:'Cotta di Maglia +2', nameEN:'Chainmail +2',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:8, maxDex:2, acp:-5, asf:30, speed:3, weight:20, cost:'4300 mo', source:'CRB' },
+
+  { id:'mw_chainmail_3', name:'Cotta di Maglia +3', nameEN:'Chainmail +3',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:9, maxDex:2, acp:-5, asf:30, speed:3, weight:20, cost:'9300 mo', source:'CRB' },
+
+  // ── Corazza di Piastre (Breastplate) ─────────────────────────────────────
+  { id:'mw_breastplate_1', name:'Corazza di Piastre +1', nameEN:'Breastplate +1',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:7, maxDex:3, acp:-4, asf:25, speed:3, weight:15, cost:'1350 mo', source:'CRB' },
+
+  { id:'mw_breastplate_2', name:'Corazza di Piastre +2', nameEN:'Breastplate +2',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:8, maxDex:3, acp:-4, asf:25, speed:3, weight:15, cost:'4350 mo', source:'CRB' },
+
+  { id:'mw_breastplate_3', name:'Corazza di Piastre +3', nameEN:'Breastplate +3',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:9, maxDex:3, acp:-4, asf:25, speed:3, weight:15, cost:'9350 mo', source:'CRB' },
+
+  // ── Armatura Completa (Full Plate) ─────────────────────────────────────────
+  { id:'mw_full_plate_1', name:'Armatura Completa +1', nameEN:'Full Plate +1',
+    category:'armor', subcategory:'pesante', armorType:'pesante',
+    bonus:10, maxDex:1, acp:-6, asf:35, speed:3, weight:25, cost:'2650 mo', source:'CRB' },
+
+  { id:'mw_full_plate_2', name:'Armatura Completa +2', nameEN:'Full Plate +2',
+    category:'armor', subcategory:'pesante', armorType:'pesante',
+    bonus:11, maxDex:1, acp:-6, asf:35, speed:3, weight:25, cost:'5650 mo', source:'CRB' },
+
+  { id:'mw_full_plate_3', name:'Armatura Completa +3', nameEN:'Full Plate +3',
+    category:'armor', subcategory:'pesante', armorType:'pesante',
+    bonus:12, maxDex:1, acp:-6, asf:35, speed:3, weight:25, cost:'10650 mo', source:'CRB' },
+
+  { id:'mw_full_plate_4', name:'Armatura Completa +4', nameEN:'Full Plate +4',
+    category:'armor', subcategory:'pesante', armorType:'pesante',
+    bonus:13, maxDex:1, acp:-6, asf:35, speed:3, weight:25, cost:'17650 mo', source:'CRB' },
+
+  { id:'mw_full_plate_5', name:'Armatura Completa +5', nameEN:'Full Plate +5',
+    category:'armor', subcategory:'pesante', armorType:'pesante',
+    bonus:14, maxDex:1, acp:-6, asf:35, speed:3, weight:25, cost:'26650 mo', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // SCUDI MAGICI  (category:'shield' — compaiono nella ricerca scudi)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  { id:'mw_buckler_1', name:'Buckler +1', nameEN:'Buckler +1',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:2, maxDex:null, acp:-1, asf:5, speed:0, weight:2.5, cost:'1155 mo', source:'CRB' },
+
+  { id:'mw_buckler_2', name:'Buckler +2', nameEN:'Buckler +2',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:3, maxDex:null, acp:-1, asf:5, speed:0, weight:2.5, cost:'4155 mo', source:'CRB' },
+
+  { id:'mw_lt_steel_1', name:'Scudo Leggero di Metallo +1', nameEN:'Light Steel Shield +1',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:2, maxDex:null, acp:-1, asf:5, speed:0, weight:3, cost:'1159 mo', source:'CRB' },
+
+  { id:'mw_lt_steel_2', name:'Scudo Leggero di Metallo +2', nameEN:'Light Steel Shield +2',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:3, maxDex:null, acp:-1, asf:5, speed:0, weight:3, cost:'4159 mo', source:'CRB' },
+
+  { id:'mw_hv_steel_1', name:'Scudo Pesante di Metallo +1', nameEN:'Heavy Steel Shield +1',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:3, maxDex:null, acp:-2, asf:15, speed:0, weight:7.5, cost:'1170 mo', source:'CRB' },
+
+  { id:'mw_hv_steel_2', name:'Scudo Pesante di Metallo +2', nameEN:'Heavy Steel Shield +2',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:4, maxDex:null, acp:-2, asf:15, speed:0, weight:7.5, cost:'4170 mo', source:'CRB' },
+
+  { id:'mw_hv_steel_3', name:'Scudo Pesante di Metallo +3', nameEN:'Heavy Steel Shield +3',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:5, maxDex:null, acp:-2, asf:15, speed:0, weight:7.5, cost:'9170 mo', source:'CRB' },
+
+  { id:'mw_hv_steel_4', name:'Scudo Pesante di Metallo +4', nameEN:'Heavy Steel Shield +4',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:6, maxDex:null, acp:-2, asf:15, speed:0, weight:7.5, cost:'16170 mo', source:'CRB' },
+
+  { id:'mw_hv_steel_5', name:'Scudo Pesante di Metallo +5', nameEN:'Heavy Steel Shield +5',
+    category:'shield', subcategory:'scudo', armorType:'scudo',
+    bonus:7, maxDex:null, acp:-2, asf:15, speed:0, weight:7.5, cost:'25170 mo', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BASTONI MAGICI  (category:'magic', subcategory:'bastoni')
+  // ══════════════════════════════════════════════════════════════════════════
+
+  { id:'staff_charming', name:'Bastone dell\'Ammaliamento', nameEN:'Staff of Charming',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'17600 mo',
+    special:'10 cariche; Ammaliare ×8 (1c), Amicizia con i Mostri ×2 (2c), Suggestione di Gruppo ×2 (2c)', source:'CRB' },
+
+  { id:'staff_defense', name:'Bastone della Difesa', nameEN:'Staff of Defense',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'62000 mo',
+    special:'10 cariche; Scudo ×9 (1c), Scudo della Fede ×7 (1c), Impavido ×6 (2c), Porta Dimensionale (solo sé) ×5 (3c)', source:'CRB' },
+
+  { id:'staff_earth_stone', name:'Bastone della Terra e della Pietra', nameEN:'Staff of Earth and Stone',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'80500 mo',
+    special:'10 cariche; Afferrare la Terra ×5 (1c), Forma Lapidea ×4 (2c), Passare tra la Pietra ×3 (2c), Movimento della Terra ×2 (3c)', source:'CRB' },
+
+  { id:'staff_enchantment', name:'Bastone degli Ammaliamenti', nameEN:'Staff of Enchantment',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'32800 mo',
+    special:'10 cariche; Ammaliare ×4 (1c), Sonno ×4 (1c), Fascino ×4 (1c), Confusione ×2 (2c), Incapacitare ×2 (2c)', source:'CRB' },
+
+  { id:'staff_evocation', name:'Bastone dell\'Evocazione', nameEN:'Staff of Evocation',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'95000 mo',
+    special:'10 cariche; Freccia Magica ×8 (1c), Sfera di Fuoco ×6 (1c), Palla di Fuoco ×6 (2c), Fulmine ×6 (2c), Mano del Mago ×4 (3c)', source:'CRB' },
+
+  { id:'staff_fire', name:'Bastone del Fuoco', nameEN:'Staff of Fire',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'18950 mo',
+    special:'10 cariche; Raggio di Fuoco ×9 (1c), Palla di Fuoco ×6 (1c), Muro di Fuoco ×3 (2c)', source:'CRB' },
+
+  { id:'staff_frost', name:'Bastone del Gelo', nameEN:'Staff of Frost',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'41400 mo',
+    special:'10 cariche; Nebbia Gelida ×4 (1c), Tempesta di Ghiaccio ×3 (2c), Muro di Ghiaccio ×3 (2c), Sfera Congelante ×2 (3c)', source:'CRB' },
+
+  { id:'staff_healing', name:'Bastone della Guarigione', nameEN:'Staff of Healing',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'29600 mo',
+    special:'10 cariche; Cura Ferite Moderate ×4 (1c), Restaurazione Minore ×4 (1c), Rimuovi Cecità/Sordità ×3 (2c), Rimuovi Malattia ×3 (2c)', source:'CRB' },
+
+  { id:'staff_illumination', name:'Bastone dell\'Illuminazione', nameEN:'Staff of Illumination',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'51500 mo',
+    special:'10 cariche; Luce ×9 (1c), Luce del Giorno ×7 (2c), Scudo Solare ×5 (2c), Bagliore del Sole ×2 (4c)', source:'CRB' },
+
+  { id:'staff_life', name:'Bastone della Vita', nameEN:'Staff of Life',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'109400 mo',
+    special:'10 cariche; Cura Ferite Critiche ×4 (1c), Guarire ×3 (2c)', source:'CRB' },
+
+  { id:'staff_necromancy', name:'Bastone della Negromanzia', nameEN:'Staff of Necromancy',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'69600 mo',
+    special:'10 cariche; Tocco Gelido ×8 (1c), Individuare Non Morti ×6 (1c), Onda Vuota ×5 (2c), Sfinimento ×4 (2c)', source:'CRB' },
+
+  { id:'staff_power', name:'Bastone del Potere', nameEN:'Staff of Power',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'235000 mo',
+    special:'10 cariche; Freccia Magica ×8 (1c), Palla di Fuoco ×4 (1c), Cono di Freddo ×4 (2c), Fulmine ×4 (2c), Muro di Forza ×3 (2c), Globo Incandescente ×3 (3c); +2 CA e salvezze; può usarlo per Assorbire Magie', source:'CRB' },
+
+  { id:'staff_magi', name:'Bastone del Mago', nameEN:'Staff of the Magi',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'238000 mo',
+    special:'10 cariche; Freccia Magica ×8 (1c), Annullamento Magico ×6 (1c), Dissolvi Magie ×4 (2c), Fulmine ×4 (2c), Invisibilità ×4 (2c), Porta Dimensionale ×3 (2c), Mano del Mago ×3 (3c); Assorbire Magie gratis', source:'CRB' },
+
+  { id:'staff_transmutation', name:'Bastone della Trasmutazione', nameEN:'Staff of Transmutation',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'81200 mo',
+    special:'10 cariche; Ingrandire Persona ×6 (1c), Miniaturizzare Persona ×6 (1c), Modificare la Propria Forma ×5 (1c), Rallentamento ×4 (2c), Polimorfo ×3 (3c)', source:'CRB' },
+
+  { id:'staff_woodlands', name:'Bastone delle Foreste', nameEN:'Staff of the Woodlands',
+    category:'magic', subcategory:'bastoni', weight:1.8, cost:'100800 mo',
+    special:'10 cariche; Radici Intralcianti ×6 (1c), Parlare con gli Animali ×5 (1c), Pelle Coriacea ×4 (2c), Portale degli Alberi ×3 (3c), Forma Selvatica ×3 (3c); +2 ai TxC e ai danni', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BRACCIALI  (category:'magic', subcategory:'bracciali')
+  // ══════════════════════════════════════════════════════════════════════════
+
+  { id:'brac_armor_1', name:'Bracciali dell\'Armatura +1', nameEN:'Bracers of Armor +1',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'1000 mo',
+    special:'+1 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_2', name:'Bracciali dell\'Armatura +2', nameEN:'Bracers of Armor +2',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'4000 mo',
+    special:'+2 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_3', name:'Bracciali dell\'Armatura +3', nameEN:'Bracers of Armor +3',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'9000 mo',
+    special:'+3 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_4', name:'Bracciali dell\'Armatura +4', nameEN:'Bracers of Armor +4',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'16000 mo',
+    special:'+4 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_5', name:'Bracciali dell\'Armatura +5', nameEN:'Bracers of Armor +5',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'25000 mo',
+    special:'+5 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_6', name:'Bracciali dell\'Armatura +6', nameEN:'Bracers of Armor +6',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'36000 mo',
+    special:'+6 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_7', name:'Bracciali dell\'Armatura +7', nameEN:'Bracers of Armor +7',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'49000 mo',
+    special:'+7 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_armor_8', name:'Bracciali dell\'Armatura +8', nameEN:'Bracers of Armor +8',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'64000 mo',
+    special:'+8 armatura alla CA; non si cumula con armatura fisica indossata', source:'CRB' },
+
+  { id:'brac_archery_lesser', name:'Bracciali dell\'Archeria Leggeri', nameEN:'Bracers of Archery, Lesser',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'5000 mo',
+    special:'+1 competenza ai TxC con archi; conferisce competenza con tutti gli archi', source:'CRB' },
+
+  { id:'brac_archery', name:'Bracciali dell\'Archeria', nameEN:'Bracers of Archery',
+    category:'magic', subcategory:'bracciali', weight:0.5, cost:'25000 mo',
+    special:'+2 competenza ai TxC con archi; conferisce competenza con tutti gli archi', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PIETRE IOUN  (category:'magic', subcategory:'ioun_stone')
+  // ══════════════════════════════════════════════════════════════════════════
+
+  { id:'ioun_clear', name:'Ioun: Chiara Spindola', nameEN:'Ioun Stone, Clear Spindle',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'4000 mo',
+    special:'Sostenta senza cibo o acqua', source:'CRB' },
+
+  { id:'ioun_dusty_rose', name:'Ioun: Prisma Rosa Polveroso', nameEN:'Ioun Stone, Dusty Rose Prism',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'5000 mo',
+    special:'+1 intuizione alla CA', source:'CRB' },
+
+  { id:'ioun_deep_red', name:'Ioun: Sfera Rosso Intenso', nameEN:'Ioun Stone, Deep Red Sphere',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento alla Destrezza', source:'CRB' },
+
+  { id:'ioun_incandescent_blue', name:'Ioun: Sfera Blu Incandescente', nameEN:'Ioun Stone, Incandescent Blue Sphere',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento alla Saggezza', source:'CRB' },
+
+  { id:'ioun_pale_blue', name:'Ioun: Romboide Azzurro Pallido', nameEN:'Ioun Stone, Pale Blue Rhomboid',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento alla Forza', source:'CRB' },
+
+  { id:'ioun_pink_green', name:'Ioun: Sfera Rosa e Verde', nameEN:'Ioun Stone, Pink and Green Sphere',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento al Carisma', source:'CRB' },
+
+  { id:'ioun_pink', name:'Ioun: Romboide Rosa', nameEN:'Ioun Stone, Pink Rhomboid',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento alla Costituzione', source:'CRB' },
+
+  { id:'ioun_scarlet_blue', name:'Ioun: Sfera Scarlatta e Blu', nameEN:'Ioun Stone, Scarlet and Blue Sphere',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'8000 mo',
+    special:'+2 potenziamento all\'Intelligenza', source:'CRB' },
+
+  { id:'ioun_dark_blue', name:'Ioun: Romboide Blu Scuro', nameEN:'Ioun Stone, Dark Blue Rhomboid',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'10000 mo',
+    special:'Concede il talento Allerta: +2 a Intuizione e Percezione', source:'CRB' },
+
+  { id:'ioun_iridescent', name:'Ioun: Spindola Iridescente', nameEN:'Ioun Stone, Iridescent Spindle',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'18000 mo',
+    special:'Permette di respirare indefinitamente senza aria (underwater, vacuum, ecc.)', source:'CRB' },
+
+  { id:'ioun_orange', name:'Ioun: Prisma Arancione', nameEN:'Ioun Stone, Orange Prism',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'30000 mo',
+    special:'+1 al livello effettivo dell\'incantatore', source:'CRB' },
+
+  { id:'ioun_vibrant_purple', name:'Ioun: Prisma Viola Vibrante', nameEN:'Ioun Stone, Vibrant Purple Prism',
+    category:'magic', subcategory:'ioun_stone', weight:0, cost:'36000 mo',
+    special:'Immagazzina fino a 3 livelli di incantesimi; il portatore può preparare/lanciare tali incantesimi dalla pietra', source:'CRB' },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // OGGETTI MERAVIGLIOSI AGGIUNTIVI
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Amuleti / Collane aggiuntivi ──────────────────────────────────────────
+  { id:'amul_mighty_3', name:'Amuleto dei Pugni Possenti +3', nameEN:'Amulet of Mighty Fists +3',
+    category:'magic', subcategory:'amuleti', weight:0.05, cost:'18000 mo',
+    special:'+3 ai TxC e ai danni con attacchi naturali e senz\'armi', source:'CRB' },
+
+  { id:'amul_mighty_4', name:'Amuleto dei Pugni Possenti +4', nameEN:'Amulet of Mighty Fists +4',
+    category:'magic', subcategory:'amuleti', weight:0.05, cost:'32000 mo',
+    special:'+4 ai TxC e ai danni con attacchi naturali e senz\'armi', source:'CRB' },
+
+  { id:'amul_mighty_5', name:'Amuleto dei Pugni Possenti +5', nameEN:'Amulet of Mighty Fists +5',
+    category:'magic', subcategory:'amuleti', weight:0.05, cost:'50000 mo',
+    special:'+5 ai TxC e ai danni con attacchi naturali e senz\'armi', source:'CRB' },
+
+  { id:'amul_adaptation', name:'Collana di Adattamento', nameEN:'Necklace of Adaptation',
+    category:'magic', subcategory:'amuleti', weight:0.05, cost:'9000 mo',
+    special:'Respira in qualsiasi ambiente (sott\'acqua, vuoto, gas); immunità agli incantesimi che usano gas', source:'CRB' },
+
+  // ── Anelli aggiuntivi ─────────────────────────────────────────────────────
+  { id:'ring_water_breath', name:'Anello di Respirazione Acquatica', nameEN:'Ring of Water Breathing',
+    category:'magic', subcategory:'anelli', weight:0, cost:'14000 mo',
+    special:'Respira indefinitamente sott\'acqua', source:'CRB' },
+
+  { id:'ring_blinking', name:'Anello di Scintillio', nameEN:'Ring of Blinking',
+    category:'magic', subcategory:'anelli', weight:0, cost:'27000 mo',
+    special:'Scintillio a volontà: 20% probabilità di evitare qualsiasi attacco fisico; può attraversare muri sottili', source:'CRB' },
+
+  { id:'ring_chameleon', name:'Anello del Camaleonte', nameEN:'Ring of Chameleon Power',
+    category:'magic', subcategory:'anelli', weight:0, cost:'12700 mo',
+    special:'Mimetismo a volontà: +10 a Furtività nel 1° round, +5 successivi; aspetto variabile', source:'CRB' },
+
+  { id:'ring_warmth', name:'Anello del Calore', nameEN:'Ring of Warmth',
+    category:'magic', subcategory:'anelli', weight:0, cost:'28000 mo',
+    special:'Resistenza al Fuoco 20; immune al freddo naturale; +4 ai TS contro freddo magico', source:'CRB' },
+
+  { id:'ring_animal_friend', name:'Anello dell\'Amicizia con gli Animali', nameEN:'Ring of Animal Friendship',
+    category:'magic', subcategory:'anelli', weight:0, cost:'10800 mo',
+    special:'Ammaliare Animali a volontà; gli animali amici non attaccano il portatore', source:'CRB' },
+
+  { id:'ring_spell_resist', name:'Anello di Resistenza Magica', nameEN:'Ring of Spell Resistance',
+    category:'magic', subcategory:'anelli', weight:0, cost:'90000 mo',
+    special:'RI 13 (versioni: RI 15 = 140k, RI 17 = 200k, RI 19 = 260k, RI 21 = 320k mo)', source:'CRB' },
+
+  // ── Per la testa ───────────────────────────────────────────────────────────
+  { id:'hat_disguise', name:'Cappello del Travestimento', nameEN:'Hat of Disguise',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.1, cost:'1800 mo',
+    special:'Travestimento a volontà (come incantesimo); modifica aspetto fisico, voce, razza umanoide', source:'CRB' },
+
+  { id:'helm_brilliance', name:'Elmo della Brillanza', nameEN:'Helm of Brilliance',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:1.35, cost:'125000 mo',
+    special:'10 diamanti (Palla di Fuoco 10d6), 20 rubini (Muro di Fuoco), 30 smeraldi (luce ciecantem), 40 opali (Raggio Ardente); RF 30; +1 agli incantesimi di fuoco', source:'CRB' },
+
+  // ── Guanti aggiuntivi ─────────────────────────────────────────────────────
+  { id:'gauntlets_ogre', name:'Guanti dell\'Orco', nameEN:'Gauntlets of Ogre Power',
+    category:'magic', subcategory:'guanti', weight:2.25, cost:'4000 mo',
+    special:'+2 potenziamento alla Forza per TxC e danni (bonus di tipo enhancement)', source:'CRB' },
+
+  // ── Mantelli aggiuntivi ───────────────────────────────────────────────────
+  { id:'cloak_arachnida', name:'Mantello dell\'Aracnide', nameEN:'Cloak of the Arachnida',
+    category:'magic', subcategory:'mantelli', weight:0.45, cost:'14000 mo',
+    special:'Ragnatela 2/giorno (come incantesimo); Scalata su ragnatele; immune alle ragnatele; visione nel buio 12 m', source:'CRB' },
+
+  // ── Collane di Palle di Fuoco (Tipo II–VII) ───────────────────────────────
+  { id:'neck_fireball_2', name:'Collana di Palle di Fuoco (Tipo II)', nameEN:'Necklace of Fireballs, Type II',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'2700 mo',
+    special:'sfere 5d6 ×2, 3d6 ×2, 2d6 ×1 (TS Riflessi CD 23, raggio 6 m)', source:'CRB' },
+
+  { id:'neck_fireball_3', name:'Collana di Palle di Fuoco (Tipo III)', nameEN:'Necklace of Fireballs, Type III',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'4350 mo',
+    special:'sfere 5d6 ×3, 4d6 ×2, 3d6 ×1 (TS Riflessi CD 23, raggio 6 m)', source:'CRB' },
+
+  { id:'neck_fireball_4', name:'Collana di Palle di Fuoco (Tipo IV)', nameEN:'Necklace of Fireballs, Type IV',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'5400 mo',
+    special:'sfere 5d6 ×4, 4d6 ×2, 3d6 ×2 (TS Riflessi CD 23, raggio 6 m)', source:'CRB' },
+
+  { id:'neck_fireball_5', name:'Collana di Palle di Fuoco (Tipo V)', nameEN:'Necklace of Fireballs, Type V',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'5850 mo',
+    special:'sfere 5d6 ×5, 4d6 ×2 (TS Riflessi CD 25, raggio 6 m)', source:'CRB' },
+
+  { id:'neck_fireball_6', name:'Collana di Palle di Fuoco (Tipo VI)', nameEN:'Necklace of Fireballs, Type VI',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'8100 mo',
+    special:'sfere 7d6 ×3, 5d6 ×4 (TS Riflessi CD 25, raggio 6 m)', source:'CRB' },
+
+  { id:'neck_fireball_7', name:'Collana di Palle di Fuoco (Tipo VII)', nameEN:'Necklace of Fireballs, Type VII',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'8700 mo',
+    special:'sfere 7d6 ×4, 5d6 ×2, 3d6 ×2 (TS Riflessi CD 27, raggio 6 m)', source:'CRB' },
+
+  // ── Varia ──────────────────────────────────────────────────────────────────
+  { id:'stone_luck', name:'Pietra Fortunata', nameEN:'Stone of Good Luck (Luckstone)',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0, cost:'20000 mo',
+    special:'+1 fortuna a tutte le prove di abilità e TS', source:'CRB' },
+
+  { id:'stone_annihilation', name:'Sfera dell\'Annientamento', nameEN:'Sphere of Annihilation',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0, cost:'150000 mo',
+    special:'Sfera di oscurità (10 cm): dissolve qualsiasi materiale tocchi incluse creature; prove di Sag (CD 13) per controllare', source:'CRB' },
+
+  { id:'hand_glory', name:'Mano della Gloria', nameEN:'Hand of Glory',
+    category:'magic', subcategory:'oggetti_meravigliosi', weight:0.45, cost:'8000 mo',
+    special:'Mano mummificata: consente di indossare un anello in più (3° slot); +1 fortuna a tutti i TS', source:'CRB' },
+
 ];
