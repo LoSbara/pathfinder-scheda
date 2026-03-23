@@ -20,10 +20,8 @@
 - `styles/main.css` — Stili `.cloud-status`, `.cloud-ok`, `.cloud-syncing`, `.cloud-error`, `@keyframes spin`
 - **Sessione 5**: `char.spells` refactored da oggetto singolo ad array di blocchi per classe incantatrice (commit `95c5414`); bug documentato (commit `99c6d15`)
 
-**⚠ CONFIGURAZIONE RICHIESTA prima che il sync funzioni:**
-1. Creare progetto gratuito su https://supabase.com
-2. SQL Editor → eseguire lo script in Sezione 22
-3. Sostituire `YOUR_SUPABASE_URL` e `YOUR_SUPABASE_ANON_KEY` in `js/sync.js`
+**⚠ TODO prima che il sync funzioni:**
+1. Nel SQL Editor di Supabase eseguire lo script in Sezione 22 per creare la tabella `characters`
 
 **Prossimo lavoro prioritario (in ordine):**
 1. Correggere bug: rimuovere `#btn-add-caster-class` e il listener da `ui.js` (vedi Sezione 10 → Bug noti)
@@ -934,7 +932,7 @@ Sostituire o affiancare il modal "Nuovo Personaggio" con una procedura guidata s
 
 ---
 
-## 22. Cloud Sync — Supabase (IMPLEMENTATO, DA CONFIGURARE)
+## 22. Cloud Sync — Supabase (CONFIGURATO ✅)
 
 ### Concetto
 Database **completamente pubblico** per il gruppo de La Torre di Jacob: nessuna autenticazione, tutti i personaggi visibili e modificabili da tutti. Ogni giocatore vede l'avanzamento dei compagni. Ideale per un gruppo ridotto e fidato.
@@ -965,11 +963,7 @@ Database **completamente pubblico** per il gruppo de La Torre di Jacob: nessuna 
 4. Andare su **Settings → API** e copiare:
    - **Project URL** (es. `https://abcdefgh.supabase.co`)
    - **anon / public key** (la chiave pubblica, non il service role)
-5. Aprire `js/sync.js` e sostituire le due costanti:
-   ```js
-   const SUPABASE_URL      = 'https://abcdefgh.supabase.co';
-   const SUPABASE_ANON_KEY = 'eyJ...la-tua-chiave...';
-   ```
+5. ✅ **GIÀ FATTO**: `js/sync.js` contiene le credenziali reali del progetto `eozugrzsifdpwxmsjqud`.
 
 ### Comportamento a runtime
 - **Home load**: `showHome()` fa `Sync.pull()` → scarica tutti i personaggi cloud in localStorage → ri-renderizza la lista (i personaggi dei compagni appaiono automaticamente)

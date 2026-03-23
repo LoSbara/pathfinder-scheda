@@ -31,8 +31,8 @@ const Sync = (() => {
 
   // ── Configurazione ────────────────────────────────────────────────────────
   // Sostituire con i valori da: Supabase dashboard → Settings → API
-  const SUPABASE_URL      = 'YOUR_SUPABASE_URL';       // es. https://abcdef.supabase.co
-  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';  // chiave pubblica "anon/public"
+  const SUPABASE_URL      = 'https://eozugrzsifdpwxmsjqud.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvenVncnpzaWZkcHd4bXNqcXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMjAwNzcsImV4cCI6MjA4OTc5NjA3N30.IjBLS5tY-M2ygpHtxgLRK4PxKLzHkpc-zpurovE4TGE';
   const TABLE             = 'characters';
 
   // ── Internals ─────────────────────────────────────────────────────────────
