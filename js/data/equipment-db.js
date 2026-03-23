@@ -37,12 +37,12 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d3', damageS:'1d2', critRange:'20', critMult:2,
     damageType:'C', twoHanded:false, range:0, weight:0, cost:'—', special:'non letale', source:'CRB' },
 
-  { id:'gauntlet',          name:'Guanto Armato',                 nameEN:'Gauntlet',
+  { id:'gauntlet',          name:'Guanto d\'Arme',                nameEN:'Gauntlet',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d3', damageS:'1d2', critRange:'20', critMult:2,
     damageType:'C', twoHanded:false, range:0, weight:0.45, cost:'2 mo', special:'', source:'CRB' },
 
-  { id:'spiked_gauntlet',   name:'Guanto Chiodate',               nameEN:'Spiked Gauntlet',
+  { id:'spiked_gauntlet',   name:'Guanto d\'Arme Chiodato',      nameEN:'Spiked Gauntlet',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'20', critMult:2,
     damageType:'P', twoHanded:false, range:0, weight:0.45, cost:'5 mo', special:'', source:'CRB' },
@@ -50,7 +50,7 @@ const PF1_EQUIPMENT_DB = [
   { id:'dagger',            name:'Pugnale',                       nameEN:'Dagger',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
-    damageType:'C/P', twoHanded:false, range:3, weight:0.45, cost:'2 mo', special:'', source:'CRB' },
+    damageType:'P/T', twoHanded:false, range:3, weight:0.45, cost:'2 mo', special:'', source:'CRB' },
 
   { id:'punching_dagger',   name:'Pugnale da Pugile',             nameEN:'Punching Dagger',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
@@ -67,18 +67,28 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
     damageType:'T', twoHanded:false, range:0, weight:0.9, cost:'6 mo', special:'trip', source:'CRB' },
 
+  { id:'battle_aspergillum',name:'Aspersorio da Battaglia',       nameEN:'Battle Aspergillum',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
+    damageType:'C', twoHanded:false, range:0, weight:2, cost:'5 mo', special:'', source:'CRB' },
+
+  { id:'cestus',            name:'Cestus',                        nameEN:'Cestus',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
+    damageType:'C/P', twoHanded:false, range:0, weight:0.5, cost:'5 mo', special:'', source:'CRB' },
+
   // ── Semplici una mano ────────────────────────────────────────────────────
   { id:'club',              name:'Randello',                      nameEN:'Club',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
     damageType:'C', twoHanded:false, range:3, weight:1.35, cost:'—', special:'', source:'CRB' },
 
-  { id:'heavy_mace',        name:'Mazza',                         nameEN:'Heavy Mace',
+  { id:'heavy_mace',        name:'Mazza Pesante',                 nameEN:'Heavy Mace',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:2,
     damageType:'C', twoHanded:false, range:0, weight:3.6, cost:'12 mo', special:'', source:'CRB' },
 
-  { id:'morningstar',       name:'Stella del Mattino',            nameEN:'Morningstar',
+  { id:'morningstar',       name:'Morning Star',                  nameEN:'Morningstar',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:2,
     damageType:'C/P', twoHanded:false, range:0, weight:2.7, cost:'8 mo', special:'', source:'CRB' },
@@ -89,7 +99,7 @@ const PF1_EQUIPMENT_DB = [
     damageType:'P', twoHanded:false, range:6, weight:1.35, cost:'1 mo', special:'', source:'CRB' },
 
   // ── Semplici due mani ────────────────────────────────────────────────────
-  { id:'quarterstaff',      name:'Bastone',                       nameEN:'Quarterstaff',
+  { id:'quarterstaff',      name:'Bastone Ferrato',               nameEN:'Quarterstaff',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
     attackType:'mischia', damage:'1d6/1d6', damageS:'1d4/1d4', critRange:'20', critMult:2,
     damageType:'C', twoHanded:true, range:0, weight:1.8, cost:'—', special:'doppio', source:'CRB' },
@@ -99,8 +109,18 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
     damageType:'P', twoHanded:true, range:6, weight:2.7, cost:'2 mo', special:'brace', source:'CRB' },
 
-  { id:'greatclub',         name:'Grande Randello',               nameEN:'Greatclub',
+  { id:'bayonet',           name:'Baionetta',                     nameEN:'Bayonet',
     category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
+    damageType:'P', twoHanded:true, range:0, weight:0.5, cost:'5 mo', special:'', source:'CRB' },
+
+  { id:'longspear',         name:'Lancia Lunga',                  nameEN:'Longspear',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'P', twoHanded:true, range:0, weight:4.5, cost:'5 mo', special:'portata, brace', source:'CRB' },
+
+  { id:'greatclub',         name:'Randello Pesante',              nameEN:'Greatclub',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:2,
     damageType:'C', twoHanded:true, range:0, weight:3.6, cost:'5 mo', special:'', source:'CRB' },
 
@@ -125,10 +145,20 @@ const PF1_EQUIPMENT_DB = [
     attackType:'distanza', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
     damageType:'P', twoHanded:true, range:36, weight:3.6, cost:'50 mo', special:'', source:'CRB' },
 
+  { id:'blowgun',           name:'Cerbottana',                    nameEN:'Blowgun',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'distanza', damage:'1d2', damageS:'1', critRange:'20', critMult:2,
+    damageType:'P', twoHanded:false, range:6, weight:0.5, cost:'2 mo', special:'', source:'CRB' },
+
+  { id:'javelin',           name:'Giavellotto',                   nameEN:'Javelin',
+    category:'weapon', subcategory:'semplice', weaponGroup:'semplice',
+    attackType:'distanza', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
+    damageType:'P', twoHanded:false, range:9, weight:0.9, cost:'1 mo', special:'', source:'CRB' },
+
   // ══════════════════════════════════════════════════════════════════════════
   // ARMI MARZIALI — LEGGERE
   // ══════════════════════════════════════════════════════════════════════════
-  { id:'handaxe',           name:'Ascia a Una Mano',              nameEN:'Handaxe',
+  { id:'handaxe',           name:'Ascia',                         nameEN:'Handaxe',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:3,
     damageType:'T', twoHanded:false, range:0, weight:1.35, cost:'6 mo', special:'', source:'CRB' },
@@ -158,7 +188,17 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'19-20', critMult:2,
     damageType:'P', twoHanded:false, range:0, weight:0.9, cost:'10 mo', special:'', source:'CRB' },
 
-  { id:'starknife',         name:'Coltello Stellato',             nameEN:'Starknife',
+  { id:'gladius',           name:'Gladio',                        nameEN:'Gladius',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'19-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1.5, cost:'15 mo', special:'', source:'CRB' },
+
+  { id:'war_razor',         name:'Rasoio da Guerra',              nameEN:'War Razor',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'19-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:0.5, cost:'8 mo', special:'', source:'CRB' },
+
+  { id:'starknife',         name:'Astrum',                        nameEN:'Starknife',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'20', critMult:3,
     damageType:'P', twoHanded:false, range:6, weight:1.35, cost:'24 mo', special:'', source:'CRB' },
@@ -174,7 +214,7 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
     damageType:'T', twoHanded:false, range:0, weight:2.7, cost:'10 mo', special:'', source:'CRB' },
 
-  { id:'flail',             name:'Flagello',                      nameEN:'Flail',
+  { id:'flail',             name:'Mazzafrusto Leggero',           nameEN:'Light Flail',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:2,
     damageType:'C', twoHanded:false, range:0, weight:2.25, cost:'8 mo', special:'disarmare, trip', source:'CRB' },
@@ -209,14 +249,19 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
     damageType:'C', twoHanded:false, range:0, weight:2.25, cost:'12 mo', special:'', source:'CRB' },
 
-  { id:'whip',              name:'Frusta',                        nameEN:'Whip',
+  { id:'cutlass',           name:'Sciabola d\'Abbordaggio',       nameEN:'Cutlass',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:2, cost:'15 mo', special:'', source:'APG' },
+
+  { id:'whip',              name:'Frusta',                        nameEN:'Whip',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d3', damageS:'1d2', critRange:'20', critMult:2,
     damageType:'T', twoHanded:false, range:0, weight:0.9, cost:'1 mo',
     special:'disarmare, trip, portata, non letale', source:'CRB' },
 
   // ── Marziali due mani ────────────────────────────────────────────────────
-  { id:'falchion',          name:'Spada Falcata',                 nameEN:'Falchion',
+  { id:'falchion',          name:'Falchion',                      nameEN:'Falchion',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'18-20', critMult:2,
     damageType:'T', twoHanded:true, range:0, weight:3.6, cost:'75 mo', special:'', source:'CRB' },
@@ -226,12 +271,12 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:3,
     damageType:'T', twoHanded:true, range:0, weight:4.5, cost:'8 mo', special:'portata', source:'CRB' },
 
-  { id:'greataxe',          name:'Grande Ascia',                  nameEN:'Greataxe',
+  { id:'greataxe',          name:'Ascia Bipenne',                 nameEN:'Greataxe',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d12', damageS:'1d10', critRange:'20', critMult:3,
     damageType:'T', twoHanded:true, range:0, weight:5.4, cost:'20 mo', special:'', source:'CRB' },
 
-  { id:'heavy_flail',       name:'Grande Flagello',               nameEN:'Heavy Flail',
+  { id:'heavy_flail',       name:'Mazzafrusto Pesante',           nameEN:'Heavy Flail',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
     damageType:'C', twoHanded:true, range:0, weight:4.5, cost:'15 mo', special:'disarmare, trip', source:'CRB' },
@@ -256,12 +301,7 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
     damageType:'P', twoHanded:true, range:0, weight:4.5, cost:'10 mo', special:'portata', source:'CRB' },
 
-  { id:'longspear',         name:'Lancia Lunga',                  nameEN:'Longspear',
-    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
-    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
-    damageType:'P', twoHanded:true, range:0, weight:4.05, cost:'5 mo', special:'portata, brace', source:'CRB' },
-
-  { id:'ranseur',           name:'Roncola da Cavalleria',         nameEN:'Ranseur',
+  { id:'ranseur',           name:'Corsesca',                      nameEN:'Ranseur',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
     attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'20', critMult:3,
     damageType:'P', twoHanded:true, range:0, weight:5.4, cost:'10 mo', special:'portata, disarmare', source:'CRB' },
@@ -271,11 +311,36 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'2d4', damageS:'1d6', critRange:'20', critMult:4,
     damageType:'P/T', twoHanded:true, range:0, weight:4.5, cost:'18 mo', special:'trip', source:'CRB' },
 
-  // ── Marziali a distanza ──────────────────────────────────────────────────
-  { id:'javelin',           name:'Giavellotto',                   nameEN:'Javelin',
+  { id:'earth_breaker',     name:'Spaccaterra',                   nameEN:'Earth Breaker',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
-    attackType:'distanza', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
-    damageType:'P', twoHanded:false, range:9, weight:0.9, cost:'1 mo', special:'', source:'CRB' },
+    attackType:'mischia', damage:'2d6', damageS:'1d10', critRange:'20', critMult:3,
+    damageType:'C', twoHanded:true, range:0, weight:7, cost:'40 mo', special:'', source:'APG' },
+
+  { id:'bardiche',          name:'Berdica',                       nameEN:'Bardiche',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
+    damageType:'T', twoHanded:true, range:0, weight:7, cost:'13 mo', special:'portata', source:'APG' },
+
+  { id:'bec_de_corbin',     name:'Bec de Corbin',                 nameEN:'Bec de Corbin',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:3,
+    damageType:'C/P', twoHanded:true, range:0, weight:6, cost:'15 mo', special:'portata', source:'APG' },
+
+  { id:'bill',              name:'Roncone',                       nameEN:'Bill',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'T', twoHanded:true, range:0, weight:5.5, cost:'11 mo', special:'portata', source:'APG' },
+
+  // ── Marziali a distanza ──────────────────────────────────────────────────
+  { id:'pilum',             name:'Pilum',                         nameEN:'Pilum',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:2,
+    damageType:'P', twoHanded:false, range:6, weight:2, cost:'5 mo', special:'', source:'CRB' },
+
+  { id:'chakram',           name:'Chakram',                       nameEN:'Chakram',
+    category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:2,
+    damageType:'T', twoHanded:false, range:9, weight:0.5, cost:'1 mo', special:'', source:'CRB' },
 
   { id:'shortbow',          name:'Arco Corto',                    nameEN:'Shortbow',
     category:'weapon', subcategory:'marziale', weaponGroup:'marziale',
@@ -313,12 +378,17 @@ const PF1_EQUIPMENT_DB = [
   { id:'sai',               name:'Sai',                           nameEN:'Sai',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d4', damageS:'1d3', critRange:'20', critMult:2,
-    damageType:'P', twoHanded:false, range:3, weight:0.45, cost:'1 mo', special:'disarmare', source:'CRB' },
+    damageType:'C', twoHanded:false, range:3, weight:0.45, cost:'1 mo', special:'disarmare', source:'CRB' },
 
   { id:'siangham',          name:'Siangham',                      nameEN:'Siangham',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'20', critMult:2,
     damageType:'P', twoHanded:false, range:0, weight:0.45, cost:'3 mo', special:'', source:'CRB' },
+
+  { id:'wakizashi',         name:'Wakizashi',                     nameEN:'Wakizashi',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d6', damageS:'1d4', critRange:'18-20', critMult:2,
+    damageType:'P/T', twoHanded:false, range:0, weight:1, cost:'35 mo', special:'letale', source:'UC' },
 
   { id:'shuriken',          name:'Shuriken (x5)',                 nameEN:'Shuriken (x5)',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
@@ -330,12 +400,27 @@ const PF1_EQUIPMENT_DB = [
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'19-20', critMult:2,
     damageType:'T', twoHanded:false, range:0, weight:2.7, cost:'35 mo', special:'', source:'CRB' },
 
-  { id:'dwarven_waraxe',    name:'Ascia Nanica da Guerra',        nameEN:'Dwarven Waraxe',
+  { id:'falcata',           name:'Falcata',                       nameEN:'Falcata',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:3,
+    damageType:'T', twoHanded:false, range:0, weight:2, cost:'18 mo', special:'', source:'APG' },
+
+  { id:'katana',            name:'Katana',                        nameEN:'Katana',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'18-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:3, cost:'50 mo', special:'letale', source:'UC' },
+
+  { id:'khopesh',           name:'Khopesh',                       nameEN:'Khopesh',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d8', damageS:'1d6', critRange:'19-20', critMult:2,
+    damageType:'T', twoHanded:false, range:0, weight:4, cost:'20 mo', special:'sbilanciare', source:'APG' },
+
+  { id:'dwarven_waraxe',    name:'Ascia da Guerra Nanica',        nameEN:'Dwarven Waraxe',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'20', critMult:3,
     damageType:'T', twoHanded:false, range:0, weight:3.6, cost:'30 mo', special:'', source:'CRB' },
 
-  { id:'elven_curve_blade', name:'Lama Curva Elfica',             nameEN:'Elven Curve Blade',
+  { id:'elven_curve_blade', name:'Sciabola Elfica',               nameEN:'Elven Curve Blade',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d10', damageS:'1d8', critRange:'18-20', critMult:2,
     damageType:'T', twoHanded:true, range:0, weight:3.15, cost:'80 mo', special:'', source:'CRB' },
@@ -344,6 +429,26 @@ const PF1_EQUIPMENT_DB = [
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
     attackType:'mischia', damage:'1d8/1d8', damageS:'1d6/1d6', critRange:'20', critMult:2,
     damageType:'C', twoHanded:true, range:0, weight:4.5, cost:'90 mo', special:'disarmare, trip, doppio', source:'CRB' },
+
+  { id:'two_bladed_sword',  name:'Spada a Due Lame',              nameEN:'Two-Bladed Sword',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d8/1d8', damageS:'1d6/1d6', critRange:'19-20', critMult:2,
+    damageType:'T', twoHanded:true, range:0, weight:5, cost:'100 mo', special:'doppio', source:'CRB' },
+
+  { id:'halfling_sling_staff', name:'Bastone Fionda Halfling',    nameEN:'Halfling Sling Staff',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'distanza', damage:'1d8', damageS:'1d6', critRange:'20', critMult:3,
+    damageType:'C', twoHanded:true, range:24, weight:1.5, cost:'20 mo', special:'', source:'APG' },
+
+  { id:'bola',              name:'Bolas',                         nameEN:'Bolas',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'distanza', damage:'1d4', damageS:'1d3', critRange:'20', critMult:2,
+    damageType:'C', twoHanded:false, range:3, weight:1, cost:'5 mo', special:'non letale, sbilanciare', source:'CRB' },
+
+  { id:'dwarven_urgrosh',   name:'Urgrosh Nanico',                nameEN:'Dwarven Urgrosh',
+    category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
+    attackType:'mischia', damage:'1d8/1d6', damageS:'1d6/1d4', critRange:'20', critMult:3,
+    damageType:'P/T', twoHanded:true, range:0, weight:6, cost:'50 mo', special:'doppio, brace', source:'CRB' },
 
   { id:'gnome_hooked',      name:'Martello ad Uncino Gnomico',    nameEN:'Gnome Hooked Hammer',
     category:'weapon', subcategory:'esotico', weaponGroup:'esotico',
@@ -414,68 +519,73 @@ const PF1_EQUIPMENT_DB = [
   { id:'padded',            name:'Armatura Imbottita',            nameEN:'Padded Armor',
     category:'armor', subcategory:'leggera', armorType:'leggera',
     bonus:1, maxDex:8, acp:0, asf:5, speed:0,
-    weight:4.5, cost:'5 mo', source:'CRB' },
+    weight:5, cost:'5 mo', source:'CRB' },
 
   { id:'leather',           name:'Armatura di Cuoio',             nameEN:'Leather Armor',
     category:'armor', subcategory:'leggera', armorType:'leggera',
     bonus:2, maxDex:6, acp:0, asf:10, speed:0,
-    weight:6.75, cost:'10 mo', source:'CRB' },
+    weight:7.5, cost:'10 mo', source:'CRB' },
 
   { id:'studded_leather',   name:'Armatura di Cuoio Borchiato',   nameEN:'Studded Leather',
     category:'armor', subcategory:'leggera', armorType:'leggera',
     bonus:3, maxDex:5, acp:-1, asf:15, speed:0,
-    weight:9, cost:'25 mo', source:'CRB' },
+    weight:10, cost:'25 mo', source:'CRB' },
 
-  { id:'chain_shirt',       name:'Camicia di Maglia',             nameEN:'Chain Shirt',
+  { id:'chain_shirt',       name:'Giaco di Maglia',               nameEN:'Chain Shirt',
     category:'armor', subcategory:'leggera', armorType:'leggera',
     bonus:4, maxDex:4, acp:-2, asf:20, speed:0,
-    weight:11.25, cost:'100 mo', source:'CRB' },
+    weight:12.5, cost:'100 mo', source:'CRB' },
 
   // ══════════════════════════════════════════════════════════════════════════
   // ARMATURE MEDIE
   // ══════════════════════════════════════════════════════════════════════════
-  { id:'hide',              name:'Armatura di Pellame',           nameEN:'Hide Armor',
+  { id:'hide',              name:'Armatura di Pelle',             nameEN:'Hide Armor',
     category:'armor', subcategory:'media', armorType:'media',
     bonus:4, maxDex:4, acp:-3, asf:20, speed:3,
-    weight:11.25, cost:'15 mo', source:'CRB' },
+    weight:12.5, cost:'15 mo', source:'CRB' },
 
-  { id:'scale_mail',        name:'Maglia a Scaglie',              nameEN:'Scale Mail',
+  { id:'scale_mail',        name:'Corazza a Scaglie',             nameEN:'Scale Mail',
     category:'armor', subcategory:'media', armorType:'media',
     bonus:5, maxDex:3, acp:-4, asf:25, speed:3,
-    weight:13.5, cost:'50 mo', source:'CRB' },
+    weight:15, cost:'50 mo', source:'CRB' },
 
   { id:'chain_mail',        name:'Cotta di Maglia',               nameEN:'Chain Mail',
     category:'armor', subcategory:'media', armorType:'media',
     bonus:6, maxDex:2, acp:-5, asf:30, speed:3,
-    weight:18, cost:'150 mo', source:'CRB' },
+    weight:20, cost:'150 mo', source:'CRB' },
 
-  { id:'breastplate',       name:'Corazza a Piastre',             nameEN:'Breastplate',
+  { id:'breastplate',       name:'Corazza di Piastre',            nameEN:'Breastplate',
     category:'armor', subcategory:'media', armorType:'media',
     bonus:6, maxDex:3, acp:-4, asf:25, speed:3,
-    weight:13.5, cost:'200 mo', source:'CRB' },
+    weight:15, cost:'200 mo', source:'CRB' },
+
+  { id:'armored_coat',      name:'Manto Corazzato',               nameEN:'Armored Coat',
+    category:'armor', subcategory:'media', armorType:'media',
+    bonus:4, maxDex:3, acp:-2, asf:20, speed:3,
+    weight:10, cost:'50 mo', source:'APG' },
 
   // ══════════════════════════════════════════════════════════════════════════
   // ARMATURE PESANTI
   // ══════════════════════════════════════════════════════════════════════════
-  { id:'splint_mail',       name:'Maglia a Fasce',                nameEN:'Splint Mail',
+  { id:'splint_mail',       name:'Corazza a Strisce',             nameEN:'Splint Mail',
     category:'armor', subcategory:'pesante', armorType:'pesante',
-    bonus:7, maxDex:0, acp:-7, asf:35, speed:3,
-    weight:20.25, cost:'200 mo', source:'CRB' },
+    bonus:7, maxDex:0, acp:-7, asf:40, speed:3,
+    weight:22.5, cost:'200 mo', source:'CRB' },
 
-  { id:'banded_mail',       name:'Armatura Lamellare',            nameEN:'Banded Mail',
+  { id:'banded_mail',       name:'Corazza di Bande',              nameEN:'Banded Mail',
     category:'armor', subcategory:'pesante', armorType:'pesante',
     bonus:7, maxDex:1, acp:-6, asf:35, speed:3,
-    weight:15.75, cost:'250 mo', source:'CRB' },
+    weight:17.5, cost:'250 mo', source:'CRB' },
 
-  { id:'half_plate',        name:'Mezza Armatura a Piastre',      nameEN:'Half-Plate',
+  { id:'half_plate',        name:'Mezza Armatura',                nameEN:'Half-Plate',
     category:'armor', subcategory:'pesante', armorType:'pesante',
     bonus:8, maxDex:0, acp:-7, asf:40, speed:3,
-    weight:22.5, cost:'600 mo', source:'CRB' },
+    weight:25, cost:'600 mo', source:'CRB' },
 
-  { id:'full_plate',        name:'Armatura Completa a Piastre',   nameEN:'Full Plate',
+  { id:'full_plate',        name:'Armatura Completa',             nameEN:'Full Plate',
     category:'armor', subcategory:'pesante', armorType:'pesante',
     bonus:9, maxDex:1, acp:-6, asf:35, speed:3,
-    weight:22.5, cost:'1500 mo', source:'CRB' },
+    weight:25, cost:'1500 mo', source:'CRB' },
 
   // ══════════════════════════════════════════════════════════════════════════
   // SCUDI
@@ -483,32 +593,32 @@ const PF1_EQUIPMENT_DB = [
   { id:'buckler',           name:'Buckler',                       nameEN:'Buckler',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:1, maxDex:null, acp:-1, asf:5, speed:0,
-    weight:2.25, cost:'5 mo', source:'CRB' },
+    weight:2.5, cost:'5 mo', source:'CRB' },
 
-  { id:'lt_wooden_shield',  name:'Scudo di Legno Leggero',        nameEN:'Light Wooden Shield',
+  { id:'lt_wooden_shield',  name:'Scudo Leggero di Legno',        nameEN:'Light Wooden Shield',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:1, maxDex:null, acp:-1, asf:5, speed:0,
-    weight:2.25, cost:'3 mo', source:'CRB' },
+    weight:2.5, cost:'3 mo', source:'CRB' },
 
-  { id:'lt_steel_shield',   name:'Scudo d\'Acciaio Leggero',      nameEN:'Light Steel Shield',
+  { id:'lt_steel_shield',   name:'Scudo Leggero di Metallo',      nameEN:'Light Steel Shield',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:1, maxDex:null, acp:-1, asf:5, speed:0,
-    weight:2.7, cost:'9 mo', source:'CRB' },
+    weight:3, cost:'9 mo', source:'CRB' },
 
-  { id:'hv_wooden_shield',  name:'Scudo di Legno Pesante',        nameEN:'Heavy Wooden Shield',
+  { id:'hv_wooden_shield',  name:'Scudo Pesante di Legno',        nameEN:'Heavy Wooden Shield',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:2, maxDex:null, acp:-2, asf:15, speed:0,
-    weight:4.5, cost:'7 mo', source:'CRB' },
+    weight:5, cost:'7 mo', source:'CRB' },
 
-  { id:'hv_steel_shield',   name:'Scudo d\'Acciaio Pesante',      nameEN:'Heavy Steel Shield',
+  { id:'hv_steel_shield',   name:'Scudo Pesante di Metallo',      nameEN:'Heavy Steel Shield',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:2, maxDex:null, acp:-2, asf:15, speed:0,
-    weight:6.75, cost:'20 mo', source:'CRB' },
+    weight:7.5, cost:'20 mo', source:'CRB' },
 
-  { id:'tower_shield',      name:'Scudo da Torre',                nameEN:'Tower Shield',
+  { id:'tower_shield',      name:'Scudo Torre',                   nameEN:'Tower Shield',
     category:'shield', subcategory:'scudo', armorType:'scudo',
     bonus:4, maxDex:2, acp:-10, asf:50, speed:0,
-    weight:20.25, cost:'30 mo', source:'CRB' },
+    weight:22.5, cost:'30 mo', source:'CRB' },
 
   // ══════════════════════════════════════════════════════════════════════════
   // OGGETTI AVVENTURA (gear)
