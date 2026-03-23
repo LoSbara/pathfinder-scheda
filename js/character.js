@@ -140,21 +140,28 @@ const Character = (() => {
     }));
   }
 
-  function _defaultSpells() {
+  /**
+   * Blocco per una singola classe incantatrice.
+   * char.spells è un array di questi blocchi (una per classe).
+   */
+  function _defaultCasterBlock(classId, className, ability) {
     return {
-      casterClass:  '',    // es. 'Iracondo di Stirpe', 'Mago', 'Chierico'
+      classId:      classId   || '',   // id ClassConfig (es. 'mago', 'iracondo_stirpe')
+      className:    className || '',   // nome visualizzato (es. 'Mago', 'Iracondo di Stirpe')
       casterLevel:  0,
-      ability:      'cha', // caratteristica di lancio: cha, int, wis
-      // Slot per livello incantesimo (0–9); 0 = non disponibile
+      ability:      ability   || 'cha',  // 'cha' | 'int' | 'wis'
       spellsPerDay: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       spellsUsed:   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      // Incantesimi conosciuti / preparati
       known: [],
-      // Struttura di uno spell:
+      // Struttura di uno spell nel `known`:
       // { id, spellLevel, name, school, subschool, descriptor,
       //   castingTime, components, range, target, duration,
       //   savingThrow, spellResistance, description, prepared }
     };
+  }
+
+  function _defaultSpells() {
+    return [];  // array di _defaultCasterBlock(); uno per classe incantatrice
   }
 
   function _defaultRage() {
@@ -328,7 +335,7 @@ const Character = (() => {
     if (!Array.isArray(char.equipment))   errors.push('equipment non è un array');
     if (!Array.isArray(char.feats))       errors.push('feats non è un array');
     if (!char.currency)            errors.push('currency mancante');
-    if (!char.spells)              errors.push('spells mancante');
+    if (!Array.isArray(char.spells)) errors.push('spells non è un array');
     if (!char.rage)                errors.push('rage mancante');
     return { valid: errors.length === 0, errors };
   }
@@ -360,6 +367,23 @@ const Character = (() => {
     }
 
     fillMissing(char, defaults);
+
+    // Migrazione spells: vecchio formato oggetto singolo → array di blocchi
+    if (char.spells && !Array.isArray(char.spells)) {
+      const old = char.spells;
+      const clasNameRaw = old.casterClass || '';
+      const classId = clasNameRaw.toLowerCase().replace(/\s+/g, '_');
+      char.spells = [{
+        classId,
+        className:    clasNameRaw,
+        casterLevel:  old.casterLevel  || 0,
+        ability:      old.ability      || 'cha',
+        spellsPerDay: old.spellsPerDay || [0,0,0,0,0,0,0,0,0,0],
+        spellsUsed:   old.spellsUsed   || [0,0,0,0,0,0,0,0,0,0],
+        known:        old.known        || [],
+      }];
+    }
+
     char._schemaVersion = defaults._schemaVersion;
     return char;
   }
@@ -373,5 +397,6 @@ const Character = (() => {
     clone,
     validate,
     migrate,
+    defaultCasterBlock: _defaultCasterBlock,
   };
 })();

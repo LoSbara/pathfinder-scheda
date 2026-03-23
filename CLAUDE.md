@@ -283,32 +283,39 @@ The full object returned by `Character.createDefault(name)`:
     { id: string, name: string, description: string }
   ],
 
-  spells: {
-    casterClass: string,
-    casterLevel: number,
-    ability: 'cha'|'int'|'wis',
-    spellsPerDay: number[10],   // index = spell level 0–9
-    spellsUsed:   number[10],
-    known: [
-      {
-        id: string,
-        spellLevel: number,
-        name: string,
-        school: string,
-        subschool: string,
-        descriptor: string,
-        castingTime: string,
-        components: string,
-        range: string,
-        target: string,
-        duration: string,
-        savingThrow: string,
-        spellResistance: string,
-        description: string,
-        prepared: boolean,
-      }
-    ],
-  },
+  // char.spells è un ARRAY di blocchi incantatrici (uno per classe incantatrice).
+  // 21 delle 33 classi hanno hasSpellsTab: true — un personaggio multiclasse
+  // può avere più blocchi (es. Mago + Chierico, Magus + Stregone).
+  // Character.defaultCasterBlock(classId, className, ability) crea un blocco vuoto.
+  spells: [
+    {
+      classId: string,          // ClassConfig.id (es. 'mago', 'iracondo_stirpe')
+      className: string,        // nome visualizzato (es. 'Mago', 'Iracondo di Stirpe')
+      casterLevel: number,
+      ability: 'cha'|'int'|'wis',
+      spellsPerDay: number[10], // index = spell level 0–9
+      spellsUsed:   number[10],
+      known: [
+        {
+          id: string,
+          spellLevel: number,
+          name: string,
+          school: string,
+          subschool: string,
+          descriptor: string,
+          castingTime: string,
+          components: string,
+          range: string,
+          target: string,
+          duration: string,
+          savingThrow: string,
+          spellResistance: string,
+          description: string,
+          prepared: boolean,
+        }
+      ],
+    }
+  ],
 
   rage: {
     active: boolean,
@@ -492,7 +499,7 @@ Each `render*()` function reads from `_char` and writes to the DOM:
 - `renderArmi` — weapon cards (generated), Power Attack helper
 - `renderEquipaggiamento` — currency, weight display, equipment items
 - `renderTalenti` — feats list, class features list, racial traits list
-- `renderIncantesimi` — caster info, slot grid (levels 0–9), known spells list
+- `renderIncantesimi` — un blocco per ogni elemento di `char.spells[]`; ogni blocco ha: intestazione (classe, liv, abilità, CD, FIA), griglia slot 0–9, lista incantesimi conosciuti
 - `renderNote` — textarea
 
 ### Event binding (`_bindAll`)
@@ -580,7 +587,7 @@ Fantasy dark theme. Key CSS custom properties:
 - **Reference rules**:
   - Italian: https://golarion.altervista.org/wiki/Pagina_principale
   - English: https://www.d20pfsrd.com
-- **Known classes used in the campaign**: "Iracondo di Stirpe" (Bloodrager) is explicitly referenced throughout the codebase with rage/bloodline mechanics. Other standard PF1 classes are fully supported via the class profile system.
+- **Classi supportate**: tutte e 33 le classi PF1 definite in `ClassConfig.CLASSES`. La meccanica dell'Ira (rage/bloodline) è supportata perché presente in più classi (Barbaro, Iracondo di Stirpe, Skald, ecc.) — nessuna classe ha trattamento speciale nel codice.
 
 ---
 
@@ -868,10 +875,10 @@ Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 - Si apre un modal con:
   - Selezione livello incantesimo (0–9) — filtro principale
   - Campo ricerca testuale (nome, scuola, descrizione)
-  - Lista risultati filtrata per: **classe incantatrice del PG** (usa `_char.spells.casterClass` → `ClassConfig.findByName` → `casterConf.id` → solo le spell che hanno `spell.level[casterConf.id] === livelloScelto`)
+  - Lista risultati filtrata per: **classi incantatrici del PG** — itera su `_char.spells` (array), per ogni blocco usa `block.classId` → filtra le spell che hanno `spell.level[block.classId] === livelloScelto`. Mostra dropdown per scegliere quale blocco/classe usare come filtro oppure "Tutte le classi del PG"
   - Ogni risultato mostra: nome, scuola, componenti, gittata, durata
-  - Click su un risultato → aggiunge lo spell alla lista con tutti i campi pre-compilati e chiude il modal
-- Per multiclasse: mostrare dropdown per scegliere quale classe usare come filtro, oppure l'unione di tutte le classi del PG
+  - Click su un risultato → aggiunge lo spell **al blocco scelto** con tutti i campi pre-compilati e chiude il modal
+- Per multiclasse: dropdown nella modal che elenca i nomi delle classi in `_char.spells`, default alla prima
 
 ### Comportamento atteso — Talenti
 - Bottone "Cerca talento" nel tab Talenti

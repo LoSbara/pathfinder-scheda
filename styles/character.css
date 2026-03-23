@@ -813,6 +813,19 @@ input.input-warning { border-color: #e07c00 !important; background: #2a1800 !imp
 /* ══════════════════════════════════════════════════════════════
    TAB: INCANTESIMI
    ══════════════════════════════════════════════════════════════ */
+
+/* Blocco per una singola classe incantatrice */
+.caster-block { margin-bottom: 1.5rem; }
+.caster-block-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-sm);
+  margin-bottom: 0.75rem;
+}
+.caster-block-header .field-group { flex: 1 1 140px; }
+.add-caster-block-row { text-align: center; padding: 0.75rem; }
+
 .spells-per-day-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));

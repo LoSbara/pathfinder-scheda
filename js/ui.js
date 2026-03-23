@@ -665,23 +665,96 @@ const UI = (() => {
 
   // ── Incantesimi ───────────────────────────────────────────────────────────
 
-  function renderIncantesimi(char) {
-    const sp = char.spells;
-    setVal('spell-class',   sp.casterClass);
-    setVal('spell-cl',      sp.casterLevel);
-    setVal('spell-ability', sp.ability);
+  /** HTML per una singola riga dell'elenco incantesimi. */
+  function _spellEntryHtml(spell, si) {
+    return `
+      <div class="spell-entry" data-index="${si}">
+        <div class="spell-entry-header">
+          <span class="spell-level-badge">Lv ${spell.spellLevel||0}</span>
+          <input type="text" class="spell-name-input" list="spell-name-datalist"
+                 placeholder="Nome incantesimo" value="${_e(spell.name||'')}" />
+          <label class="spell-prepared-label" title="Segnare come preparato">
+            <input type="checkbox" class="spell-prepared" ${spell.prepared ? 'checked' : ''} />
+            Prep.
+          </label>
+          <button class="btn btn-ghost btn-sm spell-expand"
+                  title="Espandi" style="font-size:.75rem"><i class="fa-solid fa-chevron-down"></i></button>
+          <button class="btn btn-danger btn-sm spell-remove"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="spell-details">
+          <div class="spell-detail-row">
+            <div class="field-group">
+              <label>Livello</label>
+              <input type="number" class="field-input field-narrow spell-lvl"
+                     min="0" max="9" value="${spell.spellLevel||0}" />
+            </div>
+            <div class="field-group">
+              <label>Scuola</label>
+              <input type="text" class="field-input spell-school"
+                     value="${_e(spell.school||'')}" placeholder="Trasmutazione..." />
+            </div>
+            <div class="field-group">
+              <label>Sottoscuola</label>
+              <input type="text" class="field-input spell-subschool"
+                     value="${_e(spell.subschool||'')}" placeholder="Creazione..." />
+            </div>
+            <div class="field-group">
+              <label>Descrittori</label>
+              <input type="text" class="field-input spell-descriptor"
+                     value="${_e(spell.descriptor||'')}" placeholder="Fuoco, Male..." />
+            </div>
+            <div class="field-group">
+              <label>Componenti</label>
+              <input type="text" class="field-input spell-components"
+                     value="${_e(spell.components||'')}" placeholder="V, S, M" />
+            </div>
+            <div class="field-group">
+              <label>Tempo comp.</label>
+              <input type="text" class="field-input spell-casttime"
+                     value="${_e(spell.castingTime||'')}" placeholder="1 az. std" />
+            </div>
+            <div class="field-group">
+              <label>Gittata</label>
+              <input type="text" class="field-input spell-range"
+                     value="${_e(spell.range||'')}" placeholder="Personale / 30 m" />
+            </div>
+            <div class="field-group">
+              <label>Bersaglio</label>
+              <input type="text" class="field-input spell-target"
+                     value="${_e(spell.target||'')}" placeholder="1 creatura..." />
+            </div>
+            <div class="field-group">
+              <label>Durata</label>
+              <input type="text" class="field-input spell-duration"
+                     value="${_e(spell.duration||'')}" placeholder="1 min/lv" />
+            </div>
+            <div class="field-group">
+              <label>Tiro Sal.</label>
+              <input type="text" class="field-input spell-save"
+                     value="${_e(spell.savingThrow||'')}" placeholder="Nessuno" />
+            </div>
+            <div class="field-group">
+              <label style="white-space:nowrap">Res. Inc.</label>
+              <select class="field-input field-narrow spell-sr">
+                <option value="no"  ${(spell.spellResistance||'no')==='no'  ?'selected':''}>No</option>
+                <option value="si"  ${(spell.spellResistance||'no')==='si'  ?'selected':''}>Sì</option>
+              </select>
+            </div>
+          </div>
+          <textarea class="feat-desc" rows="2"
+                    placeholder="Descrizione breve...">${_e(spell.description||'')}</textarea>
+        </div>
+      </div>`;
+  }
 
-    // Griglia slot per livello
-    const grid = el('spells-per-day-grid');
-    if (grid) {
-      grid.innerHTML = '';
-      for (let lv = 0; lv <= 9; lv++) {
-        const total = sp.spellsPerDay[lv] || 0;
-        const used  = sp.spellsUsed[lv]   || 0;
-        const box   = document.createElement('div');
-        box.className = 'spell-level-box' + (total > 0 ? ' has-slots' : '');
-        box.dataset.level = lv;
-        box.innerHTML = `
+  /** Genera la griglia slot 0–9 per un blocco incantatrice. */
+  function _spellSlotGridHtml(block) {
+    let html = '';
+    for (let lv = 0; lv <= 9; lv++) {
+      const total = block.spellsPerDay[lv] || 0;
+      const used  = block.spellsUsed[lv]   || 0;
+      html += `
+        <div class="spell-level-box${total > 0 ? ' has-slots' : ''}" data-level="${lv}">
           <span class="spell-level-label">Lv ${lv}</span>
           <div class="spell-slots-row">
             <input type="number" class="field-input spell-used spell-slot-input"
@@ -690,112 +763,97 @@ const UI = (() => {
             <input type="number" class="field-input spell-total spell-slot-input"
                    min="0" value="${total}" title="Al giorno" />
           </div>
-        `;
-        grid.appendChild(box);
-      }
+        </div>`;
     }
-
-    // Lista incantesimi
-    const list = el('spells-list');
-    if (list) {
-      list.innerHTML = '';
-      (sp.known || []).forEach((spell, i) => {
-        const entry = document.createElement('div');
-        entry.className = 'spell-entry';
-        entry.dataset.index = i;
-        entry.innerHTML = `
-          <div class="spell-entry-header">
-            <span class="spell-level-badge">Lv ${spell.spellLevel||0}</span>
-            <input type="text" class="spell-name-input" list="spell-name-datalist"
-                   placeholder="Nome incantesimo" value="${_e(spell.name||'')}" />
-            <label class="spell-prepared-label" title="Segnare come preparato">
-              <input type="checkbox" class="spell-prepared" ${spell.prepared ? 'checked' : ''} />
-              Prep.
-            </label>
-            <button class="btn btn-ghost btn-sm spell-expand"
-                    title="Espandi" style="font-size:.75rem"><i class="fa-solid fa-chevron-down"></i></button>
-            <button class="btn btn-danger btn-sm spell-remove"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div class="spell-details">
-            <div class="spell-detail-row">
-              <div class="field-group">
-                <label>Livello</label>
-                <input type="number" class="field-input field-narrow spell-lvl"
-                       min="0" max="9" value="${spell.spellLevel||0}" />
-              </div>
-              <div class="field-group">
-                <label>Scuola</label>
-                <input type="text" class="field-input spell-school"
-                       value="${_e(spell.school||'')}" placeholder="Trasmutazione..." />
-              </div>
-              <div class="field-group">
-                <label>Sottoscuola</label>
-                <input type="text" class="field-input spell-subschool"
-                       value="${_e(spell.subschool||'')}" placeholder="Creazione..." />
-              </div>
-              <div class="field-group">
-                <label>Descrittori</label>
-                <input type="text" class="field-input spell-descriptor"
-                       value="${_e(spell.descriptor||'')}" placeholder="Fuoco, Male..." />
-              </div>
-              <div class="field-group">
-                <label>Componenti</label>
-                <input type="text" class="field-input spell-components"
-                       value="${_e(spell.components||'')}" placeholder="V, S, M" />
-              </div>
-              <div class="field-group">
-                <label>Tempo comp.</label>
-                <input type="text" class="field-input spell-casttime"
-                       value="${_e(spell.castingTime||'')}" placeholder="1 az. std" />
-              </div>
-              <div class="field-group">
-                <label>Gittata</label>
-                <input type="text" class="field-input spell-range"
-                       value="${_e(spell.range||'')}" placeholder="Personale / 30 m" />
-              </div>
-              <div class="field-group">
-                <label>Bersaglio</label>
-                <input type="text" class="field-input spell-target"
-                       value="${_e(spell.target||'')}" placeholder="1 creatura..." />
-              </div>
-              <div class="field-group">
-                <label>Durata</label>
-                <input type="text" class="field-input spell-duration"
-                       value="${_e(spell.duration||'')}" placeholder="1 min/lv" />
-              </div>
-              <div class="field-group">
-                <label>Tiro Sal.</label>
-                <input type="text" class="field-input spell-save"
-                       value="${_e(spell.savingThrow||'')}" placeholder="Nessuno" />
-              </div>
-              <div class="field-group">
-                <label style="white-space:nowrap">Res. Inc.</label>
-                <select class="field-input field-narrow spell-sr">
-                  <option value="no"  ${(spell.spellResistance||'no')==='no'  ?'selected':''}>No</option>
-                  <option value="si"  ${(spell.spellResistance||'no')==='si'  ?'selected':''}>Sì</option>
-                </select>
-              </div>
-            </div>
-            <textarea class="feat-desc" rows="2"
-                      placeholder="Descrizione breve...">${_e(spell.description||'')}</textarea>
-          </div>
-        `;
-        list.appendChild(entry);
-      });
-      if ((sp.known||[]).length === 0) {
-        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:0.3rem 0">Nessun incantesimo — aggiungi sopra.</p>';
-      }
-    }
-
-    _updateSpellCalc(char);
+    return html;
   }
 
-  function _updateSpellCalc(char) {
-    const sp   = char.spells;
-    const abil = sp.ability || 'cha';
-    const mod  = Combat.mod(char, abil);
-    setText('spell-dc-base', 10 + mod);
-    setText('spell-asf', (char.armor?.asf || 0) + '%');
+  function renderIncantesimi(char) {
+    const container = el('caster-blocks-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const blocks = char.spells || [];
+
+    if (blocks.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem;text-align:center">Nessuna classe incantatrice — usa il pulsante sotto per aggiungerne una.</p>';
+      return;
+    }
+
+    const asf = char.armor?.asf || 0;
+
+    blocks.forEach((block, bi) => {
+      const dc = 10 + Combat.mod(char, block.ability || 'cha');
+
+      let spellsHtml = (block.known || []).map((sp, si) => _spellEntryHtml(sp, si)).join('');
+      if (!spellsHtml) {
+        spellsHtml = '<p style="color:var(--text-muted);font-size:0.85rem;padding:0.3rem 0">Nessun incantesimo — aggiungi.</p>';
+      }
+
+      const section = document.createElement('div');
+      section.className = 'caster-block';
+      section.dataset.blockIdx = bi;
+      section.innerHTML = `
+        <div class="section-block">
+          <div class="caster-block-header">
+            <div class="field-group">
+              <label>Classe Incantatrice</label>
+              <input type="text" class="field-input caster-class-name"
+                     value="${_e(block.className)}" placeholder="es. Mago" />
+            </div>
+            <div class="field-group">
+              <label>Liv. Incantatore</label>
+              <input type="number" class="field-input field-narrow caster-level"
+                     min="0" value="${block.casterLevel}" />
+            </div>
+            <div class="field-group">
+              <label>Caratteristica</label>
+              <select class="field-input caster-ability">
+                <option value="cha"${block.ability==='cha'?' selected':''}>CAR</option>
+                <option value="int"${block.ability==='int'?' selected':''}>INT</option>
+                <option value="wis"${block.ability==='wis'?' selected':''}>SAG</option>
+              </select>
+            </div>
+            <div class="stat-box-small">
+              <span class="stat-label">CD base</span>
+              <span class="stat-value caster-dc">${dc}</span>
+              <small>10 + lv + mod car.</small>
+            </div>
+            <div class="stat-box-small">
+              <span class="stat-label">FIA armatura</span>
+              <span class="stat-value caster-asf">${asf}%</span>
+            </div>
+            <button class="btn btn-ghost btn-sm caster-remove-btn"
+                    title="Rimuovi classe incantatrice">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <h3 style="margin-top:1rem">Slot Incantesimi al Giorno</h3>
+          <div class="spells-per-day-grid">${_spellSlotGridHtml(block)}</div>
+          <div class="section-header" style="margin-top:1rem">
+            <h3>Incantesimi Conosciuti</h3>
+            <button class="btn btn-sm btn-secondary caster-add-spell-btn">
+              <i class="fa-solid fa-plus"></i> Aggiungi
+            </button>
+          </div>
+          <div class="spells-list">${spellsHtml}</div>
+        </div>`;
+      container.appendChild(section);
+    });
+  }
+
+  function _updateSpellCalcAll(char) {
+    const asf = char.armor?.asf || 0;
+    document.querySelectorAll('.caster-block').forEach(blockEl => {
+      const bi = parseInt(blockEl.dataset.blockIdx, 10);
+      const block = (char.spells || [])[bi];
+      if (!block) return;
+      const dc = 10 + Combat.mod(char, block.ability || 'cha');
+      const dcEl  = blockEl.querySelector('.caster-dc');
+      const asfEl = blockEl.querySelector('.caster-asf');
+      if (dcEl)  dcEl.textContent  = dc;
+      if (asfEl) asfEl.textContent = asf + '%';
+    });
   }
 
   // ── Note ──────────────────────────────────────────────────────────────────
@@ -860,7 +918,7 @@ const UI = (() => {
       }
     });
 
-    _updateSpellCalc(char);
+    _updateSpellCalcAll(char);
     _updateConditionsBanner(char);
     _updateWeight(char);
   }
@@ -1037,8 +1095,8 @@ const UI = (() => {
     // 6. Auto-fill BAB (calcolato dalla progressione di tutte le classi)
     _autoFillBab(char);
 
-    // 7. Auto-fill abilità di lancio (prima classe che ha spellAbility)
-    _autoFillSpellAbility(char);
+    // 7. Sincronizza blocchi incantatrici da tutte le classi con hasSpellsTab
+    _syncCasterBlocksFromClasses(char);
 
     // 8. Auto-fill usi Canalizzare (3 + mod CHA, se ha channel)
     if (profile.features.channel) _autoFillChannelUses(char);
@@ -1068,29 +1126,41 @@ const UI = (() => {
     renderArmi(char);
   }
 
-  /** Imposta l'abilità di lancio nel tab Incantesimi dalla prima classe spellcaster. */
-  function _autoFillSpellAbility(char) {
+  /**
+   * Per ogni classe del personaggio con hasSpellsTab, assicura che esista
+   * un blocco corrispondente in char.spells. Non sovrascrive blocchi esistenti.
+   * Rimuove blocchi di classi non più presenti nel personaggio.
+   */
+  function _syncCasterBlocksFromClasses(char) {
     if (typeof ClassConfig === 'undefined') return;
+    if (!Array.isArray(char.spells)) char.spells = [];
     const classes = char.meta?.classes || [];
-    for (const cls of classes) {
-      const cfg = ClassConfig.findByName(cls.className);
-      if (cfg?.spellAbility) {
-        // Imposta solo se il campo è ancora vuoto o la classe è cambiata
-        const spEl = el('spell-ability');
-        if (spEl && (!char.spells?.ability || char.spells.ability === '')) {
-          char.spells.ability = cfg.spellAbility;
-          spEl.value = cfg.spellAbility;
-          _updateSpellCalc(char);
-        }
-        // Imposta classe incantatore se vuota
-        const scEl = el('spell-class');
-        if (scEl && (!char.spells?.casterClass || char.spells.casterClass === '')) {
-          char.spells.casterClass = cls.className;
-          scEl.value = cls.className;
-        }
-        break;
+
+    // Classi incantatrici del personaggio (quelle con hasSpellsTab: true)
+    const casterClasses = classes
+      .map(cls => ClassConfig.findByName(cls.className))
+      .filter(cfg => cfg?.hasSpellsTab);
+
+    // Rimuovi blocchi per classi non più nel personaggio (ma solo se vuoti)
+    char.spells = char.spells.filter(block => {
+      const stillPresent = casterClasses.some(cfg => cfg.id === block.classId || cfg.name === block.className);
+      const isEmpty = !block.known?.length &&
+                      block.casterLevel === 0 &&
+                      (block.spellsPerDay || []).every(s => s === 0);
+      return stillPresent || !isEmpty;  // conserva blocchi non vuoti anche se la classe è stata rimossa
+    });
+
+    // Aggiungi blocchi mancanti per le classi incantatrici del personaggio
+    let changed = false;
+    for (const cfg of casterClasses) {
+      const exists = char.spells.some(b => b.classId === cfg.id || b.className === cfg.name);
+      if (!exists) {
+        char.spells.push(Character.defaultCasterBlock(cfg.id, cfg.name, cfg.spellAbility || 'cha'));
+        changed = true;
       }
     }
+
+    if (changed) renderIncantesimi(char);
   }
 
   /** Calcola gli usi di Canalizzare = 3 + mod CHA (standard Chierico PF1). */
@@ -1387,7 +1457,7 @@ const UI = (() => {
       ['armor-bonus',    (v,c)=>{ c.armor.bonus=toInt(v); c.combat.ac.armorBonus=toInt(v); setVal('ac-armor',v); refreshCalculated(c); }],
       ['armor-maxdex',   (v,c)=>  c.armor.maxDex=(v===''?null:toInt(v))],
       ['armor-acp',      (v,c)=>{ c.armor.acp=toInt(v); refreshCalculated(c); }],
-      ['armor-asf',      (v,c)=>{ c.armor.asf=toInt(v); _updateSpellCalc(c); }],
+      ['armor-asf',      (v,c)=>{ c.armor.asf=toInt(v); _updateSpellCalcAll(c); }],
       ['armor-speed',    (v,c)=>  c.armor.speed=toInt(v)],
       ['armor-weight',   (v,c)=>{ c.armor.weight=toF(v); _updateWeight(c); }],
       ['bab-input',      (v,c)=>{ c.combat.bab=toInt(v); refreshCalculated(c); renderArmi(c); }],
@@ -1590,49 +1660,74 @@ const UI = (() => {
   }
 
   function _bindSpells() {
-    [
-      ['spell-class',   (v,c)=> c.spells.casterClass = v],
-      ['spell-cl',      (v,c)=>{ c.spells.casterLevel = toInt(v); _updateSpellCalc(c); }],
-      ['spell-ability', (v,c)=>{ c.spells.ability = v; _updateSpellCalc(c); }],
-    ].forEach(([id, fn]) => {
-      el(id)?.addEventListener('change', e => { if (_char) { fn(e.target.value, _char); _dirty(); } });
-    });
+    const tabPanel = document.getElementById('tab-incantesimi');
+    if (!tabPanel) return;
 
-    el('spells-per-day-grid')?.addEventListener('change', e => {
+    // ── Aggiungi classe incantatrice ─────────────────────────────────────────
+    el('btn-add-caster-class')?.addEventListener('click', () => {
       if (!_char) return;
-      const box = e.target.closest('.spell-level-box');
-      if (!box) return;
-      const lv = toInt(box.dataset.level, -1);
-      if (lv < 0) return;
-      if (e.target.classList.contains('spell-used'))  _char.spells.spellsUsed[lv]    = toInt(e.target.value);
-      if (e.target.classList.contains('spell-total')) {
-        _char.spells.spellsPerDay[lv] = toInt(e.target.value);
-        box.classList.toggle('has-slots', _char.spells.spellsPerDay[lv] > 0);
-      }
-      _dirty();
-    });
-
-    el('btn-add-spell')?.addEventListener('click', () => {
-      if (!_char) return;
-      _char.spells.known.push({
-        id: Character.generateId(), spellLevel:0, name:'', school:'', subschool:'',
-        descriptor:'', components:'V, S', castingTime:'1 azione standard',
-        range:'', target:'', duration:'', savingThrow:'Nessuno',
-        spellResistance:'no', description:'', prepared: false,
-      });
+      _char.spells.push(Character.defaultCasterBlock('', '', 'cha'));
       renderIncantesimi(_char); _dirty();
     });
 
-    el('spells-list')?.addEventListener('change', e => {
+    // ── Delegazione eventi sull'intero tab incantesimi ───────────────────────
+    // Helper per ricavare il blocco caster dall'elemento target
+    function getBlock(target) {
+      const blockEl = target.closest('.caster-block');
+      if (!blockEl) return null;
+      const bi = parseInt(blockEl.dataset.blockIdx, 10);
+      const block = _char?.spells?.[bi];
+      return block ? { block, bi, blockEl } : null;
+    }
+
+    tabPanel.addEventListener('change', e => {
       if (!_char) return;
+      const ctx = getBlock(e.target);
+      if (!ctx) return;
+      const { block, bi, blockEl } = ctx;
+
+      // Campi dell'intestazione blocco
+      if (e.target.classList.contains('caster-class-name')) {
+        block.className = e.target.value;
+        block.classId   = e.target.value.toLowerCase().replace(/\s+/g, '_');
+        _dirty(); return;
+      }
+      if (e.target.classList.contains('caster-level')) {
+        block.casterLevel = toInt(e.target.value);
+        _dirty(); return;
+      }
+      if (e.target.classList.contains('caster-ability')) {
+        block.ability = e.target.value;
+        const dc    = 10 + Combat.mod(_char, block.ability);
+        const dcEl  = blockEl.querySelector('.caster-dc');
+        if (dcEl) dcEl.textContent = dc;
+        _dirty(); return;
+      }
+
+      // Slot per livello
+      const levelBox = e.target.closest('.spell-level-box');
+      if (levelBox) {
+        const lv = toInt(levelBox.dataset.level, -1);
+        if (lv < 0) return;
+        if (e.target.classList.contains('spell-used')) {
+          block.spellsUsed[lv] = toInt(e.target.value);
+        } else if (e.target.classList.contains('spell-total')) {
+          block.spellsPerDay[lv] = toInt(e.target.value);
+          levelBox.classList.toggle('has-slots', block.spellsPerDay[lv] > 0);
+        }
+        _dirty(); return;
+      }
+
+      // Modifica incantesimo singolo
       const entry = e.target.closest('.spell-entry');
       if (!entry) return;
-      const i = toInt(entry.dataset.index, -1);
-      if (i < 0 || !_char.spells.known[i]) return;
-      const s = _char.spells.known[i];
+      const si = toInt(entry.dataset.index, -1);
+      if (si < 0 || !block.known[si]) return;
+      const s = block.known[si];
+
       if (e.target.classList.contains('spell-name-input')) {
         s.name = e.target.value;
-        // Auto-fill dai dati PF1 se il nome corrisponde esattamente
+        // Auto-fill da PF1_SPELLS_DB se il nome corrisponde esattamente
         if (typeof PF1_SPELLS_DB !== 'undefined') {
           const match = PF1_SPELLS_DB.find(sp => sp.name.toLowerCase() === s.name.toLowerCase());
           if (match) {
@@ -1647,45 +1742,70 @@ const UI = (() => {
             if (!s.savingThrow)     s.savingThrow     = match.savingThrow     || '';
             if (!s.spellResistance) s.spellResistance = match.spellResistance || 'no';
             if (!s.description)     s.description     = match.description     || '';
-            // Auto-fill livello incantesimo dalla classe incantatrice del personaggio
-            if (match.level && typeof ClassConfig !== 'undefined') {
-              const casterConf = ClassConfig.findByName(_char.spells.casterClass || '');
-              if (casterConf && match.level[casterConf.id] !== undefined) {
-                s.spellLevel = match.level[casterConf.id];
-              }
+            // Auto-fill livello dalla classe di questo blocco
+            if (match.level && block.classId && match.level[block.classId] !== undefined) {
+              s.spellLevel = match.level[block.classId];
             }
-            renderIncantesimi(_char); return;
+            renderIncantesimi(_char); _dirty(); return;
           }
         }
+        _dirty(); return;
       }
-      if (e.target.classList.contains('spell-prepared'))   s.prepared        = e.target.checked;
-      if (e.target.classList.contains('spell-lvl'))        { s.spellLevel = toInt(e.target.value); renderIncantesimi(_char); return; }
-      if (e.target.classList.contains('spell-school'))     s.school          = e.target.value;
-      if (e.target.classList.contains('spell-subschool'))  s.subschool       = e.target.value;
-      if (e.target.classList.contains('spell-descriptor')) s.descriptor      = e.target.value;
-      if (e.target.classList.contains('spell-components')) s.components      = e.target.value;
-      if (e.target.classList.contains('spell-casttime'))   s.castingTime     = e.target.value;
-      if (e.target.classList.contains('spell-range'))      s.range           = e.target.value;
-      if (e.target.classList.contains('spell-target'))     s.target          = e.target.value;
-      if (e.target.classList.contains('spell-duration'))   s.duration        = e.target.value;
-      if (e.target.classList.contains('spell-save'))       s.savingThrow     = e.target.value;
-      if (e.target.classList.contains('spell-sr'))         s.spellResistance = e.target.value;
-      if (e.target.tagName === 'TEXTAREA')                 s.description     = e.target.value;
-      _dirty();
+      if (e.target.classList.contains('spell-prepared'))   { s.prepared        = e.target.checked; _dirty(); return; }
+      if (e.target.classList.contains('spell-lvl'))        { s.spellLevel = toInt(e.target.value); renderIncantesimi(_char); _dirty(); return; }
+      if (e.target.classList.contains('spell-school'))     { s.school          = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-subschool'))  { s.subschool       = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-descriptor')) { s.descriptor      = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-components')) { s.components      = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-casttime'))   { s.castingTime     = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-range'))      { s.range           = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-target'))     { s.target          = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-duration'))   { s.duration        = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-save'))       { s.savingThrow     = e.target.value; _dirty(); return; }
+      if (e.target.classList.contains('spell-sr'))         { s.spellResistance = e.target.value; _dirty(); return; }
+      if (e.target.tagName === 'TEXTAREA')                 { s.description     = e.target.value; _dirty(); return; }
     });
-    el('spells-list')?.addEventListener('click', e => {
+
+    tabPanel.addEventListener('click', e => {
       if (!_char) return;
-      if (e.target.classList.contains('spell-expand') || e.target.closest('.spell-expand')) {
+
+      // Rimuovi classe incantatrice intera
+      if (e.target.closest('.caster-remove-btn')) {
+        const ctx = getBlock(e.target);
+        if (!ctx) return;
+        _char.spells.splice(ctx.bi, 1);
+        renderIncantesimi(_char); _dirty(); return;
+      }
+
+      // Aggiungi incantesimo a un blocco
+      if (e.target.closest('.caster-add-spell-btn')) {
+        const ctx = getBlock(e.target);
+        if (!ctx) return;
+        ctx.block.known.push({
+          id: Character.generateId(), spellLevel:0, name:'', school:'', subschool:'',
+          descriptor:'', components:'V, S', castingTime:'1 azione standard',
+          range:'', target:'', duration:'', savingThrow:'Nessuno',
+          spellResistance:'no', description:'', prepared: false,
+        });
+        renderIncantesimi(_char); _dirty(); return;
+      }
+
+      // Espandi/comprimi un incantesimo
+      if (e.target.closest('.spell-expand')) {
         const btn   = e.target.closest('.spell-expand');
         const entry = e.target.closest('.spell-entry');
         entry?.classList.toggle('expanded');
         btn?.classList.toggle('expanded');
         return;
       }
+
+      // Rimuovi singolo incantesimo
       if (e.target.classList.contains('spell-remove')) {
+        const ctx = getBlock(e.target);
+        if (!ctx) return;
         const entry = e.target.closest('.spell-entry');
-        const i     = toInt(entry?.dataset.index, -1);
-        if (i >= 0) { _char.spells.known.splice(i, 1); renderIncantesimi(_char); _dirty(); }
+        const si    = toInt(entry?.dataset.index, -1);
+        if (si >= 0) { ctx.block.known.splice(si, 1); renderIncantesimi(_char); _dirty(); }
       }
     });
   }

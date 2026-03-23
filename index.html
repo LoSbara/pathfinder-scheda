@@ -773,56 +773,13 @@
       <!-- ══ TAB: INCANTESIMI ══════════════════════════════════════════ -->
       <section id="tab-incantesimi" class="tab-panel">
 
-        <!-- Setup caster -->
-        <div class="section-block">
-          <div class="field-row">
-            <div class="field-group">
-              <label>Classe Incantatrice</label>
-              <input type="text" id="spell-class" class="field-input" placeholder="es. Iracondo di Stirpe" />
-            </div>
-            <div class="field-group">
-              <label>Livello Incantatore</label>
-              <input type="number" id="spell-cl" class="field-input field-narrow" min="0" value="0" />
-            </div>
-            <div class="field-group">
-              <label>Caratteristica</label>
-              <select id="spell-ability" class="field-input">
-                <option value="cha">CAR</option>
-                <option value="int">INT</option>
-                <option value="wis">SAG</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="stat-box-small">
-              <span class="stat-label">CD base</span>
-              <span class="stat-value" id="spell-dc-base">10</span>
-              <small>10 + lv + mod car.</small>
-            </div>
-            <div class="stat-box-small">
-              <span class="stat-label">FIA armatura</span>
-              <span class="stat-value" id="spell-asf">0%</span>
-            </div>
-          </div>
-        </div>
+        <!-- Un blocco per ogni classe incantatrice, generato da ui.js -->
+        <div id="caster-blocks-container"></div>
 
-        <!-- Slot per livello -->
-        <div class="section-block">
-          <h3>Slot Incantesimi al Giorno</h3>
-          <div id="spells-per-day-grid" class="spells-per-day-grid">
-            <!-- Generato da ui.js: righe 0–9 con totale/usati -->
-          </div>
-        </div>
-
-        <!-- Lista incantesimi conosciuti -->
-        <div class="section-block">
-          <div class="section-header">
-            <h3>Incantesimi Conosciuti</h3>
-            <button id="btn-add-spell" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi</button>
-          </div>
-          <div id="spells-list" class="spells-list">
-            <!-- Generato da ui.js -->
-          </div>
+        <div class="section-block add-caster-block-row">
+          <button id="btn-add-caster-class" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-plus"></i> Aggiungi classe incantatrice
+          </button>
         </div>
 
       </section>
