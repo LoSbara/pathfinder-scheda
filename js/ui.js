@@ -776,7 +776,7 @@ const UI = (() => {
     const blocks = char.spells || [];
 
     if (blocks.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem;text-align:center">Nessuna classe incantatrice — usa il pulsante sotto per aggiungerne una.</p>';
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem;text-align:center">Nessuna classe incantatrice — viene assegnata automaticamente dalle classi del personaggio.</p>';
       return;
     }
 
@@ -832,9 +832,14 @@ const UI = (() => {
           <div class="spells-per-day-grid">${_spellSlotGridHtml(block)}</div>
           <div class="section-header" style="margin-top:1rem">
             <h3>Incantesimi Conosciuti</h3>
-            <button class="btn btn-sm btn-secondary caster-add-spell-btn">
-              <i class="fa-solid fa-plus"></i> Aggiungi
-            </button>
+            <div style="display:flex;gap:0.4rem">
+              <button class="btn btn-sm btn-ghost caster-search-spell-btn" title="Cerca nel database">
+                <i class="fa-solid fa-magnifying-glass"></i> Cerca
+              </button>
+              <button class="btn btn-sm btn-secondary caster-add-spell-btn">
+                <i class="fa-solid fa-plus"></i> Aggiungi
+              </button>
+            </div>
           </div>
           <div class="spells-list">${spellsHtml}</div>
         </div>`;
@@ -1600,6 +1605,18 @@ const UI = (() => {
   }
 
   function _bindFeats() {
+    el('btn-search-feat')?.addEventListener('click', () => {
+      if (!_char || typeof SearchModal === 'undefined') return;
+      SearchModal.openFeats(feat => {
+        _char.feats.push({
+          id:          Character.generateId(),
+          name:        feat.name        || '',
+          type:        feat.type        || '',
+          description: (feat.prerequisites ? 'Prerequisiti: ' + feat.prerequisites + '\n' : '') + (feat.benefit || ''),
+        });
+        renderTalenti(_char); _dirty();
+      });
+    });
     el('btn-add-feat')?.addEventListener('click', () => {
       if (!_char) return;
       _char.feats.push({id:Character.generateId(),name:'',type:'',description:''});
@@ -1662,13 +1679,6 @@ const UI = (() => {
   function _bindSpells() {
     const tabPanel = document.getElementById('tab-incantesimi');
     if (!tabPanel) return;
-
-    // ── Aggiungi classe incantatrice ─────────────────────────────────────────
-    el('btn-add-caster-class')?.addEventListener('click', () => {
-      if (!_char) return;
-      _char.spells.push(Character.defaultCasterBlock('', '', 'cha'));
-      renderIncantesimi(_char); _dirty();
-    });
 
     // ── Delegazione eventi sull'intero tab incantesimi ───────────────────────
     // Helper per ricavare il blocco caster dall'elemento target
@@ -1768,6 +1778,38 @@ const UI = (() => {
 
     tabPanel.addEventListener('click', e => {
       if (!_char) return;
+
+      // Cerca incantesimo nel database
+      if (e.target.closest('.caster-search-spell-btn')) {
+        if (typeof SearchModal === 'undefined') return;
+        const blockEl = e.target.closest('.caster-block');
+        if (!blockEl) return;
+        const bi = parseInt(blockEl.dataset.blockIdx, 10);
+        SearchModal.openSpells(_char, bi, (sp, blockIdx) => {
+          const block = _char.spells[blockIdx];
+          if (!block) return;
+          const spLv = (block.classId && sp.level) ? (sp.level[block.classId] ?? 0) : 0;
+          block.known.push({
+            id:              Character.generateId(),
+            name:            sp.name            || '',
+            spellLevel:      spLv,
+            school:          sp.school          || '',
+            subschool:       sp.subschool        || '',
+            descriptor:      sp.descriptor       || '',
+            components:      sp.components       || '',
+            castingTime:     sp.castingTime      || '',
+            range:           sp.range            || '',
+            target:          sp.target           || '',
+            duration:        sp.duration         || '',
+            savingThrow:     sp.savingThrow      || '',
+            spellResistance: sp.spellResistance  || 'no',
+            description:     sp.description      || '',
+            prepared:        false,
+          });
+          renderIncantesimi(_char); _dirty();
+        });
+        return;
+      }
 
       // Rimuovi classe incantatrice intera
       if (e.target.closest('.caster-remove-btn')) {

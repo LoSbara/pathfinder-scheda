@@ -1,7 +1,7 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-23 (sessione 4)
+> Last updated: 2026-03-23 (sessione 8)
 
 ---
 
@@ -9,29 +9,30 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-23 (sessioni 5–6)
+### Ultima sessione: 2026-03-23 (sessione 8)
 
-**Da committare: cloud sync + refactor incantesimi multi-classe.**
+**Nuovo (non ancora committato):**
+- `js/creation.js` — wizard creazione PG livello 1 (7 passi). Vedi Sezione 21.
+- `styles/creation.css` — stili completi per il wizard
+- `js/search-modal.js` — **NUOVO** modal riutilizzabile `SearchModal` per ricerca incantesimi (`openSpells`) e talenti (`openFeats`). Paginazione 20 risultati/pagina. Filtra `PF1_SPELLS_DB` per classe+livello+testo; filtra `PF1_FEATS_DB` per tipo+testo. Aggiunge l'elemento selezionato con tutti i campi pre-compilati.
+- `index.html` — rimosso `#btn-add-caster-class` + `.add-caster-block-row`; aggiunto `#modal-search`, bottone "Cerca" in tab Talenti, bottone "Cerca" per ogni blocco incantatrice; script tag `search-modal.js` (prima di app.js)
+- `js/ui.js` — rimosso listener `btn-add-caster-class`; aggiunto `btn-search-feat` listener (chiama `SearchModal.openFeats`); aggiunto `.caster-search-spell-btn` listener (chiama `SearchModal.openSpells`); aggiornato messaggio empty-state del tab Incantesimi
+- `styles/main.css` — aggiunto stile per `.modal-search-content`, `.ms-result-item`, paginazione, etc.
+- `js/data/classes-config.js` — **AGGIORNATO** `ARCHETYPES`: copertura completa con ~10-20 archetipi per classe (tutte e 33 le classi), inclusi APG + UC + UM + ACG; featureOverrides e classSkill changes dove rilevanti
+- `js/app.js` — `handleNewCharacter()` ora chiama `Creation.start()` con fallback al vecchio modal
 
-**Modifiche apportate (non ancora committate):**
-- `js/sync.js` — **NUOVO** modulo `Sync`: sincronizzazione cloud pubblica via Supabase REST API (senza autenticazione — tutti i personaggi del gruppo visibili a tutti). Da configurare con URL + anon key. Vedi Sezione 22.
-- `js/app.js` — `showHome` resa asincrona con `Sync.pull()` all'apertura, `handleSave` con `Sync.upsert()` fire-and-forget, delete con `Sync.remove()`, `_confirmNewCharacter` con `Sync.upsert()`, nuova `updateCloudStatus(state, count)`
-- `index.html` — Aggiunto `#cloud-status` nella home toolbar, tag `<script src="js/sync.js">` prima di `app.js`
-- `styles/main.css` — Stili `.cloud-status`, `.cloud-ok`, `.cloud-syncing`, `.cloud-error`, `@keyframes spin`
-- **Sessione 5**: `char.spells` refactored da oggetto singolo ad array di blocchi per classe incantatrice (commit `95c5414`); bug documentato (commit `99c6d15`)
-
-**⚠ TODO prima che il sync funzioni:**
-1. Nel SQL Editor di Supabase eseguire lo script in Sezione 22 per creare la tabella `characters`
+**Commit storici rilevanti (tutto il resto è già committato):**
+- `be40d76` — `PF1_RACES_DB`: alternativeTraits + variants per tutte e 29 le razze
+- `95a538d` — Aggiunge `PF1_RACES_DB` (29 razze) e `PF1_LANGUAGES`
+- `d78d24c` — Supabase configurata con credenziali reali (progetto `eozugrzsifdpwxmsjqud`)
+- `4406423` — Modulo `Sync` cloud via Supabase
+- `95c5414` — `char.spells` refactored ad array di blocchi multi-classe
 
 **Prossimo lavoro prioritario (in ordine):**
-1. Correggere bug: rimuovere `#btn-add-caster-class` e il listener da `ui.js` (vedi Sezione 10 → Bug noti)
-2. Modal ricerca incantesimi/talenti con filtro per classe/livello/prerequisiti (sostituisce autocomplete semplice)
-3. Wizard creazione personaggio step-by-step a livello 1
-4. Importare talenti da documentazione inglese (d20pfsrd.com)
-5. Aggiungere tutti gli archetipi PF1 in `classes-config.js`
-6. Aggiungere tutte le razze PF1 disponibili (`PF1_RACES_DB`)
-7. Aggiungere lingue disponibili (`PF1_LANGUAGES`)
-8. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
+1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 339 IT)
+2. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
+3. Bloodline powers UI (`rage.bloodlinePowers`)
+4. `armor.speedArmor` → `calcSpeed()` wiring
 
 ---
 
@@ -50,9 +51,9 @@ The UI language is **Italian** (labels, placeholder text, button names). The cod
 | Layer | Technology |
 |---|---|
 | HTML | Single file: `index.html` |
-| CSS | Two files: `styles/main.css`, `styles/character.css` |
+| CSS | Three files: `styles/main.css`, `styles/character.css`, `styles/creation.css` |
 | JavaScript | Vanilla JS (ES6+), module pattern via IIFEs exposing global namespaces |
-| Storage | Browser `localStorage` |
+| Storage | Browser `localStorage` + cloud sync via Supabase REST API |
 | Fonts | Google Fonts: Cinzel (headers), Crimson Text (body) |
 | Icons | **Font Awesome 6.7 Free** via cdnjs CDN — used throughout for all buttons and tab labels |
 | Build | None — plain static files |
@@ -66,35 +67,46 @@ pathfinder-scheda/
 ├── index.html              ← Single HTML page, all screens and tabs are here
 ├── styles/
 │   ├── main.css            ← CSS variables, reset, buttons, home screen, toast
-│   └── character.css       ← Character sheet: header, tabs, all section styles
+│   ├── character.css       ← Character sheet: header, tabs, all section styles
+│   └── creation.css        ← Wizard creazione PG: stepper, griglia razze/classi, form dettagli
 ├── js/
 │   ├── data/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
 │   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (2927 incantesimi: 246 IT + 2681 EN)
 │   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (339 talenti PF1)
-│   │   └── classes-config.js ← Global ClassConfig: tutte le classi PF1 con feature flags
+│   │   ├── races-list.js   ← Global PF1_RACES_DB array (29 razze con tratti, lingue, mod, alt traits)
+│   │   ├── languages-list.js ← Global PF1_LANGUAGES array (lingue del mondo di Golarion)
+│   │   └── classes-config.js ← Global ClassConfig: tutte e 33 le classi PF1 con feature flags
 │   ├── storage.js          ← Storage namespace: read/write/export/import via localStorage
 │   ├── character.js        ← Character namespace: data model, validate, migrate
 │   ├── combat.js           ← Combat namespace: all PF1 math (pure functions)
 │   ├── skills.js           ← Skills namespace: skill total calculation
 │   ├── ui.js               ← UI namespace: render + event binding
-│   └── app.js              ← Entry point: navigation, home screen, save/export/import
+│   ├── sync.js             ← Sync namespace: cloud sync pubblica via Supabase REST API
+│   ├── app.js              ← Entry point: navigation, home screen, save/export/import
+│   ├── search-modal.js     ← SearchModal namespace: modal riutilizzabile ricerca incantesimi/talenti
+│   └── creation.js         ← Creation namespace: wizard creazione PG livello 1 (7 passi)
 └── assets/                 ← Static assets (currently empty)
 ```
 
 ### Script loading order (critical — defined at bottom of index.html)
 
 ```html
-<script src="js/data/skills-list.js"></script>   <!-- PF1_SKILLS global -->
-<script src="js/data/spells-list.js"></script>   <!-- PF1_SPELLS_DB global -->
-<script src="js/data/feats-list.js"></script>    <!-- PF1_FEATS_DB global -->
+<script src="js/data/skills-list.js"></script>    <!-- PF1_SKILLS global -->
+<script src="js/data/spells-list.js"></script>    <!-- PF1_SPELLS_DB global -->
+<script src="js/data/feats-list.js"></script>     <!-- PF1_FEATS_DB global -->
+<script src="js/data/races-list.js"></script>     <!-- PF1_RACES_DB global -->
+<script src="js/data/languages-list.js"></script> <!-- PF1_LANGUAGES global -->
 <script src="js/data/classes-config.js"></script> <!-- ClassConfig global -->
-<script src="js/storage.js"></script>             <!-- Storage global -->
-<script src="js/character.js"></script>           <!-- Character global (needs nothing) -->
-<script src="js/combat.js"></script>              <!-- Combat global (needs Character) -->
-<script src="js/skills.js"></script>              <!-- Skills global (needs Combat, PF1_SKILLS) -->
-<script src="js/ui.js"></script>                  <!-- UI global (needs all above) -->
-<script src="js/app.js"></script>                 <!-- Entry point (needs all above) -->
+<script src="js/storage.js"></script>              <!-- Storage global -->
+<script src="js/character.js"></script>            <!-- Character global -->
+<script src="js/combat.js"></script>               <!-- Combat global (needs Character) -->
+<script src="js/skills.js"></script>               <!-- Skills global (needs Combat, PF1_SKILLS) -->
+<script src="js/ui.js"></script>                   <!-- UI global (needs all above) -->
+<script src="js/sync.js"></script>                 <!-- Sync global (cloud — needs Storage) -->
+<script src="js/app.js"></script>                  <!-- Entry point (needs all above) -->
+<script src="js/search-modal.js"></script>         <!-- SearchModal global (needs app.js globals) -->
+<script src="js/creation.js"></script>             <!-- Creation global (needs app.js globals) -->
 ```
 
 Any new JS file must be added in the correct position in this list.
@@ -108,23 +120,30 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 
 | Global | File | Purpose |
 |---|---|---|
-| `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions |
+| `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions (35 skills) |
 | `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (2927: 246 IT + 2681 EN) |
 | `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (339 talenti) |
+| `PF1_RACES_DB` | `data/races-list.js` | Array of race definitions (29 razze, with altTraits) |
+| `PF1_LANGUAGES` | `data/languages-list.js` | Array of language name strings |
+| `ClassConfig` | `data/classes-config.js` | All 33 PF1 classes with feature flags |
 | `Storage` | `storage.js` | CRUD for characters in localStorage |
 | `Character` | `character.js` | Data model factory + utilities |
 | `Combat` | `combat.js` | Pure math functions for PF1 rules |
 | `Skills` | `skills.js` | Skill total calculations |
 | `UI` | `ui.js` | All rendering + event binding |
+| `Sync` | `sync.js` | Cloud sync via Supabase REST API |
+| `SearchModal` | `search-modal.js` | Modal ricerca incantesimi/talenti (openSpells, openFeats) |
+| `Creation` | `creation.js` | Level-1 character creation wizard |
 
 ### Single active character
 `app.js` maintains `let activeCharacter = null`. When a character is opened, `UI.init(character)` is called once, which renders all tabs and binds all event listeners (only once, gated by `_eventsBound` flag). After that, listeners mutate `_char` (internal pointer in `ui.js`) and call `_dirty()` to mark unsaved changes.
 
-### Two-screen navigation
+### Three-screen navigation
 - `#screen-home` — character list (index cards)
 - `#screen-character` — character sheet with 9 tabs
+- `#screen-creation` — level-1 character creation wizard (7 steps)
 
-`.screen.active` = visible. Only one screen active at a time.
+`.screen.active` = visible. Only one screen active at a time. `#screen-creation.active` overrides to `display:flex` (column layout) via `creation.css`.
 
 ### Dirty state
 `btn-save` gets class `has-changes` when there are unsaved changes. Navigating back warns the user if dirty.
@@ -287,12 +306,13 @@ The full object returned by `Character.createDefault(name)`:
 
   // char.spells è un ARRAY di blocchi incantatrici (uno per classe incantatrice).
   // 21 delle 33 classi hanno hasSpellsTab: true — un personaggio multiclasse
-  // può avere più blocchi (es. Mago + Chierico, Magus + Stregone).
+  // può avere più blocchi (es. Chierico + Druido, Magus + Stregone).
+  // Nessuna classe ha trattamento speciale: tutte le 21 classi incantatrici sono ugualmente supportate.
   // Character.defaultCasterBlock(classId, className, ability) crea un blocco vuoto.
   spells: [
     {
-      classId: string,          // ClassConfig.id (es. 'mago', 'iracondo_stirpe')
-      className: string,        // nome visualizzato (es. 'Mago', 'Iracondo di Stirpe')
+      classId: string,          // ClassConfig.id (es. 'chierico', 'iracondo_stirpe')
+      className: string,        // nome visualizzato (es. 'Chierico', 'Iracondo di Stirpe')
       casterLevel: number,
       ability: 'cha'|'int'|'wis',
       spellsPerDay: number[10], // index = spell level 0–9
@@ -558,26 +578,27 @@ Fantasy dark theme. Key CSS custom properties:
 - ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
 - ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`
 - ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` = array di blocchi per classe incantatrice
-- ~~Cloud sync cross-device~~ — **FATTO** (sessione 6): `js/sync.js` + `app.js` aggiornato. Da configurare con credenziali Supabase (vedi Sezione 22 + Sezione 0)
+- ~~Cloud sync cross-device~~ — **FATTO** (sessione 6): `js/sync.js`, credenziali Supabase già configurate (commit `d78d24c`)
+- ~~`PF1_RACES_DB`~~ — **FATTO** (sessione 5–6): 29 razze con tratti, lingue, modificatori, tratti alternativi e varianti (commit `95a538d`, `be40d76`)
+- ~~`PF1_LANGUAGES`~~ — **FATTO** (sessione 5–6): file `languages-list.js` con tutte le lingue di Golarion (commit `95a538d`)
+- ~~Wizard creazione personaggio livello 1~~ — **FATTO** (sessione 7): `js/creation.js` + `styles/creation.css`, 7 passi guidati
 
 ### Bug noti / Correzioni necessarie 🐛
-1. **⚠ Blocchi incantatrici non devono essere aggiunti manualmente** — Il tab Incantesimi mostra un bottone "Aggiungi classe incantatrice" (`#btn-add-caster-class`) che è concettualmente sbagliato. In PF1, le classi incantatrici derivano dalle classi scelte del personaggio: si ottengono alla creazione del PG (livello 1) o scegliendo il multiclasse durante il level-up, non aggiungendole a mano nel tab Incantesimi. La correzione prevede:
-   - Rimuovere il bottone "Aggiungi classe incantatrice" e la riga `.add-caster-block-row` da `index.html`
-   - Rimuovere il listener `#btn-add-caster-class` da `_bindSpells()` in `ui.js`
-   - I blocchi incantatrici devono comparire/scomparire **esclusivamente** in base a `meta.classes` — già gestito da `_syncCasterBlocksFromClasses()` che viene chiamata da `applyClassProfile()`. Verificare che questa funzione sia chiamata anche quando si modifica il nome/livello di una classe nel Sommario.
-   - Nota: `_syncCasterBlocksFromClasses` conserva già i blocchi con dati (non sovrascrive slot/incantesimi) — il comportamento di merge è già corretto.
+_(nessun bug noto aperto — tutti corretti)_
+
+### Completati (sessione 8) ✅
+- ~~Bug `#btn-add-caster-class`~~ — **CORRETTO** (sessione 8): bottone e listener rimossi; messaggio empty-state aggiornato
+- ~~Modal ricerca incantesimi~~ — **FATTO** (sessione 8): `js/search-modal.js`, `SearchModal.openSpells(char, blockIdx, onSelect)`
+- ~~Modal ricerca talenti~~ — **FATTO** (sessione 8): `SearchModal.openFeats(onSelect)`
+- ~~Wizard creazione personaggio livello 1~~ — **FATTO** (sessione 7): `js/creation.js` + `styles/creation.css`, 7 passi guidati
+- ~~Archetipi completi~~ — **FATTO** (sessione 8): ~10-20 archetipi per classe in `ARCHETYPES` (tutte e 33 classi), APG + UC + UM + ACG
 
 ### Priorità alta 🔴
-1. **Modal ricerca incantesimi** — sostituire l'autocomplete semplice con una schermata modale che chieda il livello dell'incantesimo e filtri `PF1_SPELLS_DB` per: classe incantatrice del PG (o le sue classi), livello spell selezionato. Il giocatore sceglie dall'elenco filtrato e l'incantesimo viene aggiunto automaticamente con tutti i campi compilati. Vedi Sezione 20.
-2. **Modal ricerca talenti** — analoga alla ricerca incantesimi: filtro per tipo talento e prerequisiti che il PG rispetta (confrontando automaticamente). Vedi Sezione 20.
-3. **Wizard creazione personaggio** — interfaccia step-by-step per la creazione di un PG di livello 1 seguendo le regole PF1 standard (scelta razza → scelta classe → distribuzione punti caratteristica → scelta abilità di classe → scelta talenti iniziali → lingue → equipaggiamento iniziale). Vedi Sezione 21.
+_(vedi sezione 0 per la lista aggiornata)_
 
 ### Priorità media 🟡
-4. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 339 IT; il totale PF1 è ~700+). Schema: aggiungere campo `nameEN` o creare file separato `feats-list-en.js`.
-5. **Tutti gli archetipi PF1** — `classes-config.js` ha già la struttura `ARCHETYPES`; popolare con tutti gli archetipi ufficiali per ogni classe (attualmente solo un sottoinsieme). Fonte: golarion.altervista.org o d20pfsrd.com/classes.
-6. **Razze PF1** — creare `js/data/races-list.js` con `PF1_RACES_DB`: tutte le razze standard (Core + Advanced Race Guide + supplementi). Schema: `{ id, name, abilityMods: {str,dex,...}, size, speed, traits: [], languages: [], bonusLanguages: [], source }`. Integrare con wizard creazione e campo Razza nel Sommario (autocomplete + auto-fill modificatori razziali).
-7. **Lingue PF1** — creare `js/data/languages-list.js` con `PF1_LANGUAGES`: array di stringhe (Comune, Nano, Elfico, Orchesco, ecc.) + lingue segrete/rare. Usare come datalist nel campo lingue del Sommario.
-8. **Mega archivio equipaggiamento** — creare `js/data/equipment-db.js` con `PF1_EQUIPMENT_DB`: armi, armature, oggetti generali, oggetti magici (IT + EN). Schema: `{ name, nameEN, category, cost, weight, damage, critRange, critMult, type, properties, source }`. Usare per autocomplete/modal nel tab Equipaggiamento e Armi.
+1. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 339 IT; il totale PF1 è ~700+). Schema: aggiungere campo `nameEN` o creare file separato `feats-list-en.js`.
+2. **Mega archivio equipaggiamento** — creare `js/data/equipment-db.js` con `PF1_EQUIPMENT_DB`: armi, armature, oggetti generali, oggetti magici (IT + EN). Schema: `{ name, nameEN, category, cost, weight, damage, critRange, critMult, type, properties, source }`. Usare per autocomplete/modal nel tab Equipaggiamento e Armi.
 
 ### Priorità bassa 🟢
 9. **Bloodline powers UI** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
@@ -622,7 +643,7 @@ File: `js/data/classes-config.js` — definisce **33 classi PF1** raggruppate pe
 ### Campi per ogni classe in `ClassConfig.CLASSES`:
 - `id`, `name`, `type` — identificazione
 - `hitDie` — dado vita (es. 12 per Barbaro)
-- `bab` — progressione BAB: `'full'` | `'3_4'` | `'half'`
+- `bab` — progressione BAB: `'full'` | `'3_4'` | `'1_2'`
 - `skillPts` — punti abilità base per livello (prima del mod INT)
 - `hasSpellsTab` — se la classe usa incantesimi
 - `spellAbility` — caratteristica di lancio (`'INT'` | `'SAG'` | `'CAR'` | `null`)
@@ -854,7 +875,7 @@ Dati di riferimento statici (talenti, incantesimi, abilità) → **file JS globa
 - **Stato**: **2927 incantesimi** — 246 IT + 2681 EN. Livelli 0–9, tutte le classi principali.
 - **Deduplicazione**: 225 EN rimossi su 2 sessioni (3152 → 2927). File validato con `node --check`.
 - **Schema**: `{ name, level, school, subschool, descriptor, components, castingTime, range, target, duration, savingThrow, spellResistance, description }`
-- **`level`** è un oggetto `{ classId: livello }` es. `{ mago:3, stregone:3, arcanista:3 }`
+- **`level`** è un oggetto `{ classId: livello }` es. `{ chierico:3, druido:4, paladino:3 }` (la chiave è il `ClassConfig.id` della classe, non il nome visualizzato)
 - **Autocomplete**: ✅ implementato (`spell-name-datalist` con 2927 nomi, auto-fill tutti i campi + livello dal classId del PG)
 
 #### `js/data/skills-list.js` — `PF1_SKILLS`
@@ -870,11 +891,11 @@ Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 - [x] Autocomplete incantesimi — FATTO (sessione 4)
 - [ ] Modal ricerca incantesimi (filtro per classe+livello) — vedi Sezione 20
 - [ ] Modal ricerca talenti (filtro per tipo+prerequisiti) — vedi Sezione 20
-- [ ] Wizard creazione personaggio livello 1 — vedi Sezione 21
+- [x] Wizard creazione personaggio livello 1 — **FATTO** (sessione 7): `js/creation.js`
 - [ ] Importare talenti EN da d20pfsrd.com (~700+ totali)
 - [ ] Aggiungere tutti gli archetipi PF1 in `classes-config.js`
-- [ ] Creare `PF1_RACES_DB` in `js/data/races-list.js`
-- [ ] Creare `PF1_LANGUAGES` in `js/data/languages-list.js`
+- [x] Creare `PF1_RACES_DB` in `js/data/races-list.js` — **FATTO** (29 razze)
+- [x] Creare `PF1_LANGUAGES` in `js/data/languages-list.js` — **FATTO**
 - [ ] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` (armi, armature, oggetti)
 
 ---
@@ -908,27 +929,53 @@ Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 
 ---
 
-## 21. Wizard Creazione Personaggio a Livello 1 (TODO)
+## 21. Wizard Creazione Personaggio a Livello 1 ✅ IMPLEMENTATO
 
-### Obiettivo
-Sostituire o affiancare il modal "Nuovo Personaggio" con una procedura guidata step-by-step che segua le regole PF1 ufficiali per la creazione personaggio a livello 1.
+File: `js/creation.js` + `styles/creation.css`. Schermata: `#screen-creation` (terza screen).
 
-### Passi wizard (ordine regole PF1 standard)
-1. **Concept** — Nome PG, nome giocatore, allineamento
-2. **Razza** — Scelta da `PF1_RACES_DB` (con preview dei bonus razziali, tratti, lingue bonus, velocità, taglia)
-3. **Classe** — Scelta da `ClassConfig.CLASSES` (con preview dado vita, BAB, TS, punti abilità, capacità di classe livello 1) + eventuale archetipo
-4. **Punteggi Caratteristica** — Metodo: punto acquisto (15/20/25 punti) o lancio dadi (4d6 scarta il minimo × 6). Distribuzione interattiva.
-5. **Abilità** — Distribuzione punti abilità (classe + INT mod, ×4 al livello 1). Highlight abilità di classe. Rank 0 o 1 per ogni abilità.
-6. **Talenti** — Scelta del/dei talenti iniziali (livello 1 = 1 talento + eventuali bonus razziali/di classe). Usa modal ricerca talenti (Sezione 20) con filtro prerequisiti rispettati.
-7. **Equipaggiamento iniziale** — Scelta equipaggiamento di partenza (gold di partenza per classe oppure kit predefinito)
-8. **Riepilogo** — Preview scheda completa, conferma e salvataggio
+### Passi implementati (7 step)
+| # | ID | Label | Validazione |
+|---|---|---|---|
+| 0 | `race` | Razza | razza selezionata obbligatoria |
+| 1 | `class` | Classe | classe selezionata obbligatoria |
+| 2 | `abilities` | Caratteristiche | sempre valido |
+| 3 | `details` | Dettagli | nome personaggio obbligatorio |
+| 4 | `skills` | Abilità | sempre valido |
+| 5 | `feats` | Talenti | sempre valido |
+| 6 | `summary` | Riepilogo | conferma e salvataggio |
 
-### Note tecniche
-- Il wizard crea un oggetto `char` via `Character.createDefault(name)` e lo popola progressivamente
-- Ogni step valida i propri input prima di permettere di andare avanti
-- Il PG può essere salvato solo al passo 8 (riepilogo)
-- UI: schermata separata `#screen-wizard` (terza screen oltre home e character sheet) oppure modal multi-step con progress bar
-- I punteggi caratteristica devono pre-compilare `abilities.strRacial` ecc. dai bonus razziali scelti
+### Funzionamento passo Razza (step 0)
+- Griglia di tutte le razze di `PF1_RACES_DB`, filtrabili per nome
+- Click → pannello laterale con modificatori, tratti standard, lingue
+- Checkbox per tratti alternativi (con rilevamento conflitti automatico)
+- I tratti sostituiti vengono barrati visivamente
+
+### Funzionamento passo Classe (step 1)
+- Classi raggruppate per tipo (Base, Avanzate, Ibride, Alternative)
+- Ogni card mostra: dado vita, progressione BAB, punti abilità, tiri salvezza
+- Tutte le 33 classi sono ugualmente supportate — nessuna ha trattamento speciale
+
+### Point buy (step 2)
+- Budget selezionabile: 10 (Bassa), 15 (Standard), 20 (Alta), 25 (Epica)
+- Modalità alternativa: inserimento manuale libero (3–18)
+- Modificatori razziali applicati in tempo reale
+
+### Slot talenti (step 5)
+- 1 talento base + eventuali bonus: +1 se Umano, +1 se Guerriero
+- Lista filtrabiile da `PF1_FEATS_DB` (339 talenti)
+
+### `_buildCharacter()` — logica di costruzione
+- Popola abilità flat (`str`, `strRacial`, ecc.)
+- HP = max(1, hitDie + CON mod); velocità dalla razza; BAB dal tipo classe
+- Tiri salvezza iniziali (2 se 'good', 0 se 'bad')
+- Skill `classSkill` = true se in `ClassConfig.CLASS_SKILLS[classId]`
+- Tratti razziali: standard meno quelli sostituiti + tratti alternativi selezionati
+- Blocco incantesimi iniziale se `cls.hasSpellsTab === true`
+
+### Public API
+```js
+Creation.start()   // avvia il wizard (chiamato da handleNewCharacter() in app.js)
+```
 
 ---
 
@@ -945,25 +992,11 @@ Database **completamente pubblico** per il gruppo de La Torre di Jacob: nessuna 
 | `index.html` | `#cloud-status` (indicatore nella toolbar), `<script src="js/sync.js">` |
 | `styles/main.css` | `.cloud-status`, `.cloud-ok`, `.cloud-syncing`, `.cloud-error` |
 
-### Setup Supabase (istruzioni per l'utente)
-1. Creare account gratuito su **https://supabase.com** (Free tier: 500 MB DB, 2 GB file storage, 50K MAU)
-2. Creare un nuovo progetto (scegliere regione EU West per latenza minima)
-3. Nel **SQL Editor** del progetto, eseguire:
-   ```sql
-   CREATE TABLE characters (
-     id          TEXT        PRIMARY KEY,
-     data        JSONB       NOT NULL,
-     updated_at  TIMESTAMPTZ DEFAULT now()
-   );
-   -- Accesso pubblico totale (senza autenticazione)
-   ALTER TABLE characters ENABLE ROW LEVEL SECURITY;
-   CREATE POLICY "gruppo_pubblico" ON characters
-     FOR ALL USING (true) WITH CHECK (true);
-   ```
-4. Andare su **Settings → API** e copiare:
-   - **Project URL** (es. `https://abcdefgh.supabase.co`)
-   - **anon / public key** (la chiave pubblica, non il service role)
-5. ✅ **GIÀ FATTO**: `js/sync.js` contiene le credenziali reali del progetto `eozugrzsifdpwxmsjqud`.
+### Setup Supabase — ✅ COMPLETAMENTE CONFIGURATO
+- Progetto attivo: `eozugrzsifdpwxmsjqud`
+- Credenziali (URL + anon key) già presenti in `js/sync.js` (commit `d78d24c`)
+- Tabella `characters` creata nel SQL Editor con RLS pubblica
+- Nessuna configurazione aggiuntiva necessaria
 
 ### Comportamento a runtime
 - **Home load**: `showHome()` fa `Sync.pull()` → scarica tutti i personaggi cloud in localStorage → ri-renderizza la lista (i personaggi dei compagni appaiono automaticamente)

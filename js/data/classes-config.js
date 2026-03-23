@@ -542,192 +542,662 @@ const ClassConfig = (() => {
   // featureOverrides sostituisce flag specifici del profilo UI (es. { bardPerf: false }).
   // ══════════════════════════════════════════════════════════════════════
   const ARCHETYPES = {
+
+    // ── BARBARO ─────────────────────────────────────────────────────────────
     barbaro: [
+      // APG
       { id: 'iracondo_invulnerabile',  name: 'Iracondo Invulnerabile' },
       { id: 'barbaro_urbano',          name: 'Barbaro Urbano',
         classSkillAdd: ['bluff','diplomazia','conoscenze_locale','senso_moti','travestimento'],
         classSkillRemove: ['nuotare','sopravvivenza'] },
       { id: 'seguace_totem',           name: 'Seguace del Totem' },
-      { id: 'cantastorie_tribale',     name: 'Cantastorie Tribale' },
-      { id: 'sciamano_polvere',        name: 'Sciamano della Polvere' },
-      { id: 'cavaliere_barbaro',       name: 'Cavaliere Barbaro' },
+      { id: 'cavaliere_barbaro',       name: 'Cavaliere Barbaro',
+        classSkillAdd: ['addestrare_animali','cavalcare'] },
+      { id: 'predone_mare',            name: 'Predone del Mare',
+        classSkillAdd: ['nuotare','scalare'] },
+      { id: 'superstizioso',           name: 'Superstizioso' },
+      { id: 'vero_primitivo',          name: 'Vero Primitivo',
+        classSkillRemove: ['cavalcare'] },
+      { id: 'barbaro_selvaggio',       name: 'Barbaro Selvaggio' },
+      { id: 'discendente_elementale',  name: 'Discendente Elementale' },
+      { id: 'barbaro_beone',           name: 'Barbaro Beone' },
+      { id: 'cantastorie_tribale',     name: 'Cantastorie Tribale',
+        classSkillAdd: ['esibizione'] },
+      { id: 'sciamano_polvere',        name: 'Sciamano della Polvere',
+        classSkillAdd: ['conoscenze_arcane','magia'] },
+      // UC
+      { id: 'colosso_corazzato',       name: 'Colosso Corazzato' },
+      { id: 'pugile_brutale',          name: 'Pugile Brutale' },
+      { id: 'cane_pazzo',              name: 'Cane Pazzo',
+        classSkillAdd: ['addestrare_animali'] },
+      { id: 'iracondo_branco',         name: 'Iracondo del Branco',
+        classSkillAdd: ['diplomazia','senso_moti'] },
+      { id: 'iracondo_cicatrizzato',   name: 'Iracondo Cicatrizzato' },
+      { id: 'massacratore_titani',     name: 'Massacratore dei Titani' },
+      { id: 'iracondo_selvaggio',      name: 'Iracondo Selvaggio' },
+      { id: 'demolitore',              name: 'Demolitore' },
+      { id: 'temerario',               name: 'Temerario' },
+      { id: 'cavaliere_stellato_bar',  name: 'Cavaliere Stellato' },
     ],
+
+    // ── BARDO ────────────────────────────────────────────────────────────────
     bardo: [
+      // APG
       { id: 'arcano_duellante',        name: 'Arcano Duellante' },
-      { id: 'trovatore',               name: 'Trovatore' },
+      { id: 'bardo_corte',             name: 'Bardo di Corte',
+        classSkillAdd: ['conoscenze_nobili','diplomazia'] },
+      { id: 'investigatore_bardo',     name: 'Investigatore',
+        classSkillAdd: ['disattivare_cong'] },
+      { id: 'bardo_lamento',           name: 'Bardo del Lamento',
+        classSkillAdd: ['conoscenze_religione'] },
+      { id: 'geisha',                  name: 'Geisha',
+        classSkillAdd: ['guarire'] },
+      { id: 'prestigiatore',           name: 'Prestigiatore',
+        classSkillAdd: ['usare_ogm'] },
       { id: 'menestello',              name: 'Menestello' },
+      { id: 'trovatore',               name: 'Trovatore' },
       { id: 'coreuta',                 name: 'Coreuta' },
       { id: 'possessore_segreti',      name: 'Possessore di Segreti',
         featureOverrides: { bardPerf: false } },
-      { id: 'veggente_arcano',         name: 'Veggente Arcano' },
+      { id: 'veggente_arcano',         name: 'Veggente Arcano',
+        classSkillAdd: ['conoscenze_arcane','magia'] },
       { id: 'maestro_strumenti',       name: 'Maestro degli Strumenti' },
+      // UC
+      { id: 'archeologo',              name: 'Archeologo',
+        featureOverrides: { bardPerf: false },
+        classSkillAdd: ['disattivare_cong','percezione'] },
+      { id: 'danzatore_derviscio',     name: 'Danzatore Derviscio',
+        featureOverrides: { bardPerf: false } },
+      { id: 'chiama_tuono',            name: 'Chiama-Tuono' },
+      { id: 'guaritore_canoro',        name: 'Guaritore Canoro',
+        classSkillAdd: ['guarire'],
+        featureOverrides: { bardPerf: false } },
+      { id: 'danzatore_fiamme',        name: 'Danzatore delle Fiamme' },
+      // UM
+      { id: 'dialogante_animali',      name: 'Dialogante con gli Animali',
+        classSkillAdd: ['addestrare_animali'] },
+      { id: 'demagogo',                name: 'Demagogo',
+        classSkillAdd: ['bluff','intimidire'] },
     ],
+
+    // ── CHIERICO ─────────────────────────────────────────────────────────────
     chierico: [
+      // APG
       { id: 'crociato',                name: 'Crociato' },
-      { id: 'curatore',                name: 'Curatore' },
-      { id: 'pontefice',               name: 'Pontefice' },
+      { id: 'claustrale',              name: 'Chierico Claustrale',
+        featureOverrides: { channel: false },
+        classSkillAdd: ['conoscenze_arcane','conoscenze_dunsioni','conoscenze_natura','conoscenze_piani'] },
+      { id: 'separatista',             name: 'Separatista' },
+      { id: 'teologo',                 name: 'Teologo' },
+      // UC
+      { id: 'evangelista',             name: 'Evangelista',
+        classSkillAdd: ['esibizione'] },
+      { id: 'guaritore_misericordioso',name: 'Guaritore Misericordioso',
+        classSkillAdd: ['guarire'] },
+      { id: 'signore_nonmorti',        name: 'Signore dei Nonmorti',
+        classSkillAdd: ['conoscenze_arcane'] },
+      // UM
+      { id: 'cardinale',               name: 'Cardinale',
+        classSkillAdd: ['bluff','diplomazia','senso_moti'] },
+      { id: 'stratega_divino',         name: 'Stratega Divino',
+        classSkillAdd: ['conoscenze_storia'] },
       { id: 'sacerdote_combattente',   name: 'Sacerdote Combattente' },
-      { id: 'esorcista',               name: 'Esorcista' },
+      { id: 'curatore',                name: 'Curatore',
+        classSkillAdd: ['guarire'] },
+      { id: 'pontefice',               name: 'Pontefice',
+        classSkillAdd: ['diplomazia','conoscenze_nobili'] },
+      { id: 'esorcista',               name: 'Esorcista',
+        classSkillAdd: ['conoscenze_piani','magia'] },
+      { id: 'incanalatore_divino',     name: 'Incanalatore Divino' },
+      { id: 'sacerdote_altare',        name: 'Sacerdote dell\'Altare' },
     ],
+
+    // ── DRUIDO ───────────────────────────────────────────────────────────────
     druido: [
+      // APG — ambienti
+      { id: 'druido_acquatico',        name: 'Druido Acquatico',
+        classSkillAdd: ['nuotare'] },
+      { id: 'druido_artico',           name: 'Druido Artico',
+        classSkillAdd: ['scalare'] },
+      { id: 'druido_caverna',          name: 'Druido della Caverna',
+        classSkillAdd: ['conoscenze_dunsioni'] },
+      { id: 'druido_deserto',          name: 'Druido del Deserto',
+        classSkillRemove: ['nuotare'] },
+      { id: 'druido_giungla',          name: 'Druido della Giungla' },
+      { id: 'druido_montagna',         name: 'Druido della Montagna',
+        classSkillAdd: ['scalare'] },
+      { id: 'druido_pianura',          name: 'Druido della Pianura',
+        classSkillAdd: ['cavalcare'] },
+      { id: 'druido_palude',           name: 'Druido della Palude',
+        classSkillAdd: ['furtivita','nuotare'] },
+      { id: 'druido_urbano',           name: 'Druido Urbano',
+        classSkillAdd: ['bluff','conoscenze_locale','diplomazia'],
+        classSkillRemove: ['sopravvivenza'] },
+      { id: 'druido_pestilenza',       name: 'Druido della Pestilenza',
+        featureOverrides: { companion: false } },
       { id: 'custode_natura',          name: 'Custode della Natura' },
-      { id: 'animale_battaglia',       name: 'Animale da Battaglia' },
-      { id: 'pastore_selvaggio',       name: 'Pastore Selvaggio' },
+      { id: 'animale_battaglia',       name: 'Animale da Battaglia',
+        classSkillAdd: ['intimidire'] },
+      { id: 'pastore_selvaggio',       name: 'Pastore Selvaggio',
+        classSkillAdd: ['addestrare_animali'] },
       { id: 'druido_viaggio',          name: 'Druido del Viaggio' },
       { id: 'scolpitore_elementi',     name: 'Scolpitore di Elementi' },
       { id: 'signore_tempesta',        name: 'Signore della Tempesta' },
+      // UC
+      { id: 'invocatore_luna',         name: 'Invocatore della Luna' },
+      { id: 'esperto_menhir',          name: 'Esperto dei Menhir',
+        classSkillAdd: ['conoscenze_arcane','magia'] },
+      { id: 'signore_branco',          name: 'Signore del Branco',
+        featureOverrides: { companion: false } },
+      { id: 'zanna_natura',            name: 'Zanna della Natura',
+        featureOverrides: { companion: false } },
     ],
+
+    // ── GUERRIERO ────────────────────────────────────────────────────────────
     guerriero: [
+      // APG
       { id: 'arciere',                 name: 'Arciere' },
       { id: 'due_armi',                name: 'Combattente a Due Armi' },
       { id: 'torre',                   name: 'Specialista dello Scudo a Torre' },
-      { id: 'rovina_mostri',           name: 'Rovina dei Mostri' },
-      { id: 'campione_popolo',         name: 'Campione del Popolo' },
-      { id: 'tattico',                 name: 'Tattico' },
-      { id: 'bruto',                   name: 'Bruto' },
+      { id: 'rovina_mostri',           name: 'Rovina dei Mostri',
+        classSkillAdd: ['conoscenze_arcane','conoscenze_dunsioni','conoscenze_natura','conoscenze_piani','conoscenze_religione'] },
+      { id: 'campione_popolo',         name: 'Campione del Popolo',
+        classSkillAdd: ['diplomazia'] },
+      { id: 'tattico',                 name: 'Tattico',
+        classSkillAdd: ['conoscenze_storia','senso_moti'] },
+      { id: 'bruto',                   name: 'Bruto',
+        featureOverrides: { rage: true } },
       { id: 'cavaliere_stellato',      name: 'Cavaliere Stellato' },
+      // UC
+      { id: 'gladiatore',              name: 'Gladiatore',
+        classSkillAdd: ['bluff','esibizione','senso_moti'] },
+      { id: 'guardia_corpo',           name: 'Guardia del Corpo',
+        classSkillAdd: ['senso_moti'] },
+      { id: 'guerriero_mobile',        name: 'Guerriero Mobile' },
+      { id: 'cavaliere_guerra',        name: 'Cavaliere da Guerra',
+        classSkillAdd: ['addestrare_animali','cavalcare'] },
+      { id: 'maestro_armi',            name: 'Maestro delle Armi' },
+      { id: 'demolizitore_guer',       name: 'Demolitore' },
+      { id: 'guerriero_difesa',        name: 'Guerriero della Difesa' },
+      { id: 'guerriero_fede',          name: 'Guerriero della Fede',
+        classSkillAdd: ['conoscenze_religione','senso_moti'] },
+      // UM
+      { id: 'armigero',                name: 'Armigero',
+        classSkillAdd: ['conoscenze_nobili'] },
+      { id: 'guerriero_pugno',         name: 'Guerriero a Mani Nude' },
     ],
+
+    // ── LADRO ────────────────────────────────────────────────────────────────
     ladro: [
-      { id: 'maestro_coltelli',        name: 'Maestro dei Coltelli' },
-      { id: 'esploratore',             name: 'Esploratore' },
+      // APG
       { id: 'acrobatico',              name: 'Assassino Acrobatico' },
-      { id: 'stalker',                 name: 'Stalker' },
-      { id: 'collezionista_taglie',    name: 'Collezionista di Taglie' },
-      { id: 'spia_ladro',              name: 'Spia' },
+      { id: 'collezionista_taglie',    name: 'Collezionista di Taglie',
+        classSkillAdd: ['percezione','sopravvivenza'] },
+      { id: 'esploratore',             name: 'Esploratore',
+        classSkillAdd: ['conoscenze_dunsioni','conoscenze_natura'] },
+      { id: 'maestro_coltelli',        name: 'Maestro dei Coltelli' },
+      { id: 'spia_ladro',              name: 'Spia',
+        classSkillAdd: ['travestimento'] },
+      { id: 'stalker',                 name: 'Stalker',
+        classSkillAdd: ['furtivita'] },
+      { id: 'truffatore',              name: 'Truffatore',
+        classSkillAdd: ['bluff','senso_moti','travestimento'] },
+      // UC
+      { id: 'assassino_ladro',         name: 'Assassino',
+        classSkillAdd: ['travestimento'] },
+      { id: 'bucaniere',               name: 'Bucaniere',
+        classSkillAdd: ['nuotare','scalare'] },
+      { id: 'cecchino_ladro',          name: 'Cecchino',
+        classSkillAdd: ['percezione','furtivita'] },
+      { id: 'contrabbandiere',         name: 'Contrabbandiere',
+        classSkillAdd: ['bluff','travestimento'] },
+      { id: 'pirata_ladro',            name: 'Pirata',
+        classSkillAdd: ['nuotare','scalare','intimidire'] },
+      { id: 'falsificatore',           name: 'Falsificatore',
+        classSkillAdd: ['artigianato','linguistica'] },
+      { id: 'investigatore_ladro',     name: 'Investigatore',
+        classSkillAdd: ['diplomazia','senso_moti','linguistica'] },
+      { id: 'scassinatore',            name: 'Scassinatore',
+        classSkillAdd: ['conoscenze_dunsioni','conoscenze_ingegneria'] },
+      { id: 'calcolatore',             name: 'Calcolatore',
+        classSkillAdd: ['conoscenze_locale'] },
     ],
+
+    // ── MAGO ─────────────────────────────────────────────────────────────────
     mago: [
+      // Scuole (APG/Core)
+      { id: 'spec_abiurazione',        name: 'Specialista di Abiurazione' },
+      { id: 'spec_ammaliamento',       name: 'Specialista di Ammaliamento' },
+      { id: 'spec_congiunzione',       name: 'Specialista di Congiunzione' },
+      { id: 'spec_divinazione',        name: 'Specialista di Divinazione' },
+      { id: 'spec_evocazione',         name: 'Specialista di Evocazione' },
+      { id: 'spec_illusione',          name: 'Specialista di Illusione' },
+      { id: 'spec_negromanzia',        name: 'Specialista di Negromanzia' },
+      { id: 'spec_trasmutazione',      name: 'Specialista di Trasmutazione' },
+      { id: 'universalista',           name: 'Universalista' },
+      // APG
       { id: 'legato_libro',            name: 'Mago Legato al Libro' },
       { id: 'mago_elementale',         name: 'Mago Elementale' },
+      // UC
+      { id: 'mago_guerra',             name: 'Mago da Guerra' },
+      { id: 'mago_duellante',          name: 'Mago Duellante',
+        classSkillAdd: ['acrobazia'] },
+      // UM
       { id: 'magister',                name: 'Magister' },
-      { id: 'universalista',           name: 'Universalista' },
-      { id: 'negromanzia',             name: 'Specialista di Negromanzia' },
+      { id: 'contromagista',           name: 'Contromagista' },
+      { id: 'mago_sangue',             name: 'Mago del Sangue' },
     ],
+
+    // ── MONACO ───────────────────────────────────────────────────────────────
     monaco: [
+      // APG
       { id: 'pugno_ferro',             name: 'Monaco del Pugno di Ferro' },
       { id: 'mano_vuota',              name: 'Monaco della Mano Vuota' },
       { id: 'studioso_forma',          name: 'Studioso della Forma Interna' },
-      { id: 'kata_maestro',            name: 'Kata Maestro' },
+      { id: 'kata_maestro',            name: 'Kata Maestro',
+        classSkillAdd: ['esibizione'] },
+      { id: 'monaco_quattro_venti',    name: 'Monaco dei Quattro Venti' },
+      { id: 'danzatore_vento',         name: 'Danzatore del Vento' },
+      // UC
+      { id: 'maestro_bastone',         name: 'Maestro del Bastone' },
+      { id: 'monaco_zen',              name: 'Monaco Zen Arciere',
+        classSkillAdd: ['percezione'] },
+      { id: 'guerriero_stellato',      name: 'Guerriero Stellato' },
+      { id: 'monaco_ombra',            name: 'Monaco dell\'Ombra',
+        classSkillAdd: ['furtivita','travestimento'] },
+      { id: 'monaco_cintura',          name: 'Monaco della Cintura Mantenuta',
+        featureOverrides: { ki: false } },
+      { id: 'monaco_vuoto',            name: 'Monaco del Vuoto Interiore',
+        featureOverrides: { ki: false } },
+      // UM
+      { id: 'monaco_sangue_sacro',     name: 'Monaco del Sangue Sacro',
+        classSkillAdd: ['conoscenze_religione'] },
+      { id: 'monaco_asceta',           name: 'Monaco Asceta' },
+      { id: 'monaco_vortice',          name: 'Monaco del Vortice' },
     ],
+
+    // ── PALADINO ─────────────────────────────────────────────────────────────
     paladino: [
+      // APG
       { id: 'mezza_luna',              name: 'Cavaliere della Mezza Luna' },
-      { id: 'protettore_divino',       name: 'Protettore Divino' },
       { id: 'difensore_fede',          name: 'Difensore della Vera Fede' },
       { id: 'campione_altare',         name: 'Campione dell\'Altare' },
+      { id: 'sacerdote_sacro',         name: 'Sacerdote Sacro',
+        classSkillAdd: ['conoscenze_arcane'] },
+      { id: 'templare',                name: 'Templare' },
+      // UC
+      { id: 'cavaliere_sacro',         name: 'Cavaliere Sacro',
+        classSkillAdd: ['addestrare_animali','cavalcare'] },
+      { id: 'inquisitore_sacro',       name: 'Inquisitore Sacro',
+        classSkillAdd: ['intimidire','percezione'] },
+      { id: 'paladino_arco',           name: 'Paladino dell\'Arco' },
+      { id: 'protettore_divino',       name: 'Protettore Divino' },
+      // UM
+      { id: 'paladino_misericordia',   name: 'Paladino della Misericordia',
+        classSkillAdd: ['guarire'] },
+      { id: 'difensore_onore',         name: 'Difensore dell\'Onore' },
+      { id: 'guerriero_sacro',         name: 'Guerriero Sacro' },
     ],
+
+    // ── RANGER ───────────────────────────────────────────────────────────────
     ranger: [
-      { id: 'cacciatore_mostri',       name: 'Cacciatore di Mostri' },
+      // APG
+      { id: 'cacciatore_mostri',       name: 'Cacciatore di Mostri',
+        classSkillAdd: ['conoscenze_arcane','conoscenze_dunsioni','conoscenze_natura','conoscenze_piani','conoscenze_religione'] },
       { id: 'arciere_foresta',         name: 'Arciere della Foresta' },
-      { id: 'segugio',                 name: 'Segugio' },
-      { id: 'cavalcatore_cielo',       name: 'Cavalcatore del Cielo' },
+      { id: 'segugio',                 name: 'Segugio',
+        classSkillAdd: ['percezione','senso_moti'] },
+      { id: 'cavalcatore_cielo',       name: 'Cavalcatore del Cielo',
+        classSkillAdd: ['volare'] },
       { id: 'nomade',                  name: 'Nomade' },
+      { id: 'custode_selvaggio',       name: 'Custode delle Terre Selvagge' },
+      // UC
+      { id: 'ranger_urbano',           name: 'Ranger Urbano',
+        classSkillAdd: ['bluff','diplomazia','conoscenze_locale','travestimento'],
+        classSkillRemove: ['conoscenze_natura','sopravvivenza'] },
+      { id: 'naturalista_ranger',      name: 'Naturalista',
+        classSkillAdd: ['guarire','conoscenze_natura'] },
+      { id: 'predone_terra',           name: 'Predone della Terra' },
+      { id: 'trapper',                 name: 'Trapper',
+        classSkillAdd: ['conoscenze_dunsioni'] },
+      // UM
+      { id: 'ranger_cavalcante',       name: 'Ranger a Cavallo',
+        classSkillAdd: ['addestrare_animali','cavalcare'] },
+      { id: 'guardiano_ranger',        name: 'Guardiano' },
     ],
+
+    // ── STREGONE ─────────────────────────────────────────────────────────────
     stregone: [
+      // APG
       { id: 'mago_arcano',             name: 'Mago Arcano' },
       { id: 'sanguemisto',             name: 'Sanguemisto' },
       { id: 'elementalista',           name: 'Elementalista' },
+      { id: 'stregone_familiare',      name: 'Stregone del Familiare' },
+      // UC
+      { id: 'mangiastorie',            name: 'Divorastorie',
+        classSkillAdd: ['bluff','diplomazia','intimidire'] },
+      { id: 'stregone_maledetto',      name: 'Stregone Maledetto' },
+      // UM
+      { id: 'stregone_destino',        name: 'Stregone del Destino' },
+      { id: 'stregone_ombre',          name: 'Stregone delle Ombre' },
+      { id: 'stregone_sangue',         name: 'Mago del Sangue' },
+      { id: 'stregone_tattoo',         name: 'Stregone dei Tatuaggi' },
     ],
+
+    // ── ALCHIMISTA ───────────────────────────────────────────────────────────
     alchimista: [
+      // APG
       { id: 'bombardiere',             name: 'Bombardiere' },
-      { id: 'chirurgo',                name: 'Chirurgo' },
-      { id: 'formulista',              name: 'Formulista' },
+      { id: 'chirurgo',                name: 'Chirurgo',
+        classSkillAdd: ['guarire'] },
       { id: 'veleniere',               name: 'Veleniere' },
+      // UC
+      { id: 'formulista',              name: 'Formulista' },
       { id: 'trasformatore',           name: 'Trasformatore' },
+      { id: 'alchimista_viscerale',    name: 'Alchimista Viscerale' },
+      { id: 'distillatore',            name: 'Distillatore' },
+      { id: 'estrattore',              name: 'Estrattore' },
+      // UM
+      { id: 'mutante',                 name: 'Mutante' },
+      { id: 'coltivatore_alch',        name: 'Coltivatore Alchemico',
+        classSkillAdd: ['conoscenze_natura'] },
+      { id: 'alch_cognitivo',          name: 'Alchimista Cognitivo',
+        classSkillAdd: ['conoscenze_arcane','conoscenze_storia'] },
+      { id: 'riciclatore',             name: 'Riciclatore' },
     ],
+
+    // ── CAVALIERE ────────────────────────────────────────────────────────────
     cavaliere: [
+      // APG
       { id: 'signore_cavallo',         name: 'Signore del Cavallo' },
-      { id: 'comandante',              name: 'Comandante' },
+      { id: 'comandante',              name: 'Comandante',
+        classSkillAdd: ['diplomazia','conoscenze_nobili'] },
       { id: 'cavaliere_errante',       name: 'Cavaliere Errante' },
+      // UC
+      { id: 'campione_ordine',         name: 'Campione dell\'Ordine' },
+      { id: 'cacciatore_cav',          name: 'Cacciatore a Cavallo',
+        classSkillAdd: ['percezione','sopravvivenza'] },
+      { id: 'guardiano_cav',           name: 'Guardiano',
+        classSkillAdd: ['guarire','senso_moti'] },
+      { id: 'cavaliere_piedi',         name: 'Cavaliere a Piedi' },
+      { id: 'cavaliere_dragone',       name: 'Cavaliere del Drago' },
     ],
+
+    // ── CONVOCATORE ──────────────────────────────────────────────────────────
     convocatore: [
+      // APG
       { id: 'bestia_convocatore',      name: 'Convocatore della Bestia' },
       { id: 'summoner_patto',          name: 'Convocatore del Patto' },
+      // UC
+      { id: 'convocatore_definitivo',  name: 'Grande Convocatore',
+        featureOverrides: { companion: false } },
+      { id: 'maestro_piaga',           name: 'Maestro della Piaga' },
+      { id: 'convocatore_naturale',    name: 'Convocatore Naturale',
+        classSkillAdd: ['conoscenze_natura','sopravvivenza'] },
     ],
+
+    // ── FATTUCCHIERA ─────────────────────────────────────────────────────────
     fattucchiera: [
+      // APG
       { id: 'fattucchiera_cacciatrice',name: 'Fattucchiera Cacciatrice' },
-      { id: 'fattucchiera_natura',     name: 'Fattucchiera della Natura' },
-      { id: 'fattucchiera_carnevale',  name: 'Fattucchiera Carnevalesca' },
+      { id: 'fattucchiera_natura',     name: 'Fattucchiera della Natura',
+        classSkillAdd: ['addestrare_animali','sopravvivenza'] },
+      { id: 'fattucchiera_carnevale',  name: 'Fattucchiera Carnevalesca',
+        classSkillAdd: ['esibizione'] },
       { id: 'strega_fate',             name: 'Ostetrica delle Fate' },
+      // UC
+      { id: 'fattucchiera_ghiaccio',   name: 'Fattucchiera del Ghiaccio' },
+      { id: 'strega_corvo',            name: 'Strega del Corvo' },
+      { id: 'fattucchiera_maledizione',name: 'Fattucchiera della Maledizione' },
+      // UM
+      { id: 'fattucchiera_cielo',      name: 'Fattucchiera del Cielo',
+        classSkillAdd: ['volare'] },
+      { id: 'fattucchiera_veleno',     name: 'Fattucchiera del Veleno' },
     ],
+
+    // ── INQUISITORE ──────────────────────────────────────────────────────────
     inquisitore: [
-      { id: 'esaminatore',             name: 'Esaminatore' },
-      { id: 'cacciatore_inquisitore',  name: 'Cacciatore di Mostri' },
-      { id: 'segugio_inquisitore',     name: 'Segugio' },
+      // APG
+      { id: 'esaminatore',             name: 'Esaminatore',
+        classSkillAdd: ['disattivare_cong','linguistica'] },
+      { id: 'cacciatore_inquisitore',  name: 'Cacciatore di Mostri',
+        classSkillAdd: ['conoscenze_arcane','conoscenze_natura','conoscenze_piani','conoscenze_religione'] },
+      { id: 'segugio_inquisitore',     name: 'Segugio',
+        classSkillAdd: ['percezione','senso_moti'] },
       { id: 'incorrotto',              name: 'Incorrotto' },
+      // UC
+      { id: 'terrore_empi',            name: 'Terrore degli Empi',
+        classSkillAdd: ['intimidire'] },
+      { id: 'giustiziere',             name: 'Giustiziere' },
+      { id: 'inquisitore_ombra',       name: 'Inquisitore Oscuro',
+        classSkillAdd: ['furtivita','travestimento'] },
+      { id: 'cacciatore_vampiri',      name: 'Cacciatore di Vampiri' },
+      // UM
+      { id: 'scopritore_eresie',       name: 'Scopritore di Eresie',
+        classSkillAdd: ['conoscenze_arcane','conoscenze_religione'] },
     ],
+
+    // ── MAGUS ────────────────────────────────────────────────────────────────
     magus: [
+      // APG
       { id: 'magus_kensai',            name: 'Kensai' },
       { id: 'magus_anime',             name: 'Magus Anime' },
-      { id: 'magus_lame',              name: 'Danzatore di Lame' },
+      // UC
+      { id: 'magus_lame',              name: 'Danzatore di Lame',
+        classSkillAdd: ['acrobazia','esibizione'] },
       { id: 'magus_arcano',            name: 'Stregone Arcano' },
+      { id: 'sferzatore_arcano',       name: 'Sferzatore Arcano' },
+      { id: 'magus_acqua',             name: 'Magus delle Acque',
+        classSkillAdd: ['nuotare'] },
+      { id: 'magus_sangue',            name: 'Magus del Sangue' },
+      { id: 'magus_vuoto',             name: 'Magus del Vuoto' },
+      // UM
+      { id: 'magus_mirabile',          name: 'Magus Mirabile' },
     ],
+
+    // ── MORFICO ──────────────────────────────────────────────────────────────
     morfico: [
       { id: 'mannaro_benedetto',       name: 'Mannaro Benedetto' },
       { id: 'esploratore_bestiale',    name: 'Esploratore Bestiale' },
       { id: 'shifter_elementale',      name: 'Trasmutatore Elementale' },
+      { id: 'morfico_ferale',          name: 'Morfico Ferale',
+        classSkillAdd: ['intimidire'] },
+      { id: 'morfico_libero',          name: 'Morfico Libero' },
+      { id: 'guardiano_forma',         name: 'Guardiano della Forma' },
     ],
+
+    // ── ORACOLO ──────────────────────────────────────────────────────────────
     oracolo: [
+      // APG
       { id: 'oracolo_battito',         name: 'Oracolo del Battito del Cuore' },
-      { id: 'cavaliere_oracolo',       name: 'Cavaliere dell\'Oracolo' },
+      { id: 'cavaliere_oracolo',       name: 'Cavaliere dell\'Oracolo',
+        classSkillAdd: ['addestrare_animali','cavalcare'] },
+      { id: 'oracolo_guerra',          name: 'Oracolo di Guerra',
+        classSkillAdd: ['intimidire'] },
+      // UC
+      { id: 'oracolo_guaritore',       name: 'Guaritore Divino',
+        classSkillAdd: ['guarire'] },
+      { id: 'oracolo_cieco',           name: 'Oracolo Cieco' },
+      { id: 'oracolo_sangue',          name: 'Oracolo del Sangue' },
+      { id: 'oracolo_tempesta',        name: 'Oracolo della Tempesta' },
+      { id: 'oracolo_antichita',       name: 'Oracolo dell\'Antichità' },
     ],
+
+    // ── PISTOLERO ────────────────────────────────────────────────────────────
     pistolero: [
+      // UC
       { id: 'tiratore_scelto',         name: 'Tiratore Scelto' },
-      { id: 'cacciatore_pistola',      name: 'Cacciatore Pistolero' },
+      { id: 'cacciatore_pistola',      name: 'Cacciatore Pistolero',
+        classSkillAdd: ['conoscenze_natura','sopravvivenza'] },
       { id: 'pistolero_pellegrino',    name: 'Pistolero Pellegrino' },
+      { id: 'duellante_pistola',       name: 'Duellante con Pistola' },
+      { id: 'pistolero_corsaro',       name: 'Pistolero Corsaro',
+        classSkillAdd: ['nuotare','scalare'] },
+      { id: 'soldato_polvere',         name: 'Soldato della Polvere' },
+      { id: 'pistolero_ombra',         name: 'Pistolero delle Ombre',
+        classSkillAdd: ['furtivita'] },
     ],
+
+    // ── VIGILANTE ────────────────────────────────────────────────────────────
     vigilante: [
+      // ACG
       { id: 'avventuriero_identita',   name: 'Vigilante Avventuriero' },
-      { id: 'cacciatore_identita',     name: 'Vigilante Cacciatore' },
+      { id: 'cacciatore_identita',     name: 'Vigilante Cacciatore',
+        classSkillAdd: ['conoscenze_natura','sopravvivenza'] },
+      { id: 'vigilante_arcano',        name: 'Vigilante Arcano',
+        classSkillAdd: ['conoscenze_arcane','magia'] },
+      { id: 'vigilante_ombra',         name: 'Vigilante delle Ombre',
+        classSkillAdd: ['furtivita'] },
+      { id: 'vigilante_rete',          name: 'Vigilante della Rete',
+        classSkillAdd: ['diplomazia','bluff'] },
     ],
+
+    // ── ANTIPALADINO ─────────────────────────────────────────────────────────
     antipaladino: [
-      { id: 'signore_morte',           name: 'Signore della Morte' },
-      { id: 'terrore_armate',          name: 'Terrore delle Armate' },
+      { id: 'signore_morte',           name: 'Signore della Morte',
+        classSkillAdd: ['conoscenze_arcane'] },
+      { id: 'terrore_armate',          name: 'Terrore delle Armate',
+        classSkillAdd: ['intimidire'] },
+      { id: 'campione_oscuro',         name: 'Campione Oscuro' },
+      { id: 'servitore_purgatorio',    name: 'Servitore del Purgatorio' },
+      { id: 'vendicatore_oscuro',      name: 'Vendicatore Oscuro' },
     ],
+
+    // ── NINJA ────────────────────────────────────────────────────────────────
     ninja: [
-      { id: 'shinobi_ombre',           name: 'Shinobi delle Ombre' },
+      { id: 'shinobi_ombre',           name: 'Shinobi delle Ombre',
+        classSkillAdd: ['furtivita'] },
       { id: 'ninja_veleno',            name: 'Ninja Veleniere' },
+      { id: 'ninja_acqua',             name: 'Ninja dell\'Acqua',
+        classSkillAdd: ['nuotare'] },
+      { id: 'ninja_senza_armatura',    name: 'Ninja Senz\'Armatura',
+        featureOverrides: { sneak: true } },
+      { id: 'cacciatore_ninja',        name: 'Cacciatore Ninja',
+        classSkillAdd: ['conoscenze_natura','sopravvivenza'] },
     ],
+
+    // ── SAMURAI ──────────────────────────────────────────────────────────────
     samurai: [
       { id: 'ronin',                   name: 'Ronin' },
       { id: 'guerriero_vincolo',       name: 'Guerriero del Vincolo' },
+      { id: 'samurai_bandiera',        name: 'Samurai della Bandiera',
+        classSkillAdd: ['conoscenze_storia'] },
+      { id: 'samurai_arco',            name: 'Samurai dell\'Arco' },
+      { id: 'onorevole_samurai',       name: 'Samurai Onorevole' },
     ],
+
+    // ── ARCANISTA ────────────────────────────────────────────────────────────
     arcanista: [
+      // ACG
       { id: 'mago_esplosivo',          name: 'Mago Esplosivo' },
       { id: 'sangue_arcano',           name: 'Sangue Arcano' },
+      { id: 'arcanista_neutra',        name: 'Arcanista Neutra' },
+      { id: 'arcanista_familiare',     name: 'Arcanista del Familiare' },
+      { id: 'arcanista_ombra',         name: 'Arcanista delle Ombre',
+        classSkillAdd: ['furtivita'] },
+      { id: 'arcanista_fuoco',         name: 'Arcanista del Fuoco' },
+      { id: 'arcanista_libri',         name: 'Arcanista dei Libri' },
     ],
+
+    // ── ATTACCABRIGHE ────────────────────────────────────────────────────────
     attaccabrighe: [
-      { id: 'pugno_urbano',            name: 'Pugno di Ferro Urbano' },
+      // ACG
+      { id: 'pugno_urbano',            name: 'Pugno di Ferro Urbano',
+        classSkillAdd: ['bluff','diplomazia'] },
       { id: 'totem_brawler',           name: 'Seguace del Totem' },
+      { id: 'attaccabrighe_snervante', name: 'Attaccabrighe Snervante' },
+      { id: 'wrestler',                name: 'Lottatore' },
+      { id: 'attaccabrighe_feroce',    name: 'Attaccabrighe Feroce',
+        featureOverrides: { rage: true } },
     ],
+
+    // ── CACCIATORE ───────────────────────────────────────────────────────────
     cacciatore: [
+      // ACG
       { id: 'seguace_animali',         name: 'Seguace degli Animali' },
       { id: 'cacciatore_orde',         name: 'Cacciatore delle Orde' },
+      { id: 'esploratore_cac',         name: 'Esploratore',
+        featureOverrides: { companion: false } },
+      { id: 'cacciatore_urbano',       name: 'Cacciatore Urbano',
+        classSkillAdd: ['bluff','diplomazia','conoscenze_locale'],
+        classSkillRemove: ['sopravvivenza'] },
+      { id: 'cacciatore_ferale',       name: 'Cacciatore Ferale' },
     ],
+
+    // ── IRACONDO DI STIRPE ───────────────────────────────────────────────────
     iracondo_stirpe: [
+      // ACG
       { id: 'iracondo_urbano',         name: 'Iracondo Urbano',
         classSkillAdd: ['bluff','diplomazia','conoscenze_locale','senso_moti'],
         classSkillRemove: ['sopravvivenza'] },
       { id: 'iracondo_rovi',           name: 'Iracondo dei Rovi' },
       { id: 'iracondo_invulnerabile',  name: 'Iracondo Invulnerabile' },
+      { id: 'iracondo_elemento',       name: 'Iracondo Elementale' },
+      { id: 'iracondo_reagente',       name: 'Iracondo Reagente',
+        classSkillAdd: ['conoscenze_arcane'] },
+      { id: 'iracondo_folle',          name: 'Iracondo Folle' },
     ],
+
+    // ── GUARDIAMARCA ─────────────────────────────────────────────────────────
     guardiamarca: [
-      { id: 'guardia_sacra',           name: 'Guardia Sacra' },
-      { id: 'patrugliatore',           name: 'Pattugliatore' },
+      // ACG
+      { id: 'guardia_sacra',           name: 'Guardia Sacra',
+        classSkillAdd: ['conoscenze_religione','senso_moti'] },
+      { id: 'patrugliatore',           name: 'Pattugliatore',
+        classSkillAdd: ['percezione','sopravvivenza'] },
+      { id: 'difensore_marchio',       name: 'Difensore del Marchio' },
+      { id: 'esecutore',               name: 'Esecutore',
+        classSkillAdd: ['intimidire'] },
+      { id: 'guardiamarca_ombra',      name: 'Guardiamarca delle Ombre',
+        classSkillAdd: ['furtivita','travestimento'] },
     ],
+
+    // ── SCHERMAGLIATORE ──────────────────────────────────────────────────────
     schermagliatore: [
+      // ACG
       { id: 'duellante_lama',          name: 'Duellante della Lama' },
       { id: 'tiratore_accurato',       name: 'Tiratore Accurato' },
+      { id: 'schermagliatore_ombra',   name: 'Schermagliatore delle Ombre',
+        classSkillAdd: ['furtivita'] },
+      { id: 'schermagliatore_veloce',  name: 'Schermagliatore Veloce' },
+      { id: 'schermagliatore_mare',    name: 'Schermagliatore del Mare',
+        classSkillAdd: ['nuotare','scalare'] },
     ],
+
+    // ── SCIAMANO ─────────────────────────────────────────────────────────────
     sciamano: [
+      // ACG
       { id: 'sciamano_corpo',          name: 'Sciamano del Corpo' },
       { id: 'sciamano_natura',         name: 'Sciamano della Natura' },
+      { id: 'sciamano_spiriti',        name: 'Parlante con gli Spiriti' },
+      { id: 'sciamano_osseo',          name: 'Sciamano dell\'Osso',
+        classSkillAdd: ['conoscenze_arcane'] },
+      { id: 'sciamano_lama',           name: 'Sciamano della Lama' },
+      { id: 'sciamano_tempesta',       name: 'Sciamano della Tempesta' },
     ],
+
+    // ── SKALD ────────────────────────────────────────────────────────────────
     skald: [
+      // ACG
       { id: 'bardo_battaglia',         name: 'Bardo di Battaglia' },
       { id: 'cantore_guerriero',       name: 'Cantore Guerriero' },
+      { id: 'skald_furioso',           name: 'Skald Furioso' },
+      { id: 'skald_invulnerabile',     name: 'Skald Invulnerabile' },
+      { id: 'berserker_nordico',       name: 'Berserker Nordico' },
     ],
+
+    // ── SPIA ─────────────────────────────────────────────────────────────────
     spia: [
-      { id: 'stalker_corte',           name: 'Spia della Corte' },
+      // ACG
+      { id: 'stalker_corte',           name: 'Spia della Corte',
+        classSkillAdd: ['bluff','diplomazia','conoscenze_nobili'] },
       { id: 'agente_doppio',           name: 'Agente Doppio' },
+      { id: 'assassino_spia',          name: 'Assassino',
+        classSkillAdd: ['travestimento'] },
+      { id: 'mimetizzatore',           name: 'Mimetizzatore',
+        classSkillAdd: ['furtivita','travestimento'] },
+      { id: 'informatore',             name: 'Informatore',
+        classSkillAdd: ['senso_moti'] },
     ],
   };
 

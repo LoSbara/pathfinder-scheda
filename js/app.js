@@ -98,13 +98,18 @@ function renderCharacterList() {
 // ── Creazione nuovo personaggio ───────────────────────────────────────────
 
 function handleNewCharacter() {
-  const modal      = document.getElementById('modal-new-character');
-  const nameInput  = document.getElementById('modal-char-name');
-  const playerInput= document.getElementById('modal-player-name');
-  if (nameInput)   nameInput.value   = '';
-  if (playerInput) playerInput.value = '';
-  modal?.classList.remove('hidden');
-  setTimeout(() => nameInput?.focus(), 60);
+  if (typeof Creation !== 'undefined') {
+    Creation.start();
+  } else {
+    // fallback al vecchio modal se creation.js non è caricato
+    const modal      = document.getElementById('modal-new-character');
+    const nameInput  = document.getElementById('modal-char-name');
+    const playerInput= document.getElementById('modal-player-name');
+    if (nameInput)   nameInput.value   = '';
+    if (playerInput) playerInput.value = '';
+    modal?.classList.remove('hidden');
+    setTimeout(() => nameInput?.focus(), 60);
+  }
 }
 
 function _closeModal() {

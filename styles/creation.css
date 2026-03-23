@@ -1,0 +1,547 @@
+/* creation.css — Stili per il wizard di creazione personaggio */
+
+/* ── Schermata contenitore ───────────────────────────────────────────────── */
+#screen-creation {
+  display: none;
+}
+#screen-creation.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bg-deep);
+}
+
+/* ── Topbar ─────────────────────────────────────────────────────────────── */
+.creation-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-gold);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.creation-topbar h2 {
+  font-family: var(--font-title);
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+#btn-creation-cancel {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+#btn-creation-cancel:hover {
+  border-color: var(--crimson);
+  color: var(--text-main);
+}
+
+/* ── Stepper ────────────────────────────────────────────────────────────── */
+.creation-stepper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding: 0.6rem 1rem;
+  background: var(--bg-section);
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.cs-step-dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 52px;
+  position: relative;
+}
+.cs-step-dot-wrap + .cs-step-dot-wrap::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  top: 14px;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+.cs-step-dot-wrap.cs-done + .cs-step-dot-wrap::before,
+.cs-step-dot-wrap.cs-active + .cs-step-dot-wrap::before {
+  background: var(--gold-dark);
+}
+.cs-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s;
+}
+.cs-step-dot-wrap.cs-done   .cs-dot { background: var(--gold-dark); border-color: var(--gold); color: var(--bg-deep); }
+.cs-step-dot-wrap.cs-active .cs-dot { background: var(--gold); border-color: var(--gold-light); color: var(--bg-deep); transform: scale(1.15); }
+.cs-dot-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+.cs-step-dot-wrap.cs-active .cs-dot-label { color: var(--gold); }
+
+/* ── Contenuto centrale ─────────────────────────────────────────────────── */
+.creation-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1rem 2rem;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.creation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-gold);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  gap: 0.75rem;
+}
+#creation-step-num {
+  font-family: var(--font-title);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.creation-footer-right {
+  display: flex;
+  gap: 0.5rem;
+}
+#btn-creation-prev,
+#btn-creation-next,
+#btn-creation-confirm {
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+#btn-creation-prev {
+  background: transparent;
+  color: var(--text-muted);
+}
+#btn-creation-prev:hover { background: var(--bg-section); color: var(--text-main); }
+#btn-creation-next {
+  background: var(--gold-dark);
+  border-color: var(--gold);
+  color: var(--bg-deep);
+  font-weight: 600;
+}
+#btn-creation-next:hover { background: var(--gold); }
+#btn-creation-confirm {
+  background: var(--green-dark, #2e7d32);
+  border-color: var(--green-light);
+  color: #fff;
+  font-weight: 700;
+}
+#btn-creation-confirm:hover { background: var(--green-light); color: var(--bg-deep); }
+.hidden { display: none !important; }
+
+/* ── Intestazione passo ─────────────────────────────────────────────────── */
+.cs-step-header {
+  margin-bottom: 1.25rem;
+}
+.cs-step-header h2 {
+  font-family: var(--font-title);
+  color: var(--gold);
+  font-size: 1.3rem;
+  margin: 0 0 0.3rem;
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.cs-step-header h2 i { color: var(--gold-dark); }
+.cs-step-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Campo di ricerca ───────────────────────────────────────────────────── */
+.cs-search {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Griglia razze ──────────────────────────────────────────────────────── */
+.cs-race-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.cs-race-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.cs-race-card:hover           { border-color: var(--gold-dark); }
+.cs-race-card.selected        { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-dark); background: var(--bg-section); }
+.cs-race-name  { font-family: var(--font-title); color: var(--text-main); font-size: 0.85rem; font-weight: 600; }
+.cs-race-mods  { font-size: 0.72rem; color: var(--text-muted); }
+.cs-race-meta  { display: flex; justify-content: space-between; align-items: center; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.25rem; }
+.cs-race-meta span { font-size: 0.7rem; color: var(--text-muted); }
+.cs-badge      { border-radius: 3px; padding: 1px 4px; font-size: 0.65rem; font-weight: 700; }
+.cs-badge-core { background: var(--gold-dark); color: var(--bg-deep); }
+.cs-badge-adv  { background: var(--border); color: var(--text-muted); }
+
+/* ── Pannello dettaglio razza ───────────────────────────────────────────── */
+.cs-race-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+.cs-race-panel-header { margin-bottom: 0.75rem; }
+.cs-race-panel-header h3 {
+  font-family: var(--font-title);
+  color: var(--gold);
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+.cs-mod-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.cs-mod-badge {
+  border-radius: 4px; padding: 2px 7px;
+  font-size: 0.75rem; font-weight: 700;
+}
+.cs-mod-badge.pos { background: #1b3a1e; color: var(--green-light); border: 1px solid var(--green-light); }
+.cs-mod-badge.neg { background: #3a1b1b; color: #ef9a9a; border: 1px solid #ef9a9a; }
+.cs-race-panel-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+@media (max-width: 500px) { .cs-race-panel-cols { grid-template-columns: 1fr; } }
+.cs-race-panel h4 { color: var(--text-label); font-size: 0.8rem; margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: .04em; }
+.cs-traits-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.cs-traits-list li {
+  font-size: 0.82rem; color: var(--text-main);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  border-left: 2px solid var(--gold-dark);
+}
+.cs-trait-replaced { opacity: 0.4; text-decoration: line-through; border-left-color: var(--crimson); }
+.cs-replaced-badge { font-size: 0.65rem; background: var(--crimson); color: #fff; border-radius: 3px; padding: 1px 4px; margin-left: 4px; }
+.cs-lang-line { font-size: 0.82rem; color: var(--text-main); margin: 0; }
+.cs-bonus-langs { font-size: 0.78rem; margin: 0.3rem 0 0; }
+
+/* Tratti alternativi */
+.cs-alt-traits { margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem; }
+.cs-alt-traits h4 { color: var(--text-label); font-size: 0.8rem; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: .04em; }
+.cs-alt-trait {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem;
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.cs-alt-trait.selected { border-color: var(--gold); background: var(--bg-card); }
+.cs-alt-trait.conflict { opacity: 0.45; cursor: not-allowed; }
+.cs-alt-trait input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; accent-color: var(--gold); }
+.cs-alt-body { display: flex; flex-direction: column; gap: 0.2rem; }
+.cs-alt-body strong { color: var(--text-main); font-size: 0.85rem; }
+.cs-alt-replaces { font-size: 0.72rem; color: var(--crimson); }
+.cs-alt-desc { font-size: 0.78rem; color: var(--text-muted); }
+.cs-hint { color: var(--text-muted); font-style: italic; padding: 1rem; text-align: center; font-size: 0.88rem; }
+
+/* ── Griglia classi ─────────────────────────────────────────────────────── */
+.cs-class-group { margin-bottom: 1.25rem; }
+.cs-group-label { font-family: var(--font-title); color: var(--text-label); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 0.5rem; }
+.cs-class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+.cs-class-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.cs-class-card:hover    { border-color: var(--gold-dark); }
+.cs-class-card.selected { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-dark); background: var(--bg-section); }
+.cs-class-icon { font-size: 1.4rem; color: var(--gold-dark); }
+.cs-class-name { font-size: 0.78rem; font-family: var(--font-title); color: var(--text-main); }
+.cs-class-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem; }
+.cs-pill { font-size: 0.62rem; background: var(--bg-deep); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px; color: var(--text-muted); white-space: nowrap; }
+.cs-class-saves { display: flex; gap: 0.2rem; }
+.cs-save { font-size: 0.65rem; border-radius: 3px; padding: 1px 4px; font-weight: 700; }
+.cs-save-good { background: #1b3a1e; color: var(--green-light); }
+.cs-save-bad  { background: #2a1a1a; color: var(--text-muted); }
+
+/* ── Caratteristiche ────────────────────────────────────────────────────── */
+.cs-ability-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 1rem;
+  margin-bottom: 1rem;
+}
+.cs-toolbar-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--text-muted); }
+.cs-select-sm { width: auto; padding: 0.25rem 0.5rem; font-size: 0.82rem; }
+.cs-abilities-table { display: flex; flex-direction: column; gap: 0.35rem; }
+.cs-abilities-header {
+  display: grid;
+  grid-template-columns: 1fr 160px 70px 60px 55px;
+  gap: 0.5rem;
+  padding: 0 0.6rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+}
+.cs-ability-row {
+  display: grid;
+  grid-template-columns: 1fr 160px 70px 60px 55px;
+  gap: 0.5rem;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.6rem;
+}
+.cs-ab-name { display: flex; flex-direction: column; }
+.cs-ab-name strong { color: var(--gold); font-size: 0.9rem; }
+.cs-ab-name small  { color: var(--text-muted); font-size: 0.72rem; }
+.cs-ab-pb   { display: flex; align-items: center; gap: 0.4rem; }
+.cs-ab-val  { font-weight: 700; color: var(--text-main); min-width: 24px; text-align: center; font-size: 1rem; }
+.cs-ab-manual { width: 64px; text-align: center; padding: 0.3rem; }
+.cs-ab-racial, .cs-ab-final, .cs-ab-mod { text-align: center; font-size: 0.9rem; font-weight: 600; }
+.cs-ab-racial.pos, .cs-ab-mod.pos { color: var(--green-light); }
+.cs-ab-racial.neg, .cs-ab-mod.neg { color: #ef9a9a; }
+.cs-ab-final { color: var(--gold); }
+@media (max-width: 540px) {
+  .cs-abilities-header,
+  .cs-ability-row { grid-template-columns: 1fr 120px 55px 50px 45px; }
+}
+
+/* ── Dettagli ───────────────────────────────────────────────────────────── */
+.cs-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 620px) { .cs-details-grid { grid-template-columns: 1fr; } }
+.cs-details-col { display: flex; flex-direction: column; gap: 0.75rem; }
+.field-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.field-row .field-group { flex: 1; min-width: 80px; }
+.field-narrow { max-width: 80px; }
+.field-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.field-group label { font-size: 0.78rem; color: var(--text-label); text-transform: uppercase; letter-spacing: .04em; }
+.cs-required { color: var(--crimson); }
+
+/* Griglia allineamento */
+.cs-align-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.3rem; }
+.cs-align-btn {
+  padding: 0.35rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  text-align: center;
+  transition: all 0.15s;
+}
+.cs-align-btn:hover    { border-color: var(--gold-dark); color: var(--text-main); }
+.cs-align-btn.selected { border-color: var(--gold); background: var(--bg-section); color: var(--gold); font-weight: 700; }
+
+/* Lingue */
+.cs-langs { display: flex; flex-direction: column; gap: 0.35rem; }
+.cs-langs-auto { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.cs-lang-badge { background: var(--gold-dark); color: var(--bg-deep); border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; font-weight: 700; }
+.cs-langs-hint { font-size: 0.78rem; color: var(--text-muted); margin: 0.25rem 0 0; }
+
+/* ── Abilità ────────────────────────────────────────────────────────────── */
+.cs-pts-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+}
+.cs-pts-bar strong { color: var(--gold); }
+.cs-pts-track { flex: 1; height: 8px; background: var(--bg-deep); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.cs-pts-fill  { height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.2s; }
+.cs-skills-table { display: flex; flex-direction: column; gap: 0.25rem; }
+.cs-skills-header {
+  display: grid;
+  grid-template-columns: 1fr 45px 35px 55px 50px;
+  gap: 0.4rem;
+  padding: 0 0.4rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+}
+.cs-skill-row {
+  display: grid;
+  grid-template-columns: 1fr 45px 35px 55px 50px;
+  gap: 0.4rem;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.4rem;
+  transition: background 0.1s;
+}
+.cs-skill-row:hover  { background: var(--bg-section); }
+.cs-cls-skill        { border-left: 2px solid var(--gold-dark); }
+.cs-sk-name {
+  font-size: 0.82rem; color: var(--text-main);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cs-sk-name sup { color: var(--gold-dark); font-size: 0.65rem; }
+.cs-sk-ab     { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+.cs-sk-cs     { text-align: center; }
+.cs-cs-icon   { color: var(--gold-dark); font-size: 0.7rem; }
+.cs-sk-rank-label { display: flex; justify-content: center; align-items: center; cursor: pointer; }
+.cs-sk-rank-label input { accent-color: var(--gold); transform: scale(1.1); cursor: pointer; }
+.cs-sk-total  { font-size: 0.85rem; font-weight: 700; text-align: center; color: var(--text-main); }
+.cs-sk-total.neg { color: #ef9a9a; }
+
+/* ── Talenti ────────────────────────────────────────────────────────────── */
+.cs-feat-slots-wrap { margin-bottom: 0.75rem; }
+.cs-feat-slots { display: flex; flex-direction: column; gap: 0.35rem; }
+.cs-feat-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  min-height: 40px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  gap: 0.5rem;
+}
+.cs-feat-slot.filled { border-style: solid; border-color: var(--gold-dark); background: var(--bg-section); }
+.cs-feat-slot-name   { color: var(--gold); font-weight: 600; font-size: 0.88rem; }
+.cs-feat-slot-empty  { display: flex; align-items: center; gap: 0.4rem; font-style: italic; }
+.cs-feat-remove { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0 0.2rem; line-height: 1; }
+.cs-feat-remove:hover { color: var(--crimson); }
+.cs-bonus-note { font-size: 0.78rem; background: var(--gold-dark); color: var(--bg-deep); border-radius: 3px; padding: 1px 5px; margin-left: 4px; font-style: normal; }
+.cs-feats-list { display: flex; flex-direction: column; gap: 0.2rem; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.25rem; }
+.cs-feat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.1s, border-color 0.1s;
+}
+.cs-feat-item:hover        { background: var(--bg-section); border-color: var(--border); }
+.cs-feat-item.cs-feat-active { background: var(--bg-card); border-color: var(--gold-dark); }
+.cs-feat-name { flex: 1; font-size: 0.82rem; color: var(--text-main); }
+.cs-feat-type { font-size: 0.68rem; color: var(--text-muted); background: var(--bg-deep); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px; white-space: nowrap; }
+.cs-feat-prereq { color: var(--gold-dark); font-size: 0.75rem; }
+
+/* ── Riepilogo ──────────────────────────────────────────────────────────── */
+.cs-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+.cs-sum-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+}
+.cs-sum-card h3 {
+  font-family: var(--font-title);
+  color: var(--gold);
+  font-size: 0.9rem;
+  margin: 0 0 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+}
+.cs-sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.18rem 0;
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--bg-section);
+}
+.cs-sum-row span { color: var(--text-muted); }
+.cs-sum-row strong { color: var(--text-main); text-align: right; }
+.cs-sum-row strong em { font-style: normal; font-size: 0.75rem; }
+.cs-sum-row strong em.pos { color: var(--green-light); }
+.cs-sum-row strong em.neg { color: #ef9a9a; }
+.cs-hp-val { color: var(--green-light) !important; font-size: 1rem !important; }
+.cs-alt-label { font-size: 0.68rem; color: var(--gold-dark); background: var(--bg-deep); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px; }
+
+/* ── Utilities condivise ────────────────────────────────────────────────── */
+.pos { color: var(--green-light); }
+.neg { color: #ef9a9a; }
+.text-muted { color: var(--text-muted); }
