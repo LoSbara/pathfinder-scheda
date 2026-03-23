@@ -30,7 +30,7 @@
 
 **Prossimo lavoro prioritario (in ordine):**
 1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 339 IT)
-2. Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)
+2. ~~Mega archivio equipaggiamento IT+EN (`PF1_EQUIPMENT_DB`)~~ — **FATTO** (300 item, session 9)
 3. Bloodline powers UI (`rage.bloodlinePowers`)
 4. `armor.speedArmor` → `calcSpeed()` wiring
 
@@ -74,6 +74,7 @@ pathfinder-scheda/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
 │   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (2927 incantesimi: 246 IT + 2681 EN)
 │   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (339 talenti PF1)
+│   │   ├── equipment-db.js ← Global PF1_EQUIPMENT_DB array (300 item: armi, armature, oggetti, magia)
 │   │   ├── races-list.js   ← Global PF1_RACES_DB array (29 razze con tratti, lingue, mod, alt traits)
 │   │   ├── languages-list.js ← Global PF1_LANGUAGES array (lingue del mondo di Golarion)
 │   │   └── classes-config.js ← Global ClassConfig: tutte e 33 le classi PF1 con feature flags
@@ -95,6 +96,7 @@ pathfinder-scheda/
 <script src="js/data/skills-list.js"></script>    <!-- PF1_SKILLS global -->
 <script src="js/data/spells-list.js"></script>    <!-- PF1_SPELLS_DB global -->
 <script src="js/data/feats-list.js"></script>     <!-- PF1_FEATS_DB global -->
+<script src="js/data/equipment-db.js"></script>  <!-- PF1_EQUIPMENT_DB global -->
 <script src="js/data/races-list.js"></script>     <!-- PF1_RACES_DB global -->
 <script src="js/data/languages-list.js"></script> <!-- PF1_LANGUAGES global -->
 <script src="js/data/classes-config.js"></script> <!-- ClassConfig global -->
@@ -123,6 +125,8 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 | `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions (35 skills) |
 | `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (2927: 246 IT + 2681 EN) |
 | `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (339 talenti) |
+| `PF1_EQUIPMENT_DB` | `data/equipment-db.js` | Array of equipment (300 item: armi/armature/oggetti/magia) |
+| `SearchModal` | `search-modal.js` | Modal ricerca incantesimi/talenti/equipaggiamento (openSpells, openFeats, openEquipment) |
 | `PF1_RACES_DB` | `data/races-list.js` | Array of race definitions (29 razze, with altTraits) |
 | `PF1_LANGUAGES` | `data/languages-list.js` | Array of language name strings |
 | `ClassConfig` | `data/classes-config.js` | All 33 PF1 classes with feature flags |
@@ -132,7 +136,6 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 | `Skills` | `skills.js` | Skill total calculations |
 | `UI` | `ui.js` | All rendering + event binding |
 | `Sync` | `sync.js` | Cloud sync via Supabase REST API |
-| `SearchModal` | `search-modal.js` | Modal ricerca incantesimi/talenti (openSpells, openFeats) |
 | `Creation` | `creation.js` | Level-1 character creation wizard |
 
 ### Single active character
@@ -896,7 +899,7 @@ Vedi Sezione 3. I file `data/` vanno sempre prima di `classes-config.js`.
 - [ ] Aggiungere tutti gli archetipi PF1 in `classes-config.js`
 - [x] Creare `PF1_RACES_DB` in `js/data/races-list.js` — **FATTO** (29 razze)
 - [x] Creare `PF1_LANGUAGES` in `js/data/languages-list.js` — **FATTO**
-- [ ] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` (armi, armature, oggetti)
+- [x] Creare `PF1_EQUIPMENT_DB` in `js/data/equipment-db.js` — **FATTO** (300 item: armi/armature/oggetti/magia; SearchModal.openEquipment() con pulsanti Cerca in tab armi/armatura/inventario)
 
 ---
 

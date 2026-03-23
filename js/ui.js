@@ -1493,6 +1493,31 @@ const UI = (() => {
     fields.forEach(([id, fn]) => {
       el(id)?.addEventListener('change', e => { if (_char) { fn(e.target.value, _char); _dirty(); } });
     });
+    el('btn-search-armor')?.addEventListener('click', () => {
+      if (!_char || typeof SearchModal === 'undefined') return;
+      SearchModal.openEquipment('armor', item => {
+        const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
+        _char.armor.name   = item.name;
+        _char.armor.type   = cap(item.armorType || '');
+        _char.armor.bonus  = item.bonus  || 0;
+        _char.armor.maxDex = (item.maxDex != null) ? item.maxDex : null;
+        _char.armor.acp    = item.acp    || 0;
+        _char.armor.asf    = item.asf    || 0;
+        _char.armor.speed  = item.speed  || 0;
+        _char.armor.weight = item.weight || 0;
+        _char.combat.ac.armorBonus = item.bonus || 0;
+        setVal('armor-name',   _char.armor.name);
+        setVal('armor-type',   _char.armor.type);
+        setVal('armor-bonus',  _char.armor.bonus);
+        setVal('armor-maxdex', _char.armor.maxDex ?? '');
+        setVal('armor-acp',    _char.armor.acp);
+        setVal('armor-asf',    _char.armor.asf);
+        setVal('armor-speed',  _char.armor.speed);
+        setVal('armor-weight', _char.armor.weight);
+        setVal('ac-armor',     _char.armor.bonus);
+        refreshCalculated(_char); _dirty();
+      });
+    });
   }
 
   function _bindSkills() {
@@ -1528,6 +1553,26 @@ const UI = (() => {
   }
 
   function _bindWeapons() {
+    el('btn-search-weapon')?.addEventListener('click', () => {
+      if (!_char || typeof SearchModal === 'undefined') return;
+      SearchModal.openEquipment('weapon', item => {
+        _char.weapons.push({
+          id: Character.generateId(),
+          name:        item.name,
+          attackType:  item.attackType  || 'mischia',
+          enhancement: 0,
+          damage:      item.damage      || '1d6',
+          critRange:   item.critRange   || '20',
+          critMult:    item.critMult    || 2,
+          range:       item.range       || 0,
+          damageType:  item.damageType  || 'T',
+          twoHanded:   item.twoHanded   || false,
+          offHand:     false,
+          attackMisc:  0, damageMisc: 0, notes: '',
+        });
+        renderArmi(_char); _dirty();
+      });
+    });
     el('btn-add-weapon')?.addEventListener('click', () => {
       if (!_char) return;
       _char.weapons.push({
@@ -1574,6 +1619,22 @@ const UI = (() => {
     ['pp','gp','sp','cp'].forEach(coin => {
       el('currency-' + coin)?.addEventListener('change', e => {
         if (_char) { _char.currency[coin] = toInt(e.target.value); _dirty(); }
+      });
+    });
+    el('btn-search-item')?.addEventListener('click', () => {
+      if (!_char || typeof SearchModal === 'undefined') return;
+      SearchModal.openEquipment(null, item => {
+        _char.equipment.push({
+          id:       Character.generateId(),
+          name:     item.name,
+          qty:      1,
+          weight:   item.weight || 0,
+          cost:     item.cost   || '',
+          location: 'zaino',
+          worn:     false,
+          notes:    '',
+        });
+        renderEquipaggiamento(_char); _dirty();
       });
     });
     el('btn-add-item')?.addEventListener('click', () => {

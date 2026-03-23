@@ -451,7 +451,10 @@
 
         <!-- Armatura indossata -->
         <div class="section-block">
-          <h3>Armatura Indossata</h3>
+          <div class="section-header">
+            <h3>Armatura Indossata</h3>
+            <button id="btn-search-armor" class="btn btn-sm btn-ghost" title="Cerca armatura nel database"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+          </div>
           <div class="field-row">
             <div class="field-group">
               <label>Nome</label>
@@ -657,7 +660,10 @@
         <div class="section-block">
           <div class="section-header">
             <h3>Armi e Attacchi</h3>
-            <button id="btn-add-weapon" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Arma</button>
+            <div style="display:flex;gap:0.4rem">
+              <button id="btn-search-weapon" class="btn btn-sm btn-ghost" title="Cerca arma nel database"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+              <button id="btn-add-weapon" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Arma</button>
+            </div>
           </div>
           <div id="weapons-list" class="weapons-list">
             <!-- Generato da ui.js -->
@@ -729,7 +735,10 @@
         <div class="section-block">
           <div class="section-header">
             <h3>Inventario</h3>
-            <button id="btn-add-item" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Oggetto</button>
+            <div style="display:flex;gap:0.4rem">
+              <button id="btn-search-item" class="btn btn-sm btn-ghost" title="Cerca oggetto nel database"><i class="fa-solid fa-magnifying-glass"></i> Cerca</button>
+              <button id="btn-add-item" class="btn btn-sm btn-secondary"><i class="fa-solid fa-plus"></i> Aggiungi Oggetto</button>
+            </div>
           </div>
           <div id="equipment-list" class="equipment-list">
             <!-- Generato da ui.js -->
@@ -964,6 +973,7 @@
   <script src="js/data/skills-list.js"></script>
   <script src="js/data/spells-list.js"></script>
   <script src="js/data/feats-list.js"></script>   <!-- PF1_FEATS_DB global -->
+  <script src="js/data/equipment-db.js"></script> <!-- PF1_EQUIPMENT_DB global -->
   <script src="js/data/races-list.js"></script>   <!-- PF1_RACES_DB global -->
   <script src="js/data/languages-list.js"></script> <!-- PF1_LANGUAGES global -->
   <script src="js/data/classes-config.js"></script>

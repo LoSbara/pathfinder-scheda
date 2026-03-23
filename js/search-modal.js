@@ -1,28 +1,36 @@
 /**
  * search-modal.js
- * Modal riutilizzabile per ricerca incantesimi (PF1_SPELLS_DB) e talenti (PF1_FEATS_DB).
+ * Modal riutilizzabile per ricerca incantesimi, talenti ed equipaggiamento.
  *
  * API pubblica:
  *   SearchModal.openSpells(char, blockIdx, onSelect)
  *     → onSelect(spell, blockIdx) — spell è l'oggetto da PF1_SPELLS_DB
  *   SearchModal.openFeats(onSelect)
  *     → onSelect(feat) — feat è l'oggetto da PF1_FEATS_DB
+ *   SearchModal.openEquipment(categoryFilter, onSelect)
+ *     → categoryFilter: 'weapon'|'armor'|['armor','shield']|null (tutto)
+ *     → onSelect(item) — item è l'oggetto da PF1_EQUIPMENT_DB
  */
 const SearchModal = (() => {
   const PAGE_SIZE = 20;
 
-  let _mode     = null;   // 'spells' | 'feats'
-  let _onSelect = null;
-  let _blockIdx = null;
-  let _char     = null;
-  let _page     = 0;
-  let _filtered = [];
+  let _mode          = null;   // 'spells' | 'feats' | 'equipment'
+  let _onSelect      = null;
+  let _blockIdx      = null;
+  let _char          = null;
+  let _page          = 0;
+  let _filtered      = [];
 
-  // filtri correnti
+  // filtri correnti (spells/feats)
   let _fClass = '';
   let _fLevel = '';
   let _fType  = '';
   let _fText  = '';
+
+  // filtri equipment
+  let _equipCatLock = null;   // filtro categoria bloccato ('weapon'|['armor','shield']|null)
+  let _fCat         = '';     // categoria selezionata nel dropdown
+  let _fSubcat      = '';     // sottocategoria selezionata
 
   // ── helpers ───────────────────────────────────────────────────────────────
 
@@ -72,6 +80,28 @@ const SearchModal = (() => {
     _show('Cerca Talento');
   }
 
+  /**
+   * Apre la modal per cercare equipaggiamento da PF1_EQUIPMENT_DB.
+   * @param {string|string[]|null} categoryFilter - 'weapon'|'armor'|['armor','shield']|null
+   * @param {function}             onSelect       - callback(item) invocata al click
+   */
+  function openEquipment(categoryFilter, onSelect) {
+    _mode         = 'equipment';
+    _char         = null;
+    _blockIdx     = null;
+    _onSelect     = onSelect;
+    _page         = 0;
+    _fText        = '';
+    _equipCatLock = categoryFilter || null;
+    _fCat         = (typeof categoryFilter === 'string') ? categoryFilter : '';
+    _fSubcat      = '';
+    _renderFilters();
+    _applyFilter();
+    const titleMap = { weapon:'Cerca Arma', armor:'Cerca Armatura', shield:'Cerca Scudo', gear:'Cerca Oggetto', magic:'Cerca Oggetto Magico' };
+    const t = (typeof categoryFilter === 'string' && titleMap[categoryFilter]) ? titleMap[categoryFilter] : 'Cerca Equipaggiamento';
+    _show(t);
+  }
+
   // ── show / hide ───────────────────────────────────────────────────────────
 
   function _show(title) {
@@ -85,16 +115,34 @@ const SearchModal = (() => {
 
   function _hide() {
     _el('modal-search')?.classList.add('hidden');
-    _mode     = null;
-    _onSelect = null;
-    _filtered = [];
+    _mode         = null;
+    _onSelect     = null;
+    _filtered     = [];
+    _equipCatLock = null;
   }
 
   // ── filter rendering ──────────────────────────────────────────────────────
 
+  // Etichette leggibili per sottocategorie equipment
+  const _SUBCAT_LABELS = {
+    semplice:'Semplice', marziale:'Marziale', esotico:'Esotico', da_fuoco:'Da fuoco',
+    leggera:'Leggera', media:'Media', pesante:'Pesante', scudo:'Scudo',
+    avventura:'Avventura', strumenti:'Strumenti', contenitori:'Contenitori',
+    alchemica:'Alchemica', trasporto:'Trasporto',
+    pozioni:'Pozioni', bacchette:'Bacchette', pergamene:'Pergamene',
+    anelli:'Anelli', amuleti:'Amuleti', mantelli:'Mantelli', cinture:'Cinture',
+    fasce:'Fasce', stivali:'Stivali', guanti:'Guanti', occhiali:'Occhiali',
+    verghe:'Verghe', oggetti_meravigliosi:'Oggetti Meravigliosi',
+  };
+
   function _renderFilters() {
     const filtersEl = _el('modal-search-filters');
     if (!filtersEl) return;
+
+    if (_mode === 'equipment') {
+      _renderEquipmentFilters(filtersEl);
+      return;
+    }
 
     if (_mode === 'spells') {
       const blocks = (_char && _char.spells) ? _char.spells : [];
@@ -151,11 +199,36 @@ const SearchModal = (() => {
     }
   }
 
+  function _renderEquipmentFilters(filtersEl) {
+    // Se bloccato su 'weapon': dropdown subcategoria armi
+    if (_equipCatLock === 'weapon') {
+      const subcats = ['', 'semplice', 'marziale', 'esotico', 'da_fuoco'];
+      const opts = subcats.map(s => `<option value="${_esc(s)}"${s === _fSubcat ? ' selected' : ''}>${s ? _SUBCAT_LABELS[s] : '— Tutti —'}</option>`).join('');
+      filtersEl.innerHTML = `<div class="ms-filter-row"><div class="field-group"><label>Gruppo</label><select id="ms-eq-subcat" class="field-input">${opts}</select></div></div>`;
+      _el('ms-eq-subcat')?.addEventListener('change', e => { _fSubcat = e.target.value; _page = 0; _applyFilter(); });
+
+    // Se bloccato su 'armor' o ['armor','shield']: dropdown tipo armatura
+    } else if (_equipCatLock === 'armor' || (Array.isArray(_equipCatLock) && _equipCatLock.includes('armor'))) {
+      const types = ['', 'leggera', 'media', 'pesante', 'scudo'];
+      const opts = types.map(s => `<option value="${_esc(s)}"${s === _fSubcat ? ' selected' : ''}>${s ? _SUBCAT_LABELS[s] : '— Tutti —'}</option>`).join('');
+      filtersEl.innerHTML = `<div class="ms-filter-row"><div class="field-group"><label>Tipo</label><select id="ms-eq-subcat" class="field-input">${opts}</select></div></div>`;
+      _el('ms-eq-subcat')?.addEventListener('change', e => { _fSubcat = e.target.value; _page = 0; _applyFilter(); });
+
+    // Modalità libera: dropdown categoria principale
+    } else {
+      const cats = [['','— Tutto —'],['weapon','Armi'],['armor','Armature'],['shield','Scudi'],['gear','Oggetti'],['magic','Magia']];
+      const catOpts = cats.map(([v, l]) => `<option value="${v}"${v === _fCat ? ' selected' : ''}>${_esc(l)}</option>`).join('');
+      filtersEl.innerHTML = `<div class="ms-filter-row"><div class="field-group"><label>Categoria</label><select id="ms-eq-cat" class="field-input">${catOpts}</select></div></div>`;
+      _el('ms-eq-cat')?.addEventListener('change', e => { _fCat = e.target.value; _fSubcat = ''; _page = 0; _applyFilter(); });
+    }
+  }
+
   // ── filter logic ──────────────────────────────────────────────────────────
 
   function _applyFilter() {
-    if (_mode === 'spells') _filterSpells();
-    else                    _filterFeats();
+    if (_mode === 'spells')    _filterSpells();
+    else if (_mode === 'feats') _filterFeats();
+    else                        _filterEquipment();
     _renderResults();
   }
 
@@ -203,6 +276,36 @@ const SearchModal = (() => {
     });
   }
 
+  function _filterEquipment() {
+    if (typeof PF1_EQUIPMENT_DB === 'undefined') { _filtered = []; return; }
+    const txt = _fText.toLowerCase().trim();
+    _filtered = PF1_EQUIPMENT_DB.filter(item => {
+      // categoria bloccata
+      if (_equipCatLock) {
+        if (Array.isArray(_equipCatLock)) {
+          if (!_equipCatLock.includes(item.category)) return false;
+        } else {
+          if (item.category !== _equipCatLock) return false;
+        }
+      }
+      // categoria scelta dall'utente (modalità libera)
+      if (_fCat && item.category !== _fCat) return false;
+      // sottocategoria
+      if (_fSubcat) {
+        const s = item.subcategory || item.armorType || '';
+        if (s !== _fSubcat) return false;
+      }
+      // testo
+      if (txt) {
+        const n  = (item.name    || '').toLowerCase();
+        const en = (item.nameEN  || '').toLowerCase();
+        const sp = (item.special || '').toLowerCase();
+        if (!n.includes(txt) && !en.includes(txt) && !sp.includes(txt)) return false;
+      }
+      return true;
+    });
+  }
+
   // ── results rendering ─────────────────────────────────────────────────────
 
   function _getSpellLvDisplay(sp) {
@@ -236,7 +339,39 @@ const SearchModal = (() => {
       return;
     }
 
-    if (_mode === 'spells') {
+    if (_mode === 'equipment') {
+      resultsEl.innerHTML = items.map((it, i) => {
+        let badge = '';
+        let sub   = '';
+        if (it.category === 'weapon') {
+          badge = `${_esc(it.damage||'—')} ${_esc(it.critRange||'20')}/×${it.critMult||2} ${_esc(it.damageType||'')} · ${_esc(it.cost||'—')}`;
+          if (it.special) sub = _esc(it.special);
+        } else if (it.category === 'armor' || it.category === 'shield') {
+          badge = `+${it.bonus||0} CA`;
+          const parts = [];
+          if (it.maxDex != null) parts.push(`Des max ${it.maxDex}`);
+          if (it.acp) parts.push(`PPA ${it.acp}`);
+          if (it.asf) parts.push(`FIA ${it.asf}%`);
+          parts.push(_esc(it.cost||'—'));
+          sub = parts.join(' · ');
+        } else {
+          badge = _esc(it.cost || '—');
+          const wt = it.weight ? `${it.weight} kg` : '';
+          const sc = _SUBCAT_LABELS[it.subcategory] || it.subcategory || '';
+          sub = [sc, wt].filter(Boolean).join(' · ');
+        }
+        const en = it.nameEN ? `<span class="ms-result-school">${_esc(it.nameEN)}</span>` : '';
+        return `
+          <div class="ms-result-item" data-idx="${start + i}">
+            <div class="ms-result-main">
+              <span class="ms-result-name">${_esc(it.name)}</span>
+              ${en}
+              <span class="ms-result-badge">${badge}</span>
+            </div>
+            ${sub ? `<div class="ms-result-sub">${sub}</div>` : ''}
+          </div>`;
+      }).join('');
+    } else if (_mode === 'spells') {
       resultsEl.innerHTML = items.map((sp, i) => {
         const lv  = _getSpellLvDisplay(sp);
         const sub = [sp.components, sp.range].filter(Boolean).join(' · ');
@@ -317,5 +452,5 @@ const SearchModal = (() => {
     _initEvents();
   }
 
-  return { openSpells, openFeats };
+  return { openSpells, openFeats, openEquipment };
 })();
