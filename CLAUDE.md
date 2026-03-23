@@ -1,7 +1,9 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-23 (sessione 8)
+> Last updated: 2026-03-23 (sessione 9)
+
+> ⚠ **DOCUMENTAZIONE UFFICIALE DISPONIBILE** — Tutti i dati di gioco (incantesimi, talenti, equipaggiamento, razze, classi, ecc.) devono essere tratti dalla documentazione ufficiale elencata nella Sezione 11, NON inventati o dedotti dall'addestramento del modello. Quando si creano o aggiornano file `data/*.js`, consultare sempre le fonti ufficiali.
 
 ---
 
@@ -620,8 +622,18 @@ _(vedi sezione 0 per la lista aggiornata)_
 - **Progression**: One level per floor (party starts at level 1, max level 13)
 - **XP**: The app stores XP (`meta.xp`) but the campaign uses level-based progression by floor, so XP is optional
 - **Reference rules**:
-  - Italian: https://golarion.altervista.org/wiki/Pagina_principale
-  - English: https://www.d20pfsrd.com
+  - Italian (principale): https://golarion.altervista.org/wiki/Pagina_principale
+  - English (principale): https://www.d20pfsrd.com
+- **Fonti ufficiali per sezione** (usare SEMPRE queste quando si popolano i file `data/`):
+
+  | Sezione | IT | EN |
+  |---|---|---|
+  | Equipaggiamento | https://golarion.altervista.org/wiki/Equipaggiamento | https://www.d20pfsrd.com/equipment/ |
+  | Incantesimi | https://golarion.altervista.org/wiki/Incantesimi | https://www.d20pfsrd.com/magic/all-spells/ |
+  | Talenti | https://golarion.altervista.org/wiki/Talenti | https://www.d20pfsrd.com/feats/ |
+  | Razze | https://golarion.altervista.org/wiki/Razze | https://www.d20pfsrd.com/races/ |
+  | Classi | https://golarion.altervista.org/wiki/Classi | https://www.d20pfsrd.com/classes/ |
+  | Abilità | https://golarion.altervista.org/wiki/Abilit%C3%A0 | https://www.d20pfsrd.com/skills/ |
 - **Classi supportate**: tutte e 33 le classi PF1 definite in `ClassConfig.CLASSES`. La meccanica dell'Ira (rage/bloodline) è supportata perché presente in più classi (Barbaro, Iracondo di Stirpe, Skald, ecc.) — nessuna classe ha trattamento speciale nel codice.
 
 ---
