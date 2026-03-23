@@ -555,6 +555,14 @@ Fantasy dark theme. Key CSS custom properties:
 - ~~`PF1_FEATS_DB`~~ — **FATTO** 339 talenti
 - ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
 - ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`, UI a due livelli in Sommario
+- ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` refactored da oggetto singolo ad array di blocchi per classe incantatrice
+
+### Bug noti / Correzioni necessarie 🐛
+1. **⚠ Blocchi incantatrici non devono essere aggiunti manualmente** — Il tab Incantesimi mostra un bottone "Aggiungi classe incantatrice" (`#btn-add-caster-class`) che è concettualmente sbagliato. In PF1, le classi incantatrici derivano dalle classi scelte del personaggio: si ottengono alla creazione del PG (livello 1) o scegliendo il multiclasse durante il level-up, non aggiungendole a mano nel tab Incantesimi. La correzione prevede:
+   - Rimuovere il bottone "Aggiungi classe incantatrice" e la riga `.add-caster-block-row` da `index.html`
+   - Rimuovere il listener `#btn-add-caster-class` da `_bindSpells()` in `ui.js`
+   - I blocchi incantatrici devono comparire/scomparire **esclusivamente** in base a `meta.classes` — già gestito da `_syncCasterBlocksFromClasses()` che viene chiamata da `applyClassProfile()`. Verificare che questa funzione sia chiamata anche quando si modifica il nome/livello di una classe nel Sommario.
+   - Nota: `_syncCasterBlocksFromClasses` conserva già i blocchi con dati (non sovrascrive slot/incantesimi) — il comportamento di merge è già corretto.
 
 ### Priorità alta 🔴
 1. **Modal ricerca incantesimi** — sostituire l'autocomplete semplice con una schermata modale che chieda il livello dell'incantesimo e filtri `PF1_SPELLS_DB` per: classe incantatrice del PG (o le sue classi), livello spell selezionato. Il giocatore sceglie dall'elenco filtrato e l'incantesimo viene aggiunto automaticamente con tutti i campi compilati. Vedi Sezione 20.
