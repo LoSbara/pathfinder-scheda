@@ -1,7 +1,7 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-24 (sessione 10)
+> Last updated: 2026-03-25 (sessione 11)
 
 > ⚠ **DOCUMENTAZIONE UFFICIALE DISPONIBILE** — Tutti i dati di gioco (incantesimi, talenti, equipaggiamento, razze, classi, ecc.) devono essere tratti dalla documentazione ufficiale elencata nella Sezione 11, NON inventati o dedotti dall'addestramento del modello. Quando si creano o aggiornano file `data/*.js`, consultare sempre le fonti ufficiali.
 
@@ -11,9 +11,20 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-24 (sessione 10)
+### Ultima sessione: 2026-03-25 (sessione 11)
 
-**Tutto committato.** Ultimo commit: `ccabff5`
+**Tutto committato.** Ultimo commit: `7b53036`
+
+**Modifiche sessione 11:**
+- `js/data/feats-list.js` — **ESPANSO** da 398 → **487 talenti** (commit `7b53036`). Aggiunte 89 voci:
+  - **Combattimento (+35)**: Arma Bizzarra, Arma da Lancio, Sgambetto Migliorato + Superiore, Taglio Decisivo + Grande, Attacco di Ritorno, Combattere in Gruppo, Fuoco Concentrato, Percuotere, Difesa Elaborata, Maestria con Armi Improvvisate, Carica con Arma da Lancio, catena Tiro del Derviscio (UC), +altri APG/UC/ACG
+  - **Stile (+19)**: Stile dello Scorpione (CRB solo); catene complete Tigre, Kirino, Djinn, Janni (UC), Assalitore (ACG Jabbing Style), Mangusta (UC)
+  - **Critico (+3)**: Accecante (Blinding), Nauseante (Sickening), Dissestante
+  - **Generali (+20)**: Velocità, Colpo Energetico, Perfezione Arcana, Bombe Extra, Evoluzione Extra, Coraggio Extra, Portamento Extra, Ampiezza d'Esperienza, Abilità Caratteristica, Guarigione Spontanea, +altri
+  - **Metamagia (+4)**: Incantesimi Elementali (APG), Disorientanti, Esaltanti, Accelerati
+  - **Incanalare Energia (+3)**: Protezione, Vita, Terrore
+  - **Eroici (+2)**: Grazia, Coraggio dell'Eroe
+  - **Trama (+3)**: Vendetta, Ultimo Respiro, Portatore di Speranza
 
 **Modifiche sessione 10:**
 - `js/data/equipment-db.js` — **ESPANSO** da 349 → **501 items** (commit `ccabff5`). Aggiunte:
@@ -27,6 +38,7 @@
 - `js/search-modal.js` — `_SUBCAT_LABELS` aggiornato con `bastoni`, `bracciali`, `ioun_stone`; campo `special` ora visibile nei risultati degli oggetti magici
 
 **Commit storici rilevanti (tutto il resto è già committato):**
+- `7b53036` — `PF1_FEATS_DB`: 398→487 talenti (Combattimento, Stile, Critico, Generali, Metamagia, Incanalare, Eroici, Trama)
 - `ccabff5` — Archivio equipaggiamento magico completo (349→501 items) + search-modal updates
 - `2ce31ab` — `PF1_FEATS_DB`: 339→398 talenti (Creazione Oggetti, Combattimento, Metamagia, Squadra)
 - `52c24fe` — `PF1_EQUIPMENT_DB`: 349 items base
@@ -37,7 +49,7 @@
 - `95c5414` — `char.spells` refactored ad array di blocchi multi-classe
 
 **Prossimo lavoro prioritario (in ordine):**
-1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 398 IT)
+1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 487 IT — restano ~200 mancanti)
 2. Bloodline powers UI (`rage.bloodlinePowers`)
 3. `armor.speedArmor` → `calcSpeed()` wiring
 
@@ -80,7 +92,7 @@ pathfinder-scheda/
 │   ├── data/
 │   │   ├── skills-list.js  ← Global PF1_SKILLS array (35 skills, static)
 │   │   ├── spells-list.js  ← Global PF1_SPELLS_DB array (2927 incantesimi: 246 IT + 2681 EN)
-│   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (398 talenti PF1)
+│   │   ├── feats-list.js   ← Global PF1_FEATS_DB array (487 talenti PF1)
 │   │   ├── equipment-db.js ← Global PF1_EQUIPMENT_DB array (501 item: armi, armature, oggetti, magia+incantata)
 │   │   ├── races-list.js   ← Global PF1_RACES_DB array (29 razze con tratti, lingue, mod, alt traits)
 │   │   ├── languages-list.js ← Global PF1_LANGUAGES array (lingue del mondo di Golarion)
@@ -131,7 +143,7 @@ Each JS file exposes a single `const Name = (() => { ... return { ... }; })();` 
 |---|---|---|
 | `PF1_SKILLS` | `data/skills-list.js` | Array of skill definitions (35 skills) |
 | `PF1_SPELLS_DB` | `data/spells-list.js` | Array of spell definitions (2927: 246 IT + 2681 EN) |
-| `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (398 talenti) |
+| `PF1_FEATS_DB` | `data/feats-list.js` | Array of feat definitions (487 talenti) |
 | `PF1_EQUIPMENT_DB` | `data/equipment-db.js` | Array of equipment (300 item: armi/armature/oggetti/magia) |
 | `SearchModal` | `search-modal.js` | Modal ricerca incantesimi/talenti/equipaggiamento (openSpells, openFeats, openEquipment) |
 | `PF1_RACES_DB` | `data/races-list.js` | Array of race definitions (29 razze, with altTraits) |
@@ -584,7 +596,7 @@ Fantasy dark theme. Key CSS custom properties:
 ### Completati ✅
 - ~~Autocomplete talenti~~ — **FATTO** (sessione 4)
 - ~~Autocomplete incantesimi~~ — **FATTO** (sessione 4)
-- ~~`PF1_FEATS_DB`~~ — **FATTO** 398 talenti (IT, campo nameEN, Creazione Oggetti inclusa)
+- ~~`PF1_FEATS_DB`~~ — **FATTO** 487 talenti (IT, campo nameEN, Creazione Oggetti inclusa)
 - ~~`PF1_SPELLS_DB`~~ — **FATTO** 2927 incantesimi (246 IT + 2681 EN, deduplicati)
 - ~~Sistema archetipi~~ — **FATTO** in `classes-config.js`
 - ~~Modello incantesimi multi-classe~~ — **FATTO** (sessione 5): `char.spells` = array di blocchi per classe incantatrice
@@ -599,6 +611,7 @@ Fantasy dark theme. Key CSS custom properties:
 - ~~`PF1_EQUIPMENT_DB` base~~ — **FATTO** (sessione 9): 349 item armi/armature/oggetti/magia; `SearchModal.openEquipment()` (commit `52c24fe`)
 - ~~Equipaggiamento magico completo~~ — **FATTO** (sessione 10): 501 item totali; +152 armi/armature/scudi magici +1→+5, bastoni, bracciali, Pietre Ioun, nuovi meravigliosi (commit `ccabff5`)
 - ~~Talenti Creazione Oggetti + Metamagia + Squadra~~ — **FATTO** (sessione 9–10): 339→398 talenti (commit `2ce31ab`)
+- ~~Talenti aggiuntivi sessione 11~~ — **FATTO** (sessione 11): 398→487 talenti, +89 voci (Combattimento, Stile catene Tiger/Kirino/Djinn/Janni/Assalitore/Mangusta, Critico, Generali, Metamagia, Incanalare, Eroici, Trama) (commit `7b53036`)
 
 ### Bug noti / Correzioni necessarie 🐛
 _(nessun bug noto aperto — tutti corretti)_
@@ -607,7 +620,7 @@ _(nessun bug noto aperto — tutti corretti)_
 _(vedi sezione 0 per la lista aggiornata)_
 
 ### Priorità media 🟡
-1. **Importare talenti EN** — scrapare d20pfsrd.com/feats per aggiungere la copertura completa dei talenti (attualmente 398 IT con nameEN; il totale PF1 è ~700+).
+1. **Importare talenti mancanti** — completare la copertura dei talenti PF1 (attualmente 487 IT con nameEN; il totale PF1 stimato è ~700+, restano ~200 voci).
 
 ### Priorità bassa 🟢
 9. **Bloodline powers UI** (`rage.bloodlinePowers`) — dati nel model, nessuna sezione UI dedicata.
