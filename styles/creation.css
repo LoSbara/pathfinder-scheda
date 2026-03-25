@@ -579,3 +579,6 @@
 .pos { color: var(--green-light); }
 .neg { color: #ef9a9a; }
 .text-muted { color: var(--text-muted); }
+
+/* ── Card Ricchezza Iniziale ─────────────────────────────────────────────── */
+.cs-sum-card--gold { border-color: var(--gold); }

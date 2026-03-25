@@ -594,11 +594,18 @@ const UI = (() => {
 
   // ── Equipaggiamento ───────────────────────────────────────────────────────
 
+  function _calcCurrencyTotalGp(char) {
+    const c = char.currency || {};
+    return (c.pp || 0) * 10 + (c.gp || 0) + (c.sp || 0) / 10 + (c.cp || 0) / 100;
+  }
+
   function renderEquipaggiamento(char) {
     setVal('currency-pp', char.currency?.pp || 0);
     setVal('currency-gp', char.currency?.gp || 0);
     setVal('currency-sp', char.currency?.sp || 0);
     setVal('currency-cp', char.currency?.cp || 0);
+    const totalGpEl = el('currency-total-gp');
+    if (totalGpEl) totalGpEl.textContent = parseFloat(_calcCurrencyTotalGp(char).toFixed(2));
     _updateWeight(char);
 
     const list = el('equipment-list');
@@ -1975,7 +1982,12 @@ const UI = (() => {
   function _bindEquip() {
     ['pp','gp','sp','cp'].forEach(coin => {
       el('currency-' + coin)?.addEventListener('change', e => {
-        if (_char) { _char.currency[coin] = toInt(e.target.value); _dirty(); }
+        if (_char) {
+          _char.currency[coin] = toInt(e.target.value);
+          _dirty();
+          const totalGpEl = el('currency-total-gp');
+          if (totalGpEl) totalGpEl.textContent = parseFloat(_calcCurrencyTotalGp(_char).toFixed(2));
+        }
       });
     });
     el('btn-search-item')?.addEventListener('click', () => {

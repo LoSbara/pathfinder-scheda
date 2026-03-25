@@ -91,6 +91,7 @@ const Creation = (() => {
       bonusLanguages: [],              // lingue bonus da INT (scelte)
       skillRanks: {},                  // { skillId: 0|1 }
       feats: [],                       // [{ name, type }]
+      startingGp: null,          // null = non ancora tirato/scelto
     };
     _step = 0;
 
@@ -989,7 +990,43 @@ const Creation = (() => {
             <h3><i class="fa-solid fa-language"></i> Lingue</h3>
             <p>${_e(allLangs.join(', '))}</p>
           </div>` : ''}
+        <div class="cs-sum-card cs-sum-card--gold" id="cs-sum-gold">
+          <h3><i class="fa-solid fa-coins"></i> Ricchezza Iniziale</h3>
+          <div class="cs-sum-row">
+            <span>Formula</span>
+            <strong>${cls?.startingGold ? cls.startingGold.dice + 'd6 × ' + cls.startingGold.multiplier + ' go' : '—'}</strong>
+          </div>
+          ${_draft.startingGp !== null ? `
+          <div class="cs-sum-row">
+            <span>Risultato</span>
+            <strong style="color:var(--gold)">${_draft.startingGp} go</strong>
+          </div>` : '<p class="text-muted" style="font-size:0.8rem;margin:0.3rem 0">Non ancora assegnata</p>'}
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+            <button class="btn btn-sm btn-ghost" id="cs-btn-roll-gold">
+              <i class="fa-solid fa-dice-d6"></i> Tira
+            </button>
+            <button class="btn btn-sm btn-ghost" id="cs-btn-avg-gold">
+              <i class="fa-solid fa-calculator"></i> Media
+            </button>
+          </div>
+        </div>
       </div>`;
+
+    // Listener ricchezza iniziale
+    document.getElementById('cs-btn-roll-gold')?.addEventListener('click', () => {
+      const sg = _draft.classObj?.startingGold;
+      if (!sg) return;
+      let total = 0;
+      for (let i = 0; i < sg.dice; i++) total += Math.floor(Math.random() * sg.sides) + 1;
+      _draft.startingGp = total * sg.multiplier;
+      _renderSummary(document.getElementById('creation-content'));
+    });
+    document.getElementById('cs-btn-avg-gold')?.addEventListener('click', () => {
+      const sg = _draft.classObj?.startingGold;
+      if (!sg) return;
+      _draft.startingGp = Math.floor(sg.dice * ((sg.sides + 1) / 2)) * sg.multiplier;
+      _renderSummary(document.getElementById('creation-content'));
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -1097,6 +1134,9 @@ const Creation = (() => {
         known: [],
       }];
     }
+
+    // ── Valuta iniziale ────────────────────────────────────────────────────
+    char.currency.gp = _draft.startingGp ?? 0;
 
     return char;
   }

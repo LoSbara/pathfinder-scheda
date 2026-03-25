@@ -1176,3 +1176,36 @@ label {
   .party-stat-box { min-width: 40px; padding: 0.2rem 0.3rem; }
   .party-hp-quick-btns { gap: 2px; }
 }
+
+/* ── PARTY TRANSFER PANEL ──────────────────────────────────────────────── */
+.party-transfer-panel {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border-gold);
+  padding: 1rem;
+  z-index: 200;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.5);
+}
+.party-transfer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.party-transfer-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--gold);
+  font-family: var(--font-title);
+}
+.party-transfer-form { display: flex; flex-direction: column; gap: 0.5rem; }
+.party-transfer-row { display: flex; align-items: center; gap: 0.5rem; }
+.party-transfer-row label {
+  font-size: 0.8rem;
+  color: var(--text-label);
+  min-width: 50px;
+  flex-shrink: 0;
+}
+.party-transfer-row .field-input { flex: 1; }
+.party-transfer-row .field-narrow { flex: 0 0 auto; width: 90px; }

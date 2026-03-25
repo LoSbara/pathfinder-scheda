@@ -1,7 +1,7 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-25 (sessione 12)
+> Last updated: 2026-03-25 (sessione 17)
 
 > ⚠ **DOCUMENTAZIONE UFFICIALE DISPONIBILE** — Tutti i dati di gioco (incantesimi, talenti, equipaggiamento, razze, classi, ecc.) devono essere tratti dalla documentazione ufficiale elencata nella Sezione 11, NON inventati o dedotti dall'addestramento del modello. Quando si creano o aggiornano file `data/*.js`, consultare sempre le fonti ufficiali.
 
@@ -13,7 +13,7 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-25 (sessione 15)
+### Ultima sessione: 2026-03-25 (sessione 17)
 
 **NON ancora committato.** Modifiche in working tree, pronte per commit.
 
@@ -100,6 +100,42 @@
 - `index.html` — `<select id="meta-race-variant">` nel Sommario (nascosto se razza senza varianti)
 - `js/ui.js` — `_updateRaceVariantSelect(char)`: match per `raceId` o nome, popola/mostra/nasconde il select; binding su `meta-race-variant` change
 - `styles/creation.css` — stili `.cs-variants`, `.cs-variant-grid`, `.cs-variant-card`
+
+**Modifiche sessione 16:**
+
+#### Bug fix — COMPLETATO
+- `index.html` — `party.js` spostato **prima** di `app.js` nell'ordine di caricamento script (era dopo: `Party` poteva risultare `undefined` se c'era un errore di parse)
+- `js/party.js:_adjustHP()` — aggiunto lower bound PF1-corretto sugli HP:
+  ```js
+  const conScore = Combat.effectiveScore(char, 'con');
+  const hpMin = -conScore;   // PF1: morto a ≤ −CON
+  char.combat.hpCurrent = Math.max(hpMin, Math.min(hpMax, ...));
+  ```
+  Prima mancava `Math.max` e gli HP potevano scendere a −∞ cliccando i pulsanti danno.
+
+**Modifiche sessione 17:**
+
+#### Ricchezza Iniziale nel wizard di creazione — COMPLETATO
+- `js/data/classes-config.js` — campo `startingGold: { dice, sides, multiplier }` aggiunto a tutte le 33 classi; valori ufficiali PF1 (Monaco 1d6×10, Druido/Mago/Stregone/Convocatore/Arcanista 2d6×10, la maggior parte 3d6×10, classi marziali pesanti 5d6×10)
+- `js/creation.js`:
+  - `_draft` — aggiunto `startingGp: null`
+  - `_renderSummary()` — card "Ricchezza Iniziale" con formula classe, btn "Tira" (random) e "Media" (formula esatta), display risultato; ri-renderizza il passo al click
+  - `_buildCharacter()` — `char.currency.gp = _draft.startingGp ?? 0`
+- `styles/creation.css` — `.cs-sum-card--gold` (bordo oro per la card)
+
+#### Gestione valuta migliorata — COMPLETATO
+- `index.html` — `#currency-total-row` con `#currency-total-gp` sotto la sezione monete nel tab Equipaggiamento; `#btn-party-transfer` (icona moneta) nella topbar party; `#party-transfer-panel` pannello fisso bottom per trasferimento
+- `js/ui.js`:
+  - `_calcCurrencyTotalGp(char)` — helper: `pp×10 + gp + sp/10 + cp/100`
+  - `renderEquipaggiamento()` + listener change — aggiornano `#currency-total-gp` in tempo reale
+- `js/party.js`:
+  - `_openTransferPanel()` — popola i dropdown con i membri del party, mostra il pannello
+  - `_closeTransferPanel()` — nasconde il pannello
+  - `_executeTransfer()` — verifica disponibilità, deduci dal mittente, accredita al destinatario, salva entrambi, aggiorna UI e card; toast success/error
+  - `_render()` — `#btn-party-transfer` visibile solo in view mode con ≥2 membri
+  - `_bindEvents()` — listener per i 3 pulsanti del pannello transfer
+- `styles/main.css` — `.party-transfer-panel` (fixed bottom), `.party-transfer-header`, `.party-transfer-form`, `.party-transfer-row`
+- `styles/character.css` — `.currency-total-row` e `.currency-total-row span`
 
 **Prossimo lavoro prioritario (in ordine):**
 1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 487 IT)

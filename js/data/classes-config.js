@@ -41,6 +41,7 @@ const ClassConfig = (() => {
       description: 'Guerriero selvaggio che attinge alla furia per potenziare il combattimento.',
       saves: { fort: 'good', ref: 'bad', will: 'bad' },
       icon: 'fa-solid fa-tornado',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'bardo',
@@ -56,6 +57,7 @@ const ClassConfig = (() => {
       description: 'Artista versatile che lancia incantesimi arcani e ispira i compagni con le esibizioni bardiche.',
       saves: { fort: 'bad', ref: 'good', will: 'good' },
       icon: 'fa-solid fa-music',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'chierico',
@@ -71,6 +73,7 @@ const ClassConfig = (() => {
       description: 'Tramite divino che lancia incantesimi, canalizza energia e invoca i poteri del proprio dominio.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-cross',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'druido',
@@ -86,6 +89,7 @@ const ClassConfig = (() => {
       description: 'Custode della natura capace di trasformarsi in animali e controllare le forze della natura.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-tree',
+      startingGold: { dice: 2, sides: 6, multiplier: 10 },
     },
     {
       id: 'guerriero',
@@ -101,6 +105,7 @@ const ClassConfig = (() => {
       description: 'Maestro del combattimento armato, con accesso a talenti di combattimento bonus.',
       saves: { fort: 'good', ref: 'bad', will: 'bad' },
       icon: 'fa-solid fa-shield-halved',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'ladro',
@@ -116,6 +121,7 @@ const ClassConfig = (() => {
       description: 'Esperto furtivo specializzato in inganni, trappole e attacchi furtivi.',
       saves: { fort: 'bad', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-user-secret',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'mago',
@@ -131,6 +137,7 @@ const ClassConfig = (() => {
       description: 'Studioso dell\'arcano che prepara incantesimi da libri di incantesimi.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-hat-wizard',
+      startingGold: { dice: 2, sides: 6, multiplier: 10 },
     },
     {
       id: 'monaco',
@@ -146,6 +153,7 @@ const ClassConfig = (() => {
       description: 'Combattente ascetico che padroneggia il combattimento disarmato e canalizza l\'energia ki.',
       saves: { fort: 'good', ref: 'good', will: 'good' },
       icon: 'fa-solid fa-hand-fist',
+      startingGold: { dice: 1, sides: 6, multiplier: 10 },
     },
     {
       id: 'paladino',
@@ -161,6 +169,7 @@ const ClassConfig = (() => {
       description: 'Campione della legge e del bene con poteri divini per punire i malvagi e guarire gli alleati.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-shield',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'ranger',
@@ -176,6 +185,7 @@ const ClassConfig = (() => {
       description: 'Cacciatore esperto con nemici prescelti, compagno animale e magia divina.',
       saves: { fort: 'good', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-compass',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'stregone',
@@ -191,6 +201,7 @@ const ClassConfig = (() => {
       description: 'Lanciatore arcano con poteri innati derivanti dalla propria stirpe magica.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-wand-magic-sparkles',
+      startingGold: { dice: 2, sides: 6, multiplier: 10 },
     },
 
     // ══════════════════════════════════════════════════════════════════════
@@ -210,6 +221,7 @@ const ClassConfig = (() => {
       description: 'Scienziato arcano che padroneggia estratti, bombe e il potente mutageno.',
       saves: { fort: 'good', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-flask',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'cavaliere',
@@ -225,6 +237,7 @@ const ClassConfig = (() => {
       description: 'Guerriero montato che segue un ordine cavalleresco e sfida i suoi avversari.',
       saves: { fort: 'good', ref: 'bad', will: 'bad' },
       icon: 'fa-solid fa-chess-knight',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'convocatore',
@@ -240,6 +253,7 @@ const ClassConfig = (() => {
       description: 'Lanciatore di incantesimi con un potente eidolon come compagno permanente.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-dragon',
+      startingGold: { dice: 2, sides: 6, multiplier: 10 },
     },
     {
       id: 'fattucchiera',
@@ -255,6 +269,7 @@ const ClassConfig = (() => {
       description: 'Lanciatore arcano guidata da un misterioso patrono, con potenti maledizioni.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-broom',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'inquisitore',
@@ -270,6 +285,7 @@ const ClassConfig = (() => {
       description: 'Agente divino che usa giudizi, incantesimi e tattiche di combattimento per la sua divinità.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-scale-balanced',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'magus',
@@ -285,6 +301,7 @@ const ClassConfig = (() => {
       description: 'Guerriero arcano che fonde magia e combattimento in mischia tramite la riserva arcana.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-bolt-lightning',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'morfico',
@@ -300,6 +317,7 @@ const ClassConfig = (() => {
       description: 'Combattente capace di trasformarsi parzialmente in animali per potenziare gli attacchi.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-paw',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'oracolo',
@@ -315,6 +333,7 @@ const ClassConfig = (() => {
       description: 'Lanciatore divino afflitto da una maledizione oracolare ma dotato di un potente mistero.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-eye',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'pistolero',
@@ -330,6 +349,7 @@ const ClassConfig = (() => {
       description: 'Combattente con armi da fuoco che guadagna punti coraggio per eseguire prodezze speciali.',
       saves: { fort: 'good', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-crosshairs',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'vigilante',
@@ -345,6 +365,7 @@ const ClassConfig = (() => {
       description: 'Giustiziere con doppia identità – pubblica e vigilante – con talenti specializzati.',
       saves: { fort: 'bad', ref: 'good', will: 'good' },
       icon: 'fa-solid fa-mask',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
 
     // ══════════════════════════════════════════════════════════════════════
@@ -364,6 +385,7 @@ const ClassConfig = (() => {
       description: 'Campione del caos e del male, versione oscura del paladino con poteri corrotti.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-skull-crossbones',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'ninja',
@@ -379,6 +401,7 @@ const ClassConfig = (() => {
       description: 'Assassino furtivo orientale che usa ki e tattiche di guerriglia.',
       saves: { fort: 'bad', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-user-ninja',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'samurai',
@@ -394,6 +417,7 @@ const ClassConfig = (() => {
       description: 'Guerriero onorevole orientale con determinazione, ordine e sfida da cavaliere.',
       saves: { fort: 'good', ref: 'bad', will: 'bad' },
       icon: 'fa-solid fa-torii-gate',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
 
     // ══════════════════════════════════════════════════════════════════════
@@ -413,6 +437,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra mago e stregone: prepara incantesimi ma li lancia con slot flessibili.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-book-open',
+      startingGold: { dice: 2, sides: 6, multiplier: 10 },
     },
     {
       id: 'attaccabrighe',
@@ -428,6 +453,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra guerriero e monaco specializzato nel combattimento disarmato e flessibilità marziale.',
       saves: { fort: 'good', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-hand-fist',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'cacciatore',
@@ -443,6 +469,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra ranger e druido, cacciatore esperto con un poderoso compagno animale.',
       saves: { fort: 'good', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-binoculars',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'iracondo_stirpe',
@@ -458,6 +485,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra barbaro e stregone: guerriero furioso con poteri di stirpe e incantesimi arcani.',
       saves: { fort: 'good', ref: 'bad', will: 'bad' },
       icon: 'fa-solid fa-fire',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'guardiamarca',
@@ -473,6 +501,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra chierico e guerriero con benedizioni divine e arma sacra.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-hammer',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
     {
       id: 'schermagliatore',
@@ -488,6 +517,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra guerriero e bardo, maestro della spada che usa bravura per eseguire prodezze.',
       saves: { fort: 'bad', ref: 'good', will: 'bad' },
       icon: 'fa-solid fa-feather',
+      startingGold: { dice: 5, sides: 6, multiplier: 10 },
     },
     {
       id: 'sciamano',
@@ -503,6 +533,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra oracolo e fattucchiera che comunica con gli spiriti e usa maledizioni.',
       saves: { fort: 'bad', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-ghost',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'skald',
@@ -518,6 +549,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra bardo e barbaro che infonde furia nei compagni tramite canti di guerra.',
       saves: { fort: 'good', ref: 'bad', will: 'good' },
       icon: 'fa-solid fa-drum',
+      startingGold: { dice: 3, sides: 6, multiplier: 10 },
     },
     {
       id: 'spia',
@@ -533,6 +565,7 @@ const ClassConfig = (() => {
       description: 'Ibrido tra alchimista e ladro: investigatore acuto con estratti e attacco furtivo.',
       saves: { fort: 'bad', ref: 'good', will: 'good' },
       icon: 'fa-solid fa-magnifying-glass',
+      startingGold: { dice: 4, sides: 6, multiplier: 10 },
     },
   ];
 

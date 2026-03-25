@@ -715,6 +715,9 @@
               <input type="number" id="currency-cp" class="field-input field-narrow" min="0" value="0" />
             </div>
           </div>
+          <div class="currency-total-row">
+            Totale: <span id="currency-total-gp">0</span> go equiv.
+          </div>
         </div>
 
         <!-- Peso -->
@@ -858,9 +861,43 @@
       <button id="btn-party-edit" class="btn btn-ghost btn-sm hidden">
         <i class="fa-solid fa-pen"></i> Gestisci
       </button>
+      <button id="btn-party-transfer" class="btn btn-ghost btn-sm hidden" title="Trasferisci monete">
+        <i class="fa-solid fa-coins"></i>
+      </button>
     </div>
     <div id="party-content" class="party-content">
       <!-- Popolato da party.js -->
+    </div>
+    <div id="party-transfer-panel" class="party-transfer-panel hidden">
+      <div class="party-transfer-header">
+        <h3><i class="fa-solid fa-money-bill-transfer"></i> Trasferisci Monete</h3>
+        <button id="btn-transfer-close" class="btn btn-ghost btn-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="party-transfer-form">
+        <div class="party-transfer-row">
+          <label>Da</label>
+          <select id="transfer-from" class="field-input"></select>
+        </div>
+        <div class="party-transfer-row">
+          <label>Qtà</label>
+          <input type="number" id="transfer-amount" class="field-input field-narrow" min="1" value="1" />
+          <select id="transfer-coin" class="field-input field-narrow">
+            <option value="pp">Platino</option>
+            <option value="gp" selected>Oro</option>
+            <option value="sp">Argento</option>
+            <option value="cp">Rame</option>
+          </select>
+        </div>
+        <div class="party-transfer-row">
+          <label>A</label>
+          <select id="transfer-to" class="field-input"></select>
+        </div>
+        <button id="btn-transfer-execute" class="btn btn-primary" style="width:100%;margin-top:0.5rem">
+          <i class="fa-solid fa-paper-plane"></i> Trasferisci
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1055,8 +1092,8 @@
   <script src="js/ui.js"></script>
   <script src="js/sync.js"></script>  <!-- Sync: cloud condiviso del gruppo -->
   <script src="js/search-modal.js"></script>
+  <script src="js/party.js"></script>
   <script src="js/app.js"></script>
   <script src="js/creation.js"></script>
-  <script src="js/party.js"></script>
 </body>
 </html>

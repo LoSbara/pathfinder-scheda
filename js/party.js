@@ -50,6 +50,7 @@ const Party = (() => {
     if (!_party) {
       if (title)   title.textContent = 'Party';
       if (editBtn) editBtn.classList.add('hidden');
+      document.getElementById('btn-party-transfer')?.classList.add('hidden');
       _renderCreate();
     } else {
       if (title)   title.textContent = _party.name || 'Party';
@@ -58,6 +59,11 @@ const Party = (() => {
         editBtn.innerHTML = _editMode
           ? '<i class="fa-solid fa-xmark"></i> Chiudi'
           : '<i class="fa-solid fa-pen"></i> Gestisci';
+      }
+      const transferBtn = document.getElementById('btn-party-transfer');
+      if (transferBtn) {
+        const hasTwoPlus = (_party.characterIds || []).length >= 2;
+        transferBtn.classList.toggle('hidden', _editMode || !hasTwoPlus);
       }
       _editMode ? _renderEditMode() : _renderViewMode();
     }
@@ -259,8 +265,10 @@ const Party = (() => {
   function _adjustHP(charId, delta) {
     const char = Storage.getCharacter(charId);
     if (!char) return;
-    const hpMax = Combat.calcAll(char).hpMax;
-    char.combat.hpCurrent = Math.min(hpMax, (char.combat.hpCurrent ?? 0) + delta);
+    const hpMax  = Combat.calcAll(char).hpMax;
+    const conScore = Combat.effectiveScore(char, 'con');
+    const hpMin  = -conScore;   // PF1: morto a ≤ −CON
+    char.combat.hpCurrent = Math.max(hpMin, Math.min(hpMax, (char.combat.hpCurrent ?? 0) + delta));
     Storage.saveCharacter(char);
     // Aggiorna la scheda aperta se è lo stesso personaggio
     if (typeof activeCharacter !== 'undefined' && activeCharacter?.id === charId) {
@@ -345,6 +353,67 @@ const Party = (() => {
     _party    = null;
     _editMode = false;
     _render();
+  }
+
+  // ── Azioni: Trasferimento monete ──────────────────────────────────────────
+
+  function _openTransferPanel() {
+    const panel = document.getElementById('party-transfer-panel');
+    if (!panel || !_party) return;
+    const members = (_party.characterIds || []).map(id => Storage.getCharacter(id)).filter(Boolean);
+    const fromSel = document.getElementById('transfer-from');
+    const toSel   = document.getElementById('transfer-to');
+    if (!fromSel || !toSel) return;
+    const options = members.map(c =>
+      `<option value="${_e(c.id)}">${_e(c.meta?.name || '—')}</option>`
+    ).join('');
+    fromSel.innerHTML = options;
+    toSel.innerHTML   = options;
+    if (toSel.options.length > 1) toSel.selectedIndex = 1;
+    panel.classList.remove('hidden');
+  }
+
+  function _closeTransferPanel() {
+    document.getElementById('party-transfer-panel')?.classList.add('hidden');
+  }
+
+  function _executeTransfer() {
+    const fromId = document.getElementById('transfer-from')?.value;
+    const toId   = document.getElementById('transfer-to')?.value;
+    const amount = parseInt(document.getElementById('transfer-amount')?.value || '0', 10);
+    const coin   = document.getElementById('transfer-coin')?.value || 'gp';
+    if (!fromId || !toId || fromId === toId || amount <= 0) {
+      if (typeof showToast === 'function') showToast('Seleziona due personaggi diversi e una quantità valida.', 'warning');
+      return;
+    }
+    const from = Storage.getCharacter(fromId);
+    const to   = Storage.getCharacter(toId);
+    if (!from || !to) return;
+    const available = from.currency?.[coin] ?? 0;
+    if (available < amount) {
+      if (typeof showToast === 'function')
+        showToast(`${from.meta?.name} non ha abbastanza monete (disponibili: ${available}).`, 'warning');
+      return;
+    }
+    from.currency[coin] = available - amount;
+    to.currency[coin]   = (to.currency[coin] ?? 0) + amount;
+    Storage.saveCharacter(from);
+    Storage.saveCharacter(to);
+    if (typeof activeCharacter !== 'undefined' && typeof UI !== 'undefined') {
+      if (activeCharacter?.id === fromId) {
+        Object.assign(activeCharacter.currency, from.currency);
+        UI.renderEquipaggiamento(activeCharacter);
+      } else if (activeCharacter?.id === toId) {
+        Object.assign(activeCharacter.currency, to.currency);
+        UI.renderEquipaggiamento(activeCharacter);
+      }
+    }
+    _refreshCard(fromId);
+    _refreshCard(toId);
+    _closeTransferPanel();
+    const coinLabel = { pp: 'Platino', gp: 'Oro', sp: 'Argento', cp: 'Rame' }[coin] || coin;
+    if (typeof showToast === 'function')
+      showToast(`${amount} ${coinLabel} trasferiti da ${from.meta?.name} a ${to.meta?.name}.`, 'success');
   }
 
   // ── Event binding (una volta per screen lifecycle) ────────────────────────
@@ -444,6 +513,11 @@ const Party = (() => {
     document.getElementById('party-cond-modal-overlay')?.addEventListener('click', () => {
       document.getElementById('party-cond-modal')?.classList.add('hidden');
     });
+
+    // Pannello trasferimento
+    document.getElementById('btn-party-transfer')?.addEventListener('click', _openTransferPanel);
+    document.getElementById('btn-transfer-close')?.addEventListener('click', _closeTransferPanel);
+    document.getElementById('btn-transfer-execute')?.addEventListener('click', _executeTransfer);
   }
 
   // ── Notifica refresh dalla scheda personaggio ─────────────────────────────
