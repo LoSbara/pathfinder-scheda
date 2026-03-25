@@ -1,9 +1,11 @@
 # CLAUDE.md — Context file for AI assistants (Claude Sonnet 4.6)
 
 > Read this file at the start of every new conversation to get full project context.
-> Last updated: 2026-03-25 (sessione 11)
+> Last updated: 2026-03-25 (sessione 12)
 
 > ⚠ **DOCUMENTAZIONE UFFICIALE DISPONIBILE** — Tutti i dati di gioco (incantesimi, talenti, equipaggiamento, razze, classi, ecc.) devono essere tratti dalla documentazione ufficiale elencata nella Sezione 11, NON inventati o dedotti dall'addestramento del modello. Quando si creano o aggiornano file `data/*.js`, consultare sempre le fonti ufficiali.
+
+> ⚠ **SCOPE**: Lavorare SOLO nella cartella `pathfinder-scheda/`. Non esplorare o toccare altre cartelle in `Progetti privati/`.
 
 ---
 
@@ -11,36 +13,42 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-25 (sessione 11)
+### Ultima sessione: 2026-03-25 (sessione 15)
 
-**Tutto committato.** Ultimo commit: `7b53036`
+**NON ancora committato.** Modifiche in working tree, pronte per commit.
 
-**Modifiche sessione 11:**
-- `js/data/feats-list.js` — **ESPANSO** da 398 → **487 talenti** (commit `7b53036`). Aggiunte 89 voci:
-  - **Combattimento (+35)**: Arma Bizzarra, Arma da Lancio, Sgambetto Migliorato + Superiore, Taglio Decisivo + Grande, Attacco di Ritorno, Combattere in Gruppo, Fuoco Concentrato, Percuotere, Difesa Elaborata, Maestria con Armi Improvvisate, Carica con Arma da Lancio, catena Tiro del Derviscio (UC), +altri APG/UC/ACG
-  - **Stile (+19)**: Stile dello Scorpione (CRB solo); catene complete Tigre, Kirino, Djinn, Janni (UC), Assalitore (ACG Jabbing Style), Mangusta (UC)
-  - **Critico (+3)**: Accecante (Blinding), Nauseante (Sickening), Dissestante
-  - **Generali (+20)**: Velocità, Colpo Energetico, Perfezione Arcana, Bombe Extra, Evoluzione Extra, Coraggio Extra, Portamento Extra, Ampiezza d'Esperienza, Abilità Caratteristica, Guarigione Spontanea, +altri
-  - **Metamagia (+4)**: Incantesimi Elementali (APG), Disorientanti, Esaltanti, Accelerati
-  - **Incanalare Energia (+3)**: Protezione, Vita, Terrore
-  - **Eroici (+2)**: Grazia, Coraggio dell'Eroe
-  - **Trama (+3)**: Vendetta, Ultimo Respiro, Portatore di Speranza
+**Modifiche sessione 12 (già in working tree dal commit precedente):**
 
-**Modifiche sessione 10:**
-- `js/data/equipment-db.js` — **ESPANSO** da 349 → **501 items** (commit `ccabff5`). Aggiunte:
-  - **Armi magiche** (`category:'weapon'`, ~62 voci): Spada Lunga/Corta/Grande, Ascia da Battaglia/Grande, Pugnale, Stocco, Scimitarra, Mazza da Guerra, Alabarda, Falcione, Arco Lungo, Arco Composito, Baleste, Lancia — bonus +1→+5 + proprietà speciali (Fiammeggiante, Gelida, Elettrica, Affilata, Sacra, Funesta, Tocco Fantasma, Disgregante, Vorticosa). Le armi magiche usano `category:'weapon'` per apparire nella ricerca armi.
-  - **Armature magiche** (`category:'armor'`, 19 voci): Cuoio +1→+3, Cuoio Borchiato +1→+3, Giaco di Maglia +1→+5, Cotta di Maglia +1→+3, Corazza di Piastre +1→+3, Armatura Completa +1→+5
-  - **Scudi magici** (`category:'shield'`, 9 voci): Buckler, Leggero, Pesante con bonus +1→+5
-  - **Bastoni** (`category:'magic'`, `subcategory:'bastoni'`, 15 voci): tutti i bastoni CRB con cariche/incantesimi nel campo `special`
-  - **Bracciali** (`category:'magic'`, `subcategory:'bracciali'`, 10 voci): Armatura +1→+8, Archeria Leggeri/Standard
-  - **Pietre Ioun** (`category:'magic'`, `subcategory:'ioun_stone'`, 12 voci): CRB completo
-  - **Oggetti meravigliosi aggiuntivi** (~20 voci): Amuleti dei Pugni +3/4/5, Collana di Adattamento, 6 anelli, Cappello del Travestimento, Elmo della Brillanza, Guanti dell'Orco, Mantello dell'Aracnide, Collane di Palle di Fuoco II–VII, Pietra Fortunata, Sfera dell'Annientamento, Mano della Gloria
-- `js/search-modal.js` — `_SUBCAT_LABELS` aggiornato con `bastoni`, `bracciali`, `ioun_stone`; campo `special` ora visibile nei risultati degli oggetti magici
+#### Interazioni tra tab (reattività) — COMPLETATO
+- `js/character.js` — `weight: 0` alle armi, migrazione automatica
+- `js/combat.js` — refactor cross-tab completo (condizioni, ingombro, ACP, velocità, attacchi)
+- `js/skills.js` — `calcConditionSkillPenalty` integrato
+- `js/ui.js` — `_updateWeight`, `renderArmi`, `_bindWeapons`, `_bindCombat` aggiornati
+- `index.html` — box "Categoria" ingombro
+- `styles/character.css` — badge `.load-light/medium/heavy`
 
-**Commit storici rilevanti (tutto il resto è già committato):**
-- `7b53036` — `PF1_FEATS_DB`: 398→487 talenti (Combattimento, Stile, Critico, Generali, Metamagia, Incanalare, Eroici, Trama)
-- `ccabff5` — Archivio equipaggiamento magico completo (349→501 items) + search-modal updates
-- `2ce31ab` — `PF1_FEATS_DB`: 339→398 talenti (Creazione Oggetti, Combattimento, Metamagia, Squadra)
+**Modifiche sessione 13:**
+
+#### Dashboard Combattimento (tab "Combatti") — COMPLETATO (sessione 13)
+- `index.html`:
+  - Aggiunto tab button `data-tab="combatti"` (icona `fa-swords`) nella nav
+  - Aggiunto `#tab-combatti` panel con struttura a sezioni: condizioni, armi, incantesimi, risorse
+- `js/ui.js`:
+  - `CONDITION_EFFECTS` — mappa condizione → reminder meccanico breve (15 condizioni PF1)
+  - `renderCombatDashboard(char)` — orchestratore, chiamato in `init()` e `refreshCalculated()`
+  - `_renderDashConditions(char)` — chips condizioni attive con effetti meccanici; nascosta se vuota
+  - `_renderDashWeapons(char)` — card per ogni arma: iterativi normali (`+8/+3`) + PA (`+6/+1`), formula danno (`1d8+5`), PA danno (+ variante 2 mani se rilevante), crit
+  - `_renderDashSpells(char)` — per ogni blocco caster: slot grid con CD per livello, pips visivi usati/liberi, btn "Usa" (disabilita a 0), lista incantesimi preparati con scuola/tempo/TS
+  - `_renderDashResources(char)` — cards: ira (rounds), esibizione bardica, punti ki, attacco furtivo (Xd6), class features con usesPerDay > 0, bloodline powers
+  - `_dmgFormula(die, bonus)` — helper formula danno (es. `1d8+5`, `1d8`, `1d8-1`)
+  - `_bindCombatDashboard()` — event delegation su `#dash-spells` per btn "Usa slot"; incrementa `spellsUsed[lv]`, chiama `_dirty()` + re-render
+  - `_bindAll()` — chiama `_bindCombatDashboard()`
+- `styles/character.css` — sezione `DASHBOARD COMBATTIMENTO` (~250 righe CSS): layout flex, card armi, slot pips, chips condizioni, cards risorse, responsive 480px
+
+**Commit storici rilevanti:**
+- `7b53036` — `PF1_FEATS_DB`: 398→487 talenti
+- `ccabff5` — Archivio equipaggiamento magico completo (349→501 items)
+- `2ce31ab` — `PF1_FEATS_DB`: 339→398 talenti
 - `52c24fe` — `PF1_EQUIPMENT_DB`: 349 items base
 - `be40d76` — `PF1_RACES_DB`: alternativeTraits + variants per tutte e 29 le razze
 - `95a538d` — Aggiunge `PF1_RACES_DB` (29 razze) e `PF1_LANGUAGES`
@@ -48,10 +56,54 @@
 - `4406423` — Modulo `Sync` cloud via Supabase
 - `95c5414` — `char.spells` refactored ad array di blocchi multi-classe
 
+**Modifiche sessione 14:**
+
+#### Sistema Party — COMPLETATO
+- `js/storage.js` — Aggiunto party CRUD: `getParty()`, `saveParty(party)`, `deleteParty()` (chiave `pf1_party`)
+- `js/party.js` — **NUOVO FILE**, namespace `Party`:
+  - `show()` — entry point: carica party da storage, attiva `#screen-party`, bind events (una sola volta)
+  - `notifyCharacterSaved(charId)` — chiamata da app.js dopo save; aggiorna la card nel party screen se visibile
+  - `_renderCreate()` — form "crea party" (nome + btn Crea)
+  - `_renderViewMode()` — cards per ogni membro del party:
+    - Header: nome + razza/classe/livello + btn "Scheda" (apre character sheet)
+    - Stats row: CA, Init, Velocità, Tempra, Riflessi, Volontà (tutti calcolati live via `Combat.calcAll`)
+    - HP section: barra visiva colorata (verde/arancione/rosso), pulsanti ±1/±5/±10, input custom "Cura/Danno" — salvataggio immediato in localStorage
+    - Condizioni: chips cliccabili (× per rimuovere) + btn "Condizione" che apre modal
+  - `_renderEditMode()` — rinomina party + checklist personaggi (aggiungi/rimuovi)
+  - `_adjustHP(charId, delta)` — aggiorna `combat.hpCurrent`, salva, aggiorna card; se la scheda è aperta aggiorna anche l'UI live
+  - `_removeCondition / _openConditionModal / _applyConditionModal` — gestione condizioni PG da party screen; aggiorna anche la scheda aperta se necessario
+  - `_refreshCard(charId)` — re-render singola card senza ricaricare tutto (usa `replaceWith`)
+  - `_bindEvents()` — event delegation su `#party-content` (chiamata una sola volta); delegation sul modal condizioni
+- `index.html`:
+  - Btn `#btn-view-party` "Party" nella home toolbar
+  - `#screen-party` — schermata party con topbar (← Home | Nome Party | Gestisci)
+  - `#party-cond-modal` + `#party-cond-modal-overlay` — modal selezione condizioni
+  - `<script src="js/party.js">` in coda (dopo creation.js)
+- `js/app.js`:
+  - `const screenParty` DOM ref
+  - `showParty()` — chiama `Party.show()`
+  - `showHome()` — rimuove anche `screen-party` dall'active
+  - `handleSave()` — chiama `Party.notifyCharacterSaved()` dopo il salvataggio
+  - Listener `#btn-view-party → showParty()`
+- `styles/main.css` — sezione `PARTY SCREEN` (~250 righe): topbar, member cards, HP bar colorata, stats row, condizioni chips, edit mode, modal, responsive 480px; aggiunta classe `.btn-xs`
+
+**Modifiche sessione 15:**
+
+#### Sottorazze / Varianti di Razza — COMPLETATO
+- `js/character.js` — 3 nuovi campi in `meta`: `raceId: ''`, `raceVariantId: ''`, `raceVariantName: ''`; la migrazione li aggiunge automaticamente via `fillMissing()`
+- `js/creation.js`:
+  - `_draft` — aggiunti `variantId: null`, `variantObj: null`; reset alla selezione di una nuova razza
+  - `_raceDetailsHTML(r)` — sezione "Varianti di Eredità" con grid di card cliccabili (badge mods, altSLA); card "Base" sempre presente
+  - `_bindVariantCards()` — aggiorna `_draft.variantId/variantObj`; aggiorna i badge mods nel passo Caratteristiche via `_refreshAllAbilRows`
+  - `_renderAbilities()` + `_bindAbilitiesEvents()` — usano `_draft.variantObj?.abilityMods ?? raceObj?.abilityMods`
+  - `_buildCharacter()` — usa mods variante, imposta `meta.raceId/raceVariantId/raceVariantName`, aggiunge variante come primo tratto razziale
+- `index.html` — `<select id="meta-race-variant">` nel Sommario (nascosto se razza senza varianti)
+- `js/ui.js` — `_updateRaceVariantSelect(char)`: match per `raceId` o nome, popola/mostra/nasconde il select; binding su `meta-race-variant` change
+- `styles/creation.css` — stili `.cs-variants`, `.cs-variant-grid`, `.cs-variant-card`
+
 **Prossimo lavoro prioritario (in ordine):**
-1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 487 IT — restano ~200 mancanti)
-2. Bloodline powers UI (`rage.bloodlinePowers`)
-3. `armor.speedArmor` → `calcSpeed()` wiring
+1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 487 IT)
+2. **Applicazione effetti da scheda personaggio**: da tab "Combatti", btn "Applica a party member" su un incantesimo/abilità apre selettore membro → applica l'effetto (es. cura HP, aggiungi condizione)
 
 ---
 

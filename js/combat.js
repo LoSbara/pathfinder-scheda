@@ -51,6 +51,30 @@
 
 const Combat = (() => {
 
+  // ── Tabella capacità di carico PF1 (libbre, indice = STR − 1, STR 1–30) ──
+  const CARRY_LB = [
+    [3,6,10],[6,13,20],[10,20,30],[13,26,40],[16,33,50],
+    [20,40,60],[23,46,70],[26,53,80],[30,60,90],[33,66,100],
+    [38,76,115],[43,86,130],[50,100,150],[58,116,175],[66,133,200],
+    [76,153,230],[86,173,260],[100,200,300],[116,233,350],[133,266,400],
+    [153,306,460],[173,346,520],[200,400,600],[233,466,700],[266,533,800],
+    [306,613,920],[346,693,1040],[400,800,1200],[466,933,1400],[533,1066,1600],
+  ];
+
+  /** Limiti di carico in kg per un dato punteggio di Forza. */
+  function _carryKg(strScore) {
+    const s = Math.max(1, strScore);
+    let lb;
+    if (s <= 30) {
+      lb = CARRY_LB[s - 1];
+    } else {
+      const extra = Math.floor((s - 20) / 10);
+      const f     = Math.pow(4, extra);
+      lb = CARRY_LB[19].map(x => x * f);
+    }
+    return lb.map(x => +(x / 2.205).toFixed(1));
+  }
+
   // ── Tabella bonus taglia ──────────────────────────────────────────────────
   // cmbMod: bonus a CMB/CMD; acMod: bonus a CA (= −cmbMod)
   const SIZE_TABLE = {
@@ -75,6 +99,12 @@ const Combat = (() => {
   // e prove abilità. La penalità si accumula (2 liv. neg. = −2, ecc.).
   function negLvlPenalty(char) {
     return -(char.negativeLevels || 0);
+  }
+
+  // ── Condizioni ────────────────────────────────────────────────────────────
+  /** Verifica se una condizione è attiva sul personaggio. */
+  function hasCondition(char, condition) {
+    return Array.isArray(char.conditions) && char.conditions.includes(condition);
   }
 
   // ── Helper: punteggio effettivo di una caratteristica ────────────────────
@@ -103,7 +133,15 @@ const Combat = (() => {
       if (key === 'con') morale = char.rage.conBonus || 4;
     }
 
-    return base + racial + enhance + temp + morale;
+    // Penalità condizioni a FOR e DES:
+    //   Affaticato → −2  |  Esausto → −6  (non cumulabili, Esausto è peggiore)
+    let condPen = 0;
+    if (key === 'str' || key === 'dex') {
+      if (hasCondition(char, 'Esausto'))         condPen = -6;
+      else if (hasCondition(char, 'Affaticato')) condPen = -2;
+    }
+
+    return base + racial + enhance + temp + morale + condPen;
   }
 
   /** Modificatore di caratteristica dal punteggio effettivo. */
@@ -111,14 +149,47 @@ const Combat = (() => {
     return Character.calcAbilityMod(effectiveScore(char, key));
   }
 
-  /** Verifica se una condizione è attiva sul personaggio. */
-  function hasCondition(char, condition) {
-    return Array.isArray(char.conditions) && char.conditions.includes(condition);
-  }
-
   /** Bonus taglia da stringa taglia (es. 'Media'). */
   function sizeEntry(char) {
     return SIZE_TABLE[char.meta?.size] || SIZE_TABLE['Media'];
+  }
+
+  // ── Ingombro ─────────────────────────────────────────────────────────────
+
+  /** Peso totale trasportato (equipaggiamento + armi + armatura) in kg. */
+  function calcCarriedWeight(char) {
+    const equip = (char.equipment||[]).reduce((s, i) => s + (i.weight||0)*(i.qty||1), 0);
+    const wpns  = (char.weapons||[]).reduce((s, w) => s + (w.weight||0), 0);
+    return equip + wpns + (char.armor?.weight || 0);
+  }
+
+  /**
+   * Categoria di ingombro: 'light' | 'medium' | 'heavy'.
+   * Basata su peso portato vs. limiti di carico per la FOR effettiva del PG.
+   */
+  function calcLoadCategory(char) {
+    const carried = calcCarriedWeight(char);
+    const limits  = _carryKg(effectiveScore(char, 'str'));
+    if (carried <= limits[0]) return 'light';
+    if (carried <= limits[1]) return 'medium';
+    return 'heavy';
+  }
+
+  /**
+   * Massimo bonus DES alla CA: il più restrittivo tra armatura e ingombro.
+   * Armatura: char.armor.maxDex (null = nessun limite).
+   * Ingombro Medio → +3; Pesante → +1; Leggero → nessun limite.
+   * Restituisce null se nessun limite si applica.
+   */
+  function calcEffectiveMaxDex(char) {
+    const armorMax = char.armor?.maxDex; // null = nessun limite
+    const loadCat  = calcLoadCategory(char);
+    const loadMax  = loadCat === 'heavy' ? 1 : loadCat === 'medium' ? 3 : null;
+
+    if (armorMax === null && loadMax === null) return null;
+    if (armorMax === null) return loadMax;
+    if (loadMax   === null) return armorMax;
+    return Math.min(armorMax, loadMax); // il più restrittivo
   }
 
   // ── Punti Ferita ─────────────────────────────────────────────────────────
@@ -154,13 +225,11 @@ const Combat = (() => {
     const misc        = ac.misc        || 0;
     const sizeAC      = size.acMod;
 
-    // Il bonus Des viene applicato solo se non si è flat-footed o in condizioni
-    // che tolgono il Des. Schivare Prodigioso mantiene il Des da flat-footed.
-    const hasDodge  = char.classFeatures?.some(f =>
-      f.name?.toLowerCase().includes('schivare prodigioso')) ||
-      char.feats?.some(f => f.name?.toLowerCase().includes('schivare prodigioso'));
-    const desMod    = mod(char, 'dex');
-    const desApplied = desMod; // CA normale: si applica sempre (salvo condizioni sotto)
+    // Il bonus DES è limitato dal maxDex dell'armatura e dall'ingombro.
+    // Schivare Prodigioso è rilevante solo per CA impreparato.
+    const maxDex     = calcEffectiveMaxDex(char);
+    const desMod     = mod(char, 'dex');
+    const desApplied = maxDex !== null ? Math.min(desMod, maxDex) : desMod;
 
     // Penalità da Ira
     const ragePenalty = char.rage?.active ? -(char.rage.acPenalty || 2) : 0;
@@ -191,10 +260,12 @@ const Combat = (() => {
    * CA a contatto: NO armatura, NO scudo, NO naturale.
    */
   function calcAC_touch(char) {
-    const ac = char.combat?.ac || {};
-    const size = sizeEntry(char);
-    const desMod   = mod(char, 'dex');
-    const ragePen  = char.rage?.active ? -(char.rage.acPenalty || 2) : 0;
+    const ac     = char.combat?.ac || {};
+    const size   = sizeEntry(char);
+    const maxDex = calcEffectiveMaxDex(char);
+    const rawDes = mod(char, 'dex');
+    const desMod = maxDex !== null ? Math.min(rawDes, maxDex) : rawDes;
+    const ragePen = char.rage?.active ? -(char.rage.acPenalty || 2) : 0;
     return 10 + desMod + (ac.deflection || 0) + (ac.dodge || 0)
              + (ac.misc || 0) + size.acMod + ragePen;
   }
@@ -268,9 +339,9 @@ const Combat = (() => {
     const abilMod  = mod(char, 'con');
     const misc     = saves.fortMisc || 0;
     // Nota: in PF1 la Furia base NON aggiunge bonus morale a Tempra (solo a Volontà).
-    // Eventuali bonus speciali di stirpe vanno nel campo misc.
-    const nlPen = negLvlPenalty(char);
-    return { total: base + abilMod + misc + nlPen, base, ability: abilMod, misc, negativeLevels: nlPen };
+    const nlPen   = negLvlPenalty(char);
+    const condPen = _shakeOrSickenPenalty(char); // Atterrito/Spaventato/Malato: −2
+    return { total: base + abilMod + misc + nlPen + condPen, base, ability: abilMod, misc, negativeLevels: nlPen, conditions: condPen };
   }
 
   /**
@@ -281,8 +352,9 @@ const Combat = (() => {
     const base    = saves.refBase  || 0;
     const abilMod = mod(char, 'dex');
     const misc    = saves.refMisc  || 0;
-    const nlPen = negLvlPenalty(char);
-    return { total: base + abilMod + misc + nlPen, base, ability: abilMod, misc, negativeLevels: nlPen };
+    const nlPen   = negLvlPenalty(char);
+    const condPen = _shakeOrSickenPenalty(char);
+    return { total: base + abilMod + misc + nlPen + condPen, base, ability: abilMod, misc, negativeLevels: nlPen, conditions: condPen };
   }
 
   /**
@@ -295,19 +367,34 @@ const Combat = (() => {
     const misc    = saves.willMisc || 0;
     const rageMor = char.rage?.active ? (char.rage.willBonus || 2) : 0;
     const nlPen   = negLvlPenalty(char);
+    const condPen = _shakeOrSickenPenalty(char);
     return {
-      total: base + abilMod + misc + rageMor + nlPen,
-      base, ability: abilMod, misc, rage: rageMor, negativeLevels: nlPen,
+      total: base + abilMod + misc + rageMor + nlPen + condPen,
+      base, ability: abilMod, misc, rage: rageMor, negativeLevels: nlPen, conditions: condPen,
     };
+  }
+
+  // ── Helper condizioni: penalità ad attacchi, TS e prove ──────────────────
+
+  /**
+   * Restituisce −2 se il personaggio è Atterrito, Spaventato o Malato; 0 altrimenti.
+   * Si applica a: tiri di attacco, tiri salvezza, prove abilità.
+   * Solo Malato si applica anche ai danni (vedi calcConditionDamagePenalty).
+   */
+  function _shakeOrSickenPenalty(char) {
+    return (hasCondition(char, 'Atterrito') || hasCondition(char, 'Spaventato') ||
+            hasCondition(char, 'Malato')) ? -2 : 0;
   }
 
   // ── Iniziativa ────────────────────────────────────────────────────────────
 
   function calcInitiative(char) {
-    const desMod = mod(char, 'dex');
-    const misc   = char.combat?.initiative?.misc || 0;
-    const nlPen  = negLvlPenalty(char);
-    return { total: desMod + misc + nlPen, dex: desMod, misc, negativeLevels: nlPen };
+    const desMod   = mod(char, 'dex');
+    const misc     = char.combat?.initiative?.misc || 0;
+    const nlPen    = negLvlPenalty(char);
+    // Assordato → −4 all'iniziativa
+    const condPen  = hasCondition(char, 'Assordato') ? -4 : 0;
+    return { total: desMod + misc + nlPen + condPen, dex: desMod, misc, negativeLevels: nlPen, conditions: condPen };
   }
 
   // ── Round Ira ─────────────────────────────────────────────────────────────
@@ -394,6 +481,7 @@ const Combat = (() => {
     // Penalità condizioni
     let condPenalty = 0;
     if (!isRanged && hasCondition(char, 'Prono')) condPenalty -= 4;
+    condPenalty += _shakeOrSickenPenalty(char); // Atterrito/Spaventato/Malato: −2
 
     const nlPen = negLvlPenalty(char);
     const total = bab + abilMod + enhance + misc + offHandPenalty + paPenalty + condPenalty + nlPen;
@@ -438,6 +526,7 @@ const Combat = (() => {
     const paPenalty = (!isRanged && powerAttack) ? pa.attackPenalty : 0;
     let   condPenalty = 0;
     if (!isRanged && hasCondition(char, 'Prono')) condPenalty -= 4;
+    condPenalty += _shakeOrSickenPenalty(char);
 
     const attacks = [];
     for (let i = 0; i < count; i++) {
@@ -484,13 +573,16 @@ const Combat = (() => {
       else                      paBonus = pa.damageBonusBase;
     }
 
-    const total = strBonus + enhance + paBonus + misc;
+    // Malato (Sickened) → −2 ai danni
+    const sickPen = hasCondition(char, 'Malato') ? -2 : 0;
+
+    const total = strBonus + enhance + paBonus + misc + sickPen;
 
     return {
       total,
       breakdown: {
         strength: strBonus, enhancement: enhance,
-        powerAttack: paBonus, misc,
+        powerAttack: paBonus, misc, conditions: sickPen,
       },
     };
   }
@@ -499,13 +591,36 @@ const Combat = (() => {
 
   /**
    * Velocità effettiva in metri.
-   * Affaticato/Esausto non modificano la velocità base.
-   * Esausto → metà velocità.
+   *
+   * Applicato in ordine:
+   *  1. Riduzione da armatura (char.armor.speed, es. 3 = −3 m)
+   *  2. Riduzione da ingombro Medio/Pesante (9 m → 6 m; 6 m → 4 m)
+   *     Si usa il valore più basso tra armatura e ingombro (non si sommano).
+   *  3. Condizione Esausto → velocità dimezzata (dopo tutto il resto).
    */
   function calcSpeed(char) {
     const base = char.combat?.speed || 9;
-    if (hasCondition(char, 'Esausto')) return Math.floor(base / 2);
-    return base;
+
+    // 1. Riduzione da armatura
+    const armorRed     = char.armor?.speed || 0;
+    const speedArmor   = base - armorRed;
+
+    // 2. Riduzione da ingombro
+    const loadCat = calcLoadCategory(char);
+    let speedLoad = base;
+    if (loadCat !== 'light') {
+      if      (base >= 9) speedLoad = 6;
+      else if (base >= 6) speedLoad = 4;
+      // se base < 6 m l'ingombro non riduce ulteriormente
+    }
+
+    // Prende il valore più penalizzante
+    let speed = Math.min(speedArmor, speedLoad);
+
+    // 3. Esausto → metà
+    if (hasCondition(char, 'Esausto')) speed = Math.floor(speed / 2);
+
+    return Math.max(1, speed);
   }
 
   // ── Risorse di classe ─────────────────────────────────────────────────────
@@ -554,11 +669,25 @@ const Combat = (() => {
   // ── Penalità armatura alla prova (ACP) ────────────────────────────────────
 
   /**
-   * ACP effettiva dall'armatura indossata (valore negativo).
+   * Penalità condizioni alle prove di abilità.
+   * Atterrito / Spaventato / Malato → −2.
+   * Esportata per essere usata da skills.js.
+   */
+  function calcConditionSkillPenalty(char) {
+    return _shakeOrSickenPenalty(char);
+  }
+
+  /**
+   * ACP effettiva: il più penalizzante tra armatura e ingombro.
+   * Ingombro Medio → −3; Pesante → −6.
+   * Non si sommano: si usa il valore più negativo.
    * Usata da skills.js per le abilità con acp: true.
    */
   function calcACP(char) {
-    return char.armor?.acp || 0; // già negativo nel modello (es. -3)
+    const armorAcp = char.armor?.acp || 0; // già negativo nel modello (es. −3)
+    const loadCat  = calcLoadCategory(char);
+    const loadAcp  = loadCat === 'heavy' ? -6 : loadCat === 'medium' ? -3 : 0;
+    return Math.min(armorAcp, loadAcp); // più negativo vince
   }
 
   // ── Riepilogo completo ────────────────────────────────────────────────────
@@ -596,6 +725,9 @@ const Combat = (() => {
       // Resistenza/penalità
       sr:             char.combat?.sr || 0,
       negativeLevels: char.negativeLevels || 0,
+      // Ingombro
+      loadCategory:   calcLoadCategory(char),
+      carriedWeight:  calcCarriedWeight(char),
       // Caratteristiche effettive (utile per la UI)
       scores: {
         str: effectiveScore(char, 'str'), strMod: mod(char, 'str'),
@@ -632,6 +764,10 @@ const Combat = (() => {
     calcKiMax,
     calcSneakDice,
     calcPowerAttack,
+    calcCarriedWeight,
+    calcLoadCategory,
+    calcEffectiveMaxDex,
+    calcConditionSkillPenalty,
     calcWeaponAttack,
     calcIterativeAttacks,
     calcWeaponDamage,

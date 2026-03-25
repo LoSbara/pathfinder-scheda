@@ -64,10 +64,13 @@ const Skills = (() => {
     // Bonus di classe: +3 se è un'abilità di classe e il personaggio ha almeno 1 grado
     const classBonus = (classSkill && ranks >= 1) ? 3 : 0;
 
-    // Penalità armatura (già negativa nel modello, es. −3)
+    // Penalità armatura/ingombro (già negativa nel modello, es. −3)
     const acp = skillDef.acp ? (Combat.calcACP(char) || 0) : 0;
 
-    const total = ranks + abilityMod + classBonus + acp + miscBonus;
+    // Penalità condizioni (Atterrito / Spaventato / Malato → −2)
+    const condPen = (typeof Combat !== 'undefined') ? Combat.calcConditionSkillPenalty(char) : 0;
+
+    const total = ranks + abilityMod + classBonus + acp + miscBonus + condPen;
 
     // Abilità non addestrate: non utilizzabile se trainedOnly e ranks = 0
     const usable = !(skillDef.trainedOnly && ranks === 0);
@@ -90,6 +93,7 @@ const Skills = (() => {
         classBonus,
         acp,
         misc: miscBonus,
+        conditions: condPen,
       },
     };
   }

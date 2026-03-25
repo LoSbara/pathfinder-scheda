@@ -13,6 +13,7 @@ let activeCharacter = null;
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const screenHome      = document.getElementById('screen-home');
 const screenCharacter = document.getElementById('screen-character');
+const screenParty     = document.getElementById('screen-party');
 const characterList   = document.getElementById('character-list');
 const btnNewCharacter = document.getElementById('btn-new-character');
 const btnBack         = document.getElementById('btn-back');
@@ -29,8 +30,15 @@ function _esc(s) {
 
 // ── Navigazione ───────────────────────────────────────────────────────────
 
+function showParty() {
+  if (typeof Party !== 'undefined') {
+    Party.show();
+  }
+}
+
 async function showHome() {
   screenCharacter.classList.remove('active');
+  screenParty?.classList.remove('active');
   screenHome.classList.add('active');
   renderCharacterList();   // mostra subito i dati locali
   updateStorageBar();
@@ -170,6 +178,10 @@ function handleSave() {
       console.warn('[Sync] Upsert fallito:', e.message)
     );
   }
+  // Aggiorna la card nel party screen se visibile
+  if (typeof Party !== 'undefined') {
+    Party.notifyCharacterSaved(activeCharacter.id);
+  }
 }
 
 // ── Cloud status ─────────────────────────────────────────────────────────
@@ -233,6 +245,7 @@ function updateStorageBar() {
 // ── Event listeners ───────────────────────────────────────────────────────
 
 btnNewCharacter.addEventListener('click', handleNewCharacter);
+document.getElementById('btn-view-party')?.addEventListener('click', showParty);
 
 btnBack.addEventListener('click', () => {
   if (btnSave.classList.contains('has-changes')) {

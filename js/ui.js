@@ -90,10 +90,39 @@ const UI = (() => {
 
   // ── Sommario ──────────────────────────────────────────────────────────────
 
+  /**
+   * Popola e mostra/nasconde il select variante razza nel Sommario.
+   * Cerca la razza in PF1_RACES_DB prima per raceId, poi per nome.
+   */
+  function _updateRaceVariantSelect(char) {
+    const group  = el('race-variant-group');
+    const select = el('meta-race-variant');
+    if (!group || !select || typeof PF1_RACES_DB === 'undefined') return;
+
+    const raceId   = char.meta.raceId || '';
+    const raceName = (char.meta.race || '').toLowerCase();
+    const raceObj  = PF1_RACES_DB.find(r =>
+      (raceId && r.id === raceId) || r.name.toLowerCase() === raceName
+    );
+
+    const variants = raceObj?.variants ?? [];
+    if (variants.length === 0) {
+      group.style.display = 'none';
+      return;
+    }
+    group.style.display = '';
+
+    select.innerHTML = '<option value="">— Base —</option>' +
+      variants.map(v =>
+        `<option value="${v.id}"${char.meta.raceVariantId === v.id ? ' selected' : ''}>${v.name}</option>`
+      ).join('');
+  }
+
   function renderSommario(char) {
     setVal('meta-name',       char.meta.name);
     setVal('meta-player',     char.meta.playerName);
     setVal('meta-race',       char.meta.race);
+    _updateRaceVariantSelect(char);
     setVal('meta-alignment',  char.meta.alignment);
     setVal('meta-deity',      char.meta.deity);
     setVal('meta-size',       char.meta.size);
@@ -512,6 +541,11 @@ const UI = (() => {
             <input type="number" class="field-input field-narrow wpn-dmg-misc"
                    value="${w.damageMisc||0}" />
           </div>
+          <div class="field-group" style="flex:1">
+            <label>Peso (kg)</label>
+            <input type="number" class="field-input field-narrow wpn-weight"
+                   min="0" step="0.1" value="${w.weight||0}" title="Peso in kg" />
+          </div>
         </div>
         <div class="field-group" style="margin-top:0.3rem">
           <label>Note speciali</label>
@@ -537,6 +571,7 @@ const UI = (() => {
     }
 
     _updatePowerAttackPreview(char);
+    _updateWeight(char);
   }
 
   function _updatePowerAttackPreview(char) {
@@ -601,14 +636,23 @@ const UI = (() => {
   }
 
   function _updateWeight(char) {
-    const equip   = (char.equipment||[]).reduce((s, i) => s + (i.weight||0)*(i.qty||1), 0);
-    const carried = equip + (char.armor?.weight || 0);
+    const carried = Combat.calcCarriedWeight(char);
     setText('weight-carried', carried.toFixed(1) + ' kg');
     const strScore = Combat.effectiveScore(char, 'str');
     const lim = _carryKg(strScore);
     setText('weight-light',  lim[0] + ' kg');
     setText('weight-medium', lim[1] + ' kg');
     setText('weight-heavy',  lim[2] + ' kg');
+
+    // Badge categoria ingombro
+    const loadEl = el('weight-load-category');
+    if (loadEl) {
+      const cat = Combat.calcLoadCategory(char);
+      const labels  = { light: 'Leggero', medium: 'Medio', heavy: 'Pesante' };
+      const classes = { light: 'load-light', medium: 'load-medium', heavy: 'load-heavy' };
+      loadEl.textContent = labels[cat];
+      loadEl.className   = 'load-category-badge ' + classes[cat];
+    }
   }
 
   // ── Talenti ───────────────────────────────────────────────────────────────
@@ -861,6 +905,297 @@ const UI = (() => {
     });
   }
 
+  // ── Dashboard Combattimento ────────────────────────────────────────────────
+
+  // Effetti meccanici brevi per ogni condizione (mostrati nella dashboard)
+  const CONDITION_EFFECTS = {
+    'Accecato':        '−2 CA, perde DES, −4 attacchi, 50% fallimento incant.',
+    'Affaticato':      '−2 FOR/DES, no corsa/carica',
+    'Assordato':       '−4 Iniziativa, 20% fallimento incant. con V',
+    'Atterrito':       '−2 attacchi/TS/prove/CD, non si avvicina alla fonte',
+    'Confuso':         'Agisce casualmente ogni turno',
+    'Esausto':         '−6 FOR/DES, velocità dimezzata',
+    'Fascinato':       'Non può agire in combattimento',
+    'Immobilizzato':   'Perde DES a CA, attacchi mischia su di lui +2',
+    'Malato':          '−2 attacchi/danni/TS/prove',
+    'Nauseato':        'Solo azione movimento',
+    'Paralizzato':     'FOR/DES 0, attacchi critici automatici in mischia',
+    'Privo di Sensi':  'Incosciente, impossibilitato ad agire',
+    'Prono':           '−4 attacchi mischia, −4 CA vs mischia, +4 CA vs distanza',
+    'Spaventato':      '−2 attacchi/TS/prove/CD, deve fuggire',
+    'Stordito':        'Perde DES a CA, cade oggetti, −2 CA',
+  };
+
+  function renderCombatDashboard(char) {
+    _renderDashConditions(char);
+    _renderDashWeapons(char);
+    _renderDashSpells(char);
+    _renderDashResources(char);
+  }
+
+  function _renderDashConditions(char) {
+    const sec = el('dash-conditions');
+    if (!sec) return;
+    const conds = char.conditions || [];
+    const isRaging = char.rage?.active;
+    if (conds.length === 0 && !isRaging) {
+      sec.classList.add('hidden');
+      sec.innerHTML = '';
+      return;
+    }
+    sec.classList.remove('hidden');
+    let html = '<div class="dash-cond-title"><i class="fa-solid fa-triangle-exclamation"></i> Condizioni Attive</div><div class="dash-cond-chips">';
+    if (isRaging) {
+      html += '<div class="dash-cond-chip dash-cond-rage"><span class="dash-cond-name">⚔ IN IRA</span><span class="dash-cond-effect">+STR/CON, +Will, −2 CA, non può fuggire</span></div>';
+    }
+    conds.forEach(c => {
+      const eff = CONDITION_EFFECTS[c] || '';
+      html += `<div class="dash-cond-chip"><span class="dash-cond-name">${_e(c)}</span>${eff ? `<span class="dash-cond-effect">${_e(eff)}</span>` : ''}</div>`;
+    });
+    html += '</div>';
+    sec.innerHTML = html;
+  }
+
+  function _renderDashWeapons(char) {
+    const container = el('dash-weapons');
+    const emptyMsg  = el('dash-weapons-empty');
+    if (!container) return;
+    const weapons = char.weapons || [];
+    if (weapons.length === 0) {
+      container.innerHTML = '';
+      emptyMsg?.classList.remove('hidden');
+      return;
+    }
+    emptyMsg?.classList.add('hidden');
+    const bab = char.combat?.bab || 0;
+    const pa  = Combat.calcPowerAttack(bab);
+
+    container.innerHTML = weapons.map(wpn => {
+      const isRanged  = wpn.attackType === 'distanza';
+      const isMelee   = !isRanged;
+
+      // Attacchi iterativi normali
+      const normalAtks = Combat.calcIterativeAttacks(char, wpn, false);
+      const normalStr  = normalAtks.map(a => sign(a)).join(' / ');
+
+      // Danno normale
+      const normalDmg = Combat.calcWeaponDamage(char, wpn, false);
+      const dmgStr    = _dmgFormula(wpn.damage, normalDmg.total);
+
+      // Critico
+      const critStr = `${wpn.critRange || '20'}/×${wpn.critMult || 2}`;
+
+      // Power Attack (solo armi da mischia)
+      let paHtml = '';
+      if (isMelee && bab >= 1) {
+        const paAtks   = Combat.calcIterativeAttacks(char, wpn, true);
+        const paNormal = Combat.calcWeaponDamage(char, wpn, true);
+        const paTH     = wpn.twoHanded ? null : Combat.calcWeaponDamage(char, { ...wpn, twoHanded: true }, true);
+
+        const paAtkStr  = paAtks.map(a => sign(a)).join(' / ');
+        const paDmgStr  = _dmgFormula(wpn.damage, paNormal.total);
+        const paTHStr   = paTH ? _dmgFormula(wpn.damage, paTH.total) : null;
+
+        paHtml = `
+          <div class="dash-wpn-row dash-wpn-pa">
+            <span class="dash-wpn-label">PA</span>
+            <span class="dash-wpn-attacks dash-pa-color">${_e(paAtkStr)}</span>
+            <span class="dash-wpn-damage dash-pa-color">${_e(paDmgStr)}${paTHStr ? ` <span class="dash-pa-th">(2m: ${_e(paTHStr)})</span>` : ''}</span>
+          </div>`;
+      }
+
+      const typeIcon = isRanged ? 'fa-bow-arrow' : wpn.twoHanded ? 'fa-staff' : 'fa-sword';
+      const typeLabel = wpn.attackType === 'naturale' ? 'Naturale' : isRanged ? 'Distanza' : wpn.twoHanded ? '2 mani' : 'Mischia';
+
+      return `
+        <div class="dash-wpn-card">
+          <div class="dash-wpn-header">
+            <span class="dash-wpn-name">${_e(wpn.name || '—')}</span>
+            <span class="dash-wpn-meta">${_e(typeLabel)} · ${_e(wpn.damageType || '')} · Crit: ${_e(critStr)}</span>
+          </div>
+          <div class="dash-wpn-row">
+            <span class="dash-wpn-label">Attacca</span>
+            <span class="dash-wpn-attacks">${_e(normalStr)}</span>
+            <span class="dash-wpn-damage">${_e(dmgStr)}</span>
+          </div>
+          ${paHtml}
+        </div>`;
+    }).join('');
+  }
+
+  function _dmgFormula(die, bonus) {
+    if (!die) return bonus >= 0 ? '+' + bonus : String(bonus);
+    if (bonus === 0) return die;
+    return bonus > 0 ? `${die}+${bonus}` : `${die}${bonus}`;
+  }
+
+  function _renderDashSpells(char) {
+    const sec       = el('dash-spells-section');
+    const container = el('dash-spells');
+    if (!sec || !container) return;
+    const blocks = char.spells || [];
+    if (blocks.length === 0) {
+      sec.classList.add('hidden');
+      return;
+    }
+    sec.classList.remove('hidden');
+
+    container.innerHTML = blocks.map((block, bi) => {
+      const abilMod  = Combat.mod(char, block.ability || 'cha');
+      const cl       = block.casterLevel || 0;
+      const asf      = char.armor?.asf || 0;
+
+      // Griglia slot livello 0-9
+      let slotRows = '';
+      for (let lv = 0; lv <= 9; lv++) {
+        const total = block.spellsPerDay?.[lv] ?? 0;
+        if (total <= 0) continue;
+        const used  = block.spellsUsed?.[lv]  ?? 0;
+        const left  = Math.max(0, total - used);
+        const dc    = 10 + lv + abilMod;
+        const pips  = Array.from({ length: total }, (_, i) =>
+          `<span class="dash-slot-pip${i < used ? ' used' : ''}"></span>`).join('');
+        slotRows += `
+          <div class="dash-slot-row">
+            <span class="dash-slot-lv">Lv ${lv}</span>
+            <span class="dash-slot-dc">CD ${dc}</span>
+            <span class="dash-slot-pips">${pips}</span>
+            <span class="dash-slot-count">${left}/${total}</span>
+            <button class="btn btn-sm dash-slot-use${left === 0 ? ' disabled' : ''}"
+              data-block="${bi}" data-level="${lv}" ${left === 0 ? 'disabled' : ''}>Usa</button>
+          </div>`;
+      }
+      if (!slotRows) {
+        slotRows = '<p class="dash-empty" style="margin:0.3rem 0">Nessuno slot configurato.</p>';
+      }
+
+      // Incantesimi preparati / conosciuti
+      const prepared = (block.known || []).filter(sp => sp.prepared);
+      let prepHtml = '';
+      if (prepared.length > 0) {
+        prepHtml = `<div class="dash-prepared-list">${prepared.map(sp =>
+          `<div class="dash-prepared-entry">
+            <span class="dash-sp-name">${_e(sp.name)}</span>
+            <span class="dash-sp-meta">Lv${sp.spellLevel} · ${_e(sp.school || '')}${sp.castingTime ? ' · ' + _e(sp.castingTime) : ''}</span>
+            ${sp.savingThrow ? `<span class="dash-sp-save">TS: ${_e(sp.savingThrow)}</span>` : ''}
+          </div>`).join('')}</div>`;
+      }
+
+      return `
+        <div class="dash-caster-block">
+          <div class="dash-caster-header">
+            <span class="dash-caster-name">${_e(block.className || '—')}</span>
+            <span class="dash-caster-meta">Livello ${cl} · ${(block.ability || 'cha').toUpperCase()}${asf > 0 ? ` · FIA ${asf}%` : ''}</span>
+          </div>
+          <div class="dash-slot-grid" data-block="${bi}">${slotRows}</div>
+          ${prepHtml}
+        </div>`;
+    }).join('');
+  }
+
+  function _renderDashResources(char) {
+    const container = el('dash-resources');
+    const emptyMsg  = el('dash-resources-empty');
+    if (!container) return;
+    const c = Combat.calcAll(char);
+
+    const items = [];
+
+    // Ira (Barbaro/Bloodrager)
+    if (c.rageRoundsTotal > 0 || (char.rage?.roundsUsed ?? 0) > 0) {
+      const left  = c.rageRoundsLeft;
+      const total = c.rageRoundsTotal;
+      const active = char.rage?.active;
+      items.push(`
+        <div class="dash-res-card${active ? ' dash-res-active' : ''}">
+          <div class="dash-res-name">${active ? '⚔ ' : ''}Ira${active ? ' (Attiva)' : ''}</div>
+          <div class="dash-res-counter"><span class="dash-res-left">${left}</span><span class="dash-res-sep">/</span><span class="dash-res-total">${total}</span></div>
+          <div class="dash-res-label">round</div>
+        </div>`);
+    }
+
+    // Esibizione Bardica
+    if (c.bardPerfMax > 0) {
+      const used  = char.bardPerf?.roundsUsed ?? 0;
+      const left  = Math.max(0, c.bardPerfMax - used);
+      items.push(`
+        <div class="dash-res-card">
+          <div class="dash-res-name">Esibizione Bardica</div>
+          <div class="dash-res-counter"><span class="dash-res-left">${left}</span><span class="dash-res-sep">/</span><span class="dash-res-total">${c.bardPerfMax}</span></div>
+          <div class="dash-res-label">round</div>
+        </div>`);
+    }
+
+    // Punti Ki
+    if (c.kiMax > 0) {
+      const used = char.ki?.used ?? 0;
+      const left = Math.max(0, c.kiMax - used);
+      items.push(`
+        <div class="dash-res-card">
+          <div class="dash-res-name">Punti Ki</div>
+          <div class="dash-res-counter"><span class="dash-res-left">${left}</span><span class="dash-res-sep">/</span><span class="dash-res-total">${c.kiMax}</span></div>
+          <div class="dash-res-label">punti</div>
+        </div>`);
+    }
+
+    // Attacco Furtivo
+    if (c.sneakDice > 0) {
+      items.push(`
+        <div class="dash-res-card">
+          <div class="dash-res-name">Attacco Furtivo</div>
+          <div class="dash-res-counter dash-res-static"><span class="dash-res-left">+${c.sneakDice}d6</span></div>
+          <div class="dash-res-label">danni extra</div>
+        </div>`);
+    }
+
+    // Feature di classe con usi rimanenti
+    (char.classFeatures || []).filter(f => f.usesPerDay > 0).forEach(f => {
+      items.push(`
+        <div class="dash-res-card">
+          <div class="dash-res-name">${_e(f.name)}</div>
+          <div class="dash-res-counter"><span class="dash-res-left">${f.usesLeft ?? 0}</span><span class="dash-res-sep">/</span><span class="dash-res-total">${f.usesPerDay}</span></div>
+          <div class="dash-res-label">usi/giorno</div>
+        </div>`);
+    });
+
+    // Poteri del lignaggio (Bloodrager)
+    (char.rage?.bloodlinePowers || []).filter(p => p.usesPerDay > 0).forEach(p => {
+      items.push(`
+        <div class="dash-res-card">
+          <div class="dash-res-name">${_e(p.name)}</div>
+          <div class="dash-res-counter"><span class="dash-res-left">${p.usesLeft ?? 0}</span><span class="dash-res-sep">/</span><span class="dash-res-total">${p.usesPerDay}</span></div>
+          <div class="dash-res-label">usi/giorno</div>
+        </div>`);
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = '';
+      emptyMsg?.classList.remove('hidden');
+    } else {
+      emptyMsg?.classList.add('hidden');
+      container.innerHTML = items.join('');
+    }
+  }
+
+  function _bindCombatDashboard() {
+    // Usa slot incantesimo (event delegation su #dash-spells)
+    el('dash-spells')?.addEventListener('click', e => {
+      const btn = e.target.closest('.dash-slot-use');
+      if (!btn || btn.disabled || !_char) return;
+      const bi  = parseInt(btn.dataset.block,  10);
+      const lv  = parseInt(btn.dataset.level,  10);
+      const block = _char.spells?.[bi];
+      if (!block) return;
+      if (!block.spellsUsed) block.spellsUsed = Array(10).fill(0);
+      const total = block.spellsPerDay?.[lv] ?? 0;
+      const used  = block.spellsUsed[lv]    ?? 0;
+      if (used >= total) return;
+      block.spellsUsed[lv] = used + 1;
+      _dirty();
+      _renderDashSpells(_char);
+    });
+  }
+
   // ── Note ──────────────────────────────────────────────────────────────────
 
   function renderNote(char) {
@@ -926,6 +1261,7 @@ const UI = (() => {
     _updateSpellCalcAll(char);
     _updateConditionsBanner(char);
     _updateWeight(char);
+    renderCombatDashboard(char);
   }
 
   function _updateConditionsBanner(char) {
@@ -960,6 +1296,7 @@ const UI = (() => {
     _bindFeats();
     _bindSpells();
     _bindNotes();
+    _bindCombatDashboard();
   }
 
   // Popola il datalist con tutti i nomi classe da ClassConfig
@@ -1186,7 +1523,7 @@ const UI = (() => {
     const text = [
       ['meta-name',       (v, c) => { c.meta.name = v; el('char-header-name').textContent = v||'Personaggio'; }],
       ['meta-player',     (v, c) => c.meta.playerName  = v],
-      ['meta-race',       (v, c) => c.meta.race        = v],
+      ['meta-race',       (v, c) => { c.meta.race = v; _updateRaceVariantSelect(c); }],
       ['meta-alignment',  (v, c) => c.meta.alignment   = v],
       ['meta-deity',      (v, c) => c.meta.deity       = v],
       ['meta-size',       (v, c) => { c.meta.size = v; refreshCalculated(c); }],
@@ -1203,6 +1540,22 @@ const UI = (() => {
     ];
     text.forEach(([id, fn]) => {
       el(id)?.addEventListener('change', e => { if (_char) { fn(e.target.value, _char); _dirty(); } });
+    });
+
+    // Variante razza
+    el('meta-race-variant')?.addEventListener('change', e => {
+      if (!_char) return;
+      const vid = e.target.value;
+      if (typeof PF1_RACES_DB !== 'undefined') {
+        const raceObj   = PF1_RACES_DB.find(r =>
+          (_char.meta.raceId && r.id === _char.meta.raceId) ||
+          r.name.toLowerCase() === (_char.meta.race || '').toLowerCase()
+        );
+        const variantObj = (raceObj?.variants ?? []).find(v => v.id === vid) ?? null;
+        _char.meta.raceVariantId   = variantObj?.id   ?? '';
+        _char.meta.raceVariantName = variantObj?.name ?? '';
+      }
+      _dirty();
     });
 
     // Immagine
@@ -1461,7 +1814,7 @@ const UI = (() => {
       ['armor-type',     (v,c)=>  c.armor.type=v],
       ['armor-bonus',    (v,c)=>{ c.armor.bonus=toInt(v); c.combat.ac.armorBonus=toInt(v); setVal('ac-armor',v); refreshCalculated(c); }],
       ['armor-maxdex',   (v,c)=>  c.armor.maxDex=(v===''?null:toInt(v))],
-      ['armor-acp',      (v,c)=>{ c.armor.acp=toInt(v); refreshCalculated(c); }],
+      ['armor-acp',      (v,c)=>{ c.armor.acp=toInt(v); refreshCalculated(c); renderAbilita(c); }],
       ['armor-asf',      (v,c)=>{ c.armor.asf=toInt(v); _updateSpellCalcAll(c); }],
       ['armor-speed',    (v,c)=>  c.armor.speed=toInt(v)],
       ['armor-weight',   (v,c)=>{ c.armor.weight=toF(v); _updateWeight(c); }],
@@ -1515,7 +1868,9 @@ const UI = (() => {
         setVal('armor-speed',  _char.armor.speed);
         setVal('armor-weight', _char.armor.weight);
         setVal('ac-armor',     _char.armor.bonus);
-        refreshCalculated(_char); _dirty();
+        refreshCalculated(_char);
+        renderAbilita(_char);
+        _dirty();
       });
     });
   }
@@ -1568,6 +1923,7 @@ const UI = (() => {
           damageType:  item.damageType  || 'T',
           twoHanded:   item.twoHanded   || false,
           offHand:     false,
+          weight:      item.weight      || 0,
           attackMisc:  0, damageMisc: 0, notes: '',
         });
         renderArmi(_char); _dirty();
@@ -1579,7 +1935,7 @@ const UI = (() => {
         id: Character.generateId(), name:'Nuova Arma', attackType:'mischia',
         enhancement:0, damage:'1d6', critRange:'20', critMult:2, range:0,
         damageType:'T', twoHanded:false, offHand:false,
-        attackMisc:0, damageMisc:0, notes:'',
+        weight:0, attackMisc:0, damageMisc:0, notes:'',
       });
       renderArmi(_char); _dirty();
     });
@@ -1604,6 +1960,7 @@ const UI = (() => {
       if (e.target.classList.contains('wpn-offhand'))     w.offHand      = e.target.checked;
       if (e.target.classList.contains('wpn-atk-misc'))    w.attackMisc   = toInt(e.target.value);
       if (e.target.classList.contains('wpn-dmg-misc'))    w.damageMisc   = toInt(e.target.value);
+      if (e.target.classList.contains('wpn-weight'))    { w.weight       = toF(e.target.value); _updateWeight(_char); }
       if (e.target.classList.contains('wpn-notes'))       w.notes        = e.target.value;
       renderArmi(_char); _dirty();
     });
@@ -1938,6 +2295,7 @@ const UI = (() => {
     renderTalenti(char);
     renderIncantesimi(char);
     renderNote(char);
+    renderCombatDashboard(char);
     applyClassProfile(char);
     // Reset dirty state after full render
     el('btn-save')?.classList.remove('has-changes');

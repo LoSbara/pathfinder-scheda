@@ -828,3 +828,351 @@ label {
   .lu-hp-options     { gap: 0.3rem; }
   .lu-hp-btn         { padding: 0.25rem 0.55rem; font-size: 0.78rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PARTY SCREEN  (#screen-party)
+══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Topbar ── */
+.party-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--gold);
+  padding: 0.6rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.party-topbar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  color: var(--gold-light);
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+/* ── Contenuto principale ── */
+.party-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* ── Empty state / crea party ── */
+.party-empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.party-create-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+}
+.party-create-row .field-input { flex: 1 1 200px; }
+
+/* ── Member card ── */
+.party-member-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.party-member-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.party-member-identity {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.party-member-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--gold-light);
+}
+.party-member-info {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Stats row ── */
+.party-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.party-stat-box {
+  background: var(--bg-section);
+  border: 1px solid rgba(200,168,75,0.2);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  min-width: 46px;
+}
+.party-stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.party-stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  font-weight: bold;
+  color: var(--text-main);
+}
+
+/* ── HP section ── */
+.party-hp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.party-hp-bar-wrap {
+  height: 8px;
+  background: var(--bg-deep);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(200,168,75,0.15);
+}
+.party-hp-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.party-hp-bar.hp-ok      { background: #4caf50; }
+.party-hp-bar.hp-warning { background: #ff9800; }
+.party-hp-bar.hp-danger  { background: #e53935; }
+
+.party-hp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.party-hp-display {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: bold;
+  min-width: 80px;
+}
+.party-hp-display.hp-ok      { color: #7ec87e; }
+.party-hp-display.hp-warning { color: #ffa726; }
+.party-hp-display.hp-danger  { color: #ef5350; }
+
+.party-hp-quick-btns {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+/* btn-xs: variante più piccola di btn-sm */
+.btn-xs {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.72rem;
+  border-radius: 3px;
+  min-height: unset;
+  line-height: 1.4;
+}
+
+.party-hp-btn {
+  border: 1px solid var(--border);
+  background: var(--bg-section);
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+}
+.party-hp-btn:hover { background: var(--bg-card); }
+.party-hp-heal { color: #7ec87e; border-color: rgba(126,200,126,0.3); }
+.party-hp-dmg  { color: #ef5350; border-color: rgba(239,83,80,0.3);  }
+.party-hp-heal:hover { background: rgba(76,175,80,0.1); }
+.party-hp-dmg:hover  { background: rgba(229,57,53,0.1); }
+
+.party-hp-custom-row {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.party-hp-apply-heal {
+  color: #7ec87e;
+  border: 1px solid rgba(126,200,126,0.3);
+  background: var(--bg-section);
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.party-hp-apply-heal:hover { background: rgba(76,175,80,0.1); }
+.party-hp-apply-dmg {
+  color: #ef5350;
+  border: 1px solid rgba(239,83,80,0.3);
+  background: var(--bg-section);
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.party-hp-apply-dmg:hover { background: rgba(229,57,53,0.1); }
+
+/* ── Condizioni ── */
+.party-cond-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(200,168,75,0.15);
+}
+.party-cond-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+.party-no-cond {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.party-cond-chip {
+  background: rgba(180,40,40,0.2);
+  border: 1px solid #c04040;
+  border-radius: 3px;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.73rem;
+  color: var(--text-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.party-cond-chip:hover { background: rgba(180,40,40,0.35); }
+.party-cond-chip i     { font-size: 0.65rem; color: #e07070; }
+.party-add-cond {
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  min-height: unset;
+}
+
+/* ── Gestione party (edit mode) ── */
+.party-edit-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.party-edit-name-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.party-edit-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  color: var(--gold);
+  margin: 0.25rem 0 0 0;
+  border-bottom: 1px solid rgba(200,168,75,0.2);
+  padding-bottom: 0.3rem;
+}
+.party-edit-section-title i { margin-right: 0.4em; }
+.party-members-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.party-member-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  background: var(--bg-section);
+  border: 1px solid rgba(200,168,75,0.15);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.party-member-check-item:hover { border-color: var(--border-gold); }
+.party-member-check-item input[type="checkbox"] { flex-shrink: 0; }
+.party-member-check-info { display: flex; flex-direction: column; }
+.party-member-check-name { font-weight: bold; font-size: 0.88rem; color: var(--text-main); }
+.party-member-check-meta { font-size: 0.73rem; color: var(--text-muted); }
+.party-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+}
+
+/* ── Modal condizioni ── */
+#party-cond-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1010;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 1.25rem;
+  width: 320px;
+  max-width: 92vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+#party-cond-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1005;
+}
+.party-cond-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.party-cond-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+.party-cond-check-item:hover { background: var(--bg-section); }
+.party-cond-check-item input { flex-shrink: 0; }
+
+@media (max-width: 480px) {
+  .party-content { padding: 0.6rem; }
+  .party-stats-row { gap: 0.2rem; }
+  .party-stat-box { min-width: 40px; padding: 0.2rem 0.3rem; }
+  .party-hp-quick-btns { gap: 2px; }
+}

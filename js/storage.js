@@ -238,6 +238,32 @@ const Storage = (() => {
     };
   }
 
+  // ── Party ──────────────────────────────────────────────────────────────────
+
+  const PARTY_KEY = 'pf1_party';
+
+  /**
+   * Ritorna l'oggetto party attivo o null se non esiste.
+   * Struttura: { id, name, characterIds: string[] }
+   */
+  function getParty() {
+    try {
+      return JSON.parse(localStorage.getItem(PARTY_KEY)) || null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Salva il party nel localStorage. */
+  function saveParty(party) {
+    localStorage.setItem(PARTY_KEY, JSON.stringify(party));
+  }
+
+  /** Elimina il party (i personaggi non vengono eliminati). */
+  function deleteParty() {
+    localStorage.removeItem(PARTY_KEY);
+  }
+
   // ── API pubblica ──────────────────────────────────────────────────────────
 
   return {
@@ -249,5 +275,8 @@ const Storage = (() => {
     importCharacter,
     importCharacterFromJson,
     getStorageUsage,
+    getParty,
+    saveParty,
+    deleteParty,
   };
 })();

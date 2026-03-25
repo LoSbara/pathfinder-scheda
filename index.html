@@ -30,6 +30,7 @@
           <i class="fa-solid fa-file-import"></i> Importa
           <input type="file" id="input-import" accept=".json,.pf1.json" hidden />
         </label>
+        <button id="btn-view-party" class="btn btn-secondary"><i class="fa-solid fa-users"></i> Party</button>
         <div id="cloud-status" class="cloud-status hidden">
           <i class="fa-solid fa-cloud" id="cloud-icon"></i>
           <span id="cloud-status-text"></span>
@@ -85,6 +86,7 @@
         <button class="tab-btn" data-tab="talenti"><i class="fa-solid fa-star"></i> Talenti</button>
         <button class="tab-btn" data-tab="incantesimi"><i class="fa-solid fa-wand-magic-sparkles"></i> Incantesimi</button>
         <button class="tab-btn" data-tab="note"><i class="fa-solid fa-pen"></i> Note</button>
+        <button class="tab-btn" data-tab="combatti"><i class="fa-solid fa-swords"></i> Combatti</button>
       </div>
     </nav>
 
@@ -123,6 +125,12 @@
               <div class="field-group">
                 <label>Razza</label>
                 <input type="text" id="meta-race" class="field-input" placeholder="es. Mezzorco" />
+              </div>
+              <div class="field-group" id="race-variant-group" style="display:none">
+                <label>Variante</label>
+                <select id="meta-race-variant" class="field-input">
+                  <option value="">— Base —</option>
+                </select>
               </div>
             </div>
             <div class="field-row">
@@ -728,6 +736,10 @@
               <span class="stat-label">Carico Pesante</span>
               <span class="stat-value" id="weight-heavy">— kg</span>
             </div>
+            <div class="weight-box">
+              <span class="stat-label">Categoria</span>
+              <span id="weight-load-category" class="load-category-badge load-light">Leggero</span>
+            </div>
           </div>
         </div>
 
@@ -805,7 +817,62 @@
         </div>
       </section>
 
+      <!-- ══ TAB: COMBATTI (Dashboard combattimento) ══════════════════ -->
+      <section id="tab-combatti" class="tab-panel">
+
+        <!-- Condizioni attive -->
+        <div id="dash-conditions" class="dash-section dash-conditions-section hidden"></div>
+
+        <!-- Armi -->
+        <div class="dash-section">
+          <h3 class="dash-section-title"><i class="fa-solid fa-hand-fist"></i> Armi</h3>
+          <div id="dash-weapons" class="dash-weapons-grid"></div>
+          <p id="dash-weapons-empty" class="dash-empty hidden">Nessun'arma configurata. Vai al tab Armi.</p>
+        </div>
+
+        <!-- Incantesimi -->
+        <div id="dash-spells-section" class="dash-section hidden">
+          <h3 class="dash-section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Incantesimi</h3>
+          <div id="dash-spells"></div>
+        </div>
+
+        <!-- Risorse di classe -->
+        <div id="dash-resources-section" class="dash-section">
+          <h3 class="dash-section-title"><i class="fa-solid fa-bolt"></i> Risorse di Classe</h3>
+          <div id="dash-resources" class="dash-resources-grid"></div>
+          <p id="dash-resources-empty" class="dash-empty">Nessuna risorsa di classe attiva.</p>
+        </div>
+
+      </section>
+
     </main>
+  </div>
+
+  <!-- ===== PARTY SCREEN ===== -->
+  <div id="screen-party" class="screen">
+    <div class="party-topbar">
+      <button id="btn-party-back" class="btn btn-ghost btn-sm">
+        <i class="fa-solid fa-arrow-left"></i> Home
+      </button>
+      <h2 id="party-screen-title" class="party-topbar-title">Party</h2>
+      <button id="btn-party-edit" class="btn btn-ghost btn-sm hidden">
+        <i class="fa-solid fa-pen"></i> Gestisci
+      </button>
+    </div>
+    <div id="party-content" class="party-content">
+      <!-- Popolato da party.js -->
+    </div>
+  </div>
+
+  <!-- Modal: selezione condizioni per membro party -->
+  <div id="party-cond-modal-overlay" class="modal-overlay hidden"></div>
+  <div id="party-cond-modal" class="modal-panel hidden" data-char-id="">
+    <h3 class="modal-title">Condizioni</h3>
+    <div id="party-cond-list" class="party-cond-modal-list"></div>
+    <div class="modal-footer">
+      <button id="btn-party-cond-cancel" class="btn btn-ghost">Annulla</button>
+      <button id="btn-party-cond-apply" class="btn btn-primary">Applica</button>
+    </div>
   </div>
 
   <!-- ===== WIZARD: Creazione personaggio livello 1 ===== -->
@@ -990,5 +1057,6 @@
   <script src="js/search-modal.js"></script>
   <script src="js/app.js"></script>
   <script src="js/creation.js"></script>
+  <script src="js/party.js"></script>
 </body>
 </html>

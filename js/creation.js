@@ -80,6 +80,7 @@ const Creation = (() => {
   function start() {
     _draft = {
       raceId: null,  raceObj: null,
+      variantId:  null,  variantObj: null,  // variante di razza (es. Daemon-spawn per Tiefling)
       altTraits: [],                   // nomi dei tratti alternativi selezionati
       classId: null, classObj: null,
       abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
@@ -209,15 +210,18 @@ const Creation = (() => {
       card.addEventListener('click', () => {
         document.querySelectorAll('.cs-race-card').forEach(x => x.classList.remove('selected'));
         card.classList.add('selected');
-        _draft.raceId  = card.dataset.id;
-        _draft.raceObj = races.find(r => r.id === card.dataset.id) ?? null;
-        _draft.altTraits = [];
+        _draft.raceId     = card.dataset.id;
+        _draft.raceObj    = races.find(r => r.id === card.dataset.id) ?? null;
+        _draft.altTraits  = [];
+        _draft.variantId  = null;
+        _draft.variantObj = null;
         document.getElementById('race-panel').innerHTML = _raceDetailsHTML(_draft.raceObj);
         _bindAltTraits();
+        _bindVariantCards();
       });
     });
 
-    if (_draft.raceId) _bindAltTraits();
+    if (_draft.raceId) { _bindAltTraits(); _bindVariantCards(); }
   }
 
   function _raceCard(r) {
@@ -276,6 +280,35 @@ const Creation = (() => {
         }).join('')}
       </div>` : '';
 
+    // ── Varianti di razza ────────────────────────────────────────────────
+    const variantsHTML = (r.variants?.length > 0) ? `
+      <div class="cs-variants">
+        <h4>Varianti di Eredità</h4>
+        <p class="cs-hint" style="margin-bottom:0.5rem">Ogni variante sostituisce i modificatori base e la capacità magica della razza.</p>
+        <div class="cs-variant-grid">
+          <div class="cs-variant-card ${!_draft.variantId ? 'selected' : ''}" data-variant-id="">
+            <div class="cs-variant-name">${_e(r.name)} Base</div>
+            <div class="cs-variant-mods">${
+              Object.entries(r.abilityMods).filter(([,v]) => v !== 0)
+                .map(([k,v]) => `<span class="cs-mod-badge ${v>0?'pos':'neg'}">${k.toUpperCase()} ${_sign(v)}</span>`).join('') ||
+              '<span class="text-muted">Variabile</span>'
+            }</div>
+          </div>
+          ${r.variants.map(v => {
+            const sel = _draft.variantId === v.id;
+            const mods = Object.entries(v.abilityMods).filter(([,val]) => val !== 0)
+              .map(([k,val]) => `<span class="cs-mod-badge ${val>0?'pos':'neg'}">${k.toUpperCase()} ${_sign(val)}</span>`).join('') ||
+              '<span class="text-muted">Variabile</span>';
+            return `<div class="cs-variant-card ${sel ? 'selected' : ''}" data-variant-id="${_e(v.id)}"
+                         data-variant-name="${_e(v.name)}">
+              <div class="cs-variant-name">${_e(v.name)}</div>
+              <div class="cs-variant-mods">${mods}</div>
+              ${v.altSLA ? `<div class="cs-variant-sla">${_e(v.altSLA)}</div>` : ''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
     return `<div class="cs-race-panel">
       <div class="cs-race-panel-header">
         <h3>${_e(r.name)}</h3>
@@ -292,8 +325,27 @@ const Creation = (() => {
           ${r.bonusLanguages?.length ? `<p class="text-muted cs-bonus-langs">Bonus: ${_e(r.bonusLanguages.join(', '))}</p>` : ''}
         </div>
       </div>
+      ${variantsHTML}
       ${altHTML}
     </div>`;
+  }
+
+  function _bindVariantCards() {
+    document.querySelectorAll('.cs-variant-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const vid = card.dataset.variantId || null;
+        _draft.variantId  = vid;
+        _draft.variantObj = vid
+          ? (_draft.raceObj?.variants ?? []).find(v => v.id === vid) ?? null
+          : null;
+        document.getElementById('race-panel').innerHTML = _raceDetailsHTML(_draft.raceObj);
+        _bindAltTraits();
+        _bindVariantCards();
+        // Aggiorna i modificatori nel passo Caratteristiche se già renderizzato
+        const racialMods = _draft.variantObj?.abilityMods ?? _draft.raceObj?.abilityMods ?? {};
+        _refreshAllAbilRows(racialMods);
+      });
+    });
   }
 
   function _bindAltTraits() {
@@ -373,7 +425,7 @@ const Creation = (() => {
   // ─────────────────────────────────────────────────────────────────────────
 
   function _renderAbilities(c) {
-    const racialMods = _draft.raceObj?.abilityMods ?? {};
+    const racialMods = _draft.variantObj?.abilityMods ?? _draft.raceObj?.abilityMods ?? {};
     const spent      = _pbSpent();
     const isManual   = _draft.pbMode === 'manual';
     c.innerHTML = `
@@ -430,7 +482,7 @@ const Creation = (() => {
   }
 
   function _bindAbilitiesEvents() {
-    const racialMods = _draft.raceObj?.abilityMods ?? {};
+    const racialMods = _draft.variantObj?.abilityMods ?? _draft.raceObj?.abilityMods ?? {};
     document.getElementById('pb-mode')?.addEventListener('change', e => {
       _draft.pbMode = e.target.value;
       if (_draft.pbMode === 'pointbuy') ABILITIES_DEF.forEach(a => { _draft.abilities[a.key] = 10; });
@@ -499,7 +551,6 @@ const Creation = (() => {
     const el = document.getElementById('pb-spent-val');
     if (el) el.textContent = spent;
     // aggiorna stati dei pulsanti +
-    const racialMods = _draft.raceObj?.abilityMods ?? {};
     ABILITIES_DEF.forEach(a => {
       const inc = document.querySelector(`.cs-ab-inc[data-key="${a.key}"]`);
       if (!inc) return;
@@ -960,13 +1011,18 @@ const Creation = (() => {
 
   function _buildCharacter() {
     const race       = _draft.raceObj;
+    const variant    = _draft.variantObj;   // null se razza base
     const cls        = _draft.classObj;
-    const racialMods = race?.abilityMods ?? {};
+    // I mods applicati sono quelli della variante (se scelta) o della razza base
+    const racialMods = variant?.abilityMods ?? race?.abilityMods ?? {};
     const char       = Character.createDefault(_draft.name.trim() || 'Senza Nome');
 
     // ── Meta ──────────────────────────────────────────────────────────────
-    char.meta.playerName = _draft.playerName;
-    char.meta.race        = race?.name ?? '';
+    char.meta.playerName     = _draft.playerName;
+    char.meta.race           = race?.name ?? '';
+    char.meta.raceId         = race?.id   ?? '';
+    char.meta.raceVariantId  = variant?.id   ?? '';
+    char.meta.raceVariantName= variant?.name ?? '';
     char.meta.alignment   = _draft.alignment;
     char.meta.gender      = _draft.gender;
     char.meta.deity       = _draft.deity;
@@ -1019,6 +1075,8 @@ const Creation = (() => {
       .filter(at => _draft.altTraits.includes(at.name))
       .flatMap(at => at.replaces);
     char.racialTraits = [
+      // Se è stata scelta una variante, aggiungila come primo tratto con il suo altSLA
+      ...(variant ? [{ id: Character.generateId(), name: variant.name, description: variant.altSLA ?? '' }] : []),
       ...(race?.traits ?? [])
         .filter(t => !replacedStd.includes(t))
         .map(t => ({ id: Character.generateId(), name: t, description: '' })),

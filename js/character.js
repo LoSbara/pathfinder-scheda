@@ -198,7 +198,10 @@ const Character = (() => {
       meta: {
         name,
         playerName:   '',
-        race:         '',
+        race:            '',
+        raceId:          '',   // id nel PF1_RACES_DB (es. 'tiefling')
+        raceVariantId:   '',   // id della variante (es. 'daemon-spawn') o '' per la base
+        raceVariantName: '',   // nome visualizzato variante (es. 'Daemon-spawn')
         // Classi: array per supportare multiclasse
         // { className, level, hitDie }  es. { className: 'Iracondo di Stirpe', level: 6, hitDie: 10 }
         classes:      [],
@@ -240,6 +243,7 @@ const Character = (() => {
       //   damageType,            // 'C' | 'P' | 'T' | 'C/P' ecc.
       //   twoHanded,             // impugnatura a due mani
       //   offHand,               // mano secondaria
+      //   weight,                // peso in kg (usato nel calcolo carico)
       //   special, notes }
 
       // ── Equipaggiamento ───────────────────────────────────────────────
@@ -382,6 +386,11 @@ const Character = (() => {
         spellsUsed:   old.spellsUsed   || [0,0,0,0,0,0,0,0,0,0],
         known:        old.known        || [],
       }];
+    }
+
+    // Migrazione armi: aggiungi weight se mancante (sessione 12)
+    if (Array.isArray(char.weapons)) {
+      char.weapons.forEach(w => { if (w.weight === undefined) w.weight = 0; });
     }
 
     char._schemaVersion = defaults._schemaVersion;
