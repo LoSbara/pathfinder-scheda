@@ -1504,3 +1504,27 @@ input.input-warning { border-color: #e07c00 !important; background: #2a1800 !imp
   color: var(--gold-light);
   font-weight: bold;
 }
+
+/* ── Modal Acquisto / Prestito ──────────────────────────────────────────── */
+.purchase-item-name {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.purchase-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.purchase-row span { color: var(--text-muted); }
+.purchase-warn {
+  margin-top: 0.75rem;
+  color: #e07040;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}

@@ -41,6 +41,7 @@ const UI = (() => {
   let _char = null;         // personaggio attualmente mostrato
   let _eventsBound = false; // gli event listener vengono registrati una sola volta
   let _classSkillIds = [];  // IDs abilità di classe per la classe attiva (popolato da applyClassProfile)
+  let _pendingPurchaseItem = null;  // oggetto selezionato in attesa di conferma acquisto
 
   // ── Utility ───────────────────────────────────────────────────────────────
 
@@ -593,6 +594,38 @@ const UI = (() => {
   }
 
   // ── Equipaggiamento ───────────────────────────────────────────────────────
+
+  // Converte una stringa costo PF1 ("25 mo", "5 mr", "2 ma") in monete d'oro equivalenti
+  function _parseCostGp(costStr) {
+    if (!costStr || costStr === '—') return 0;
+    const m = String(costStr).trim().match(/^([\d.,]+)\s*(mo|ma|mr|mp|pa)/i);
+    if (!m) return 0;
+    const n = parseFloat(m[1].replace(',', '.'));
+    switch (m[2].toLowerCase()) {
+      case 'mp': case 'pa': return n * 10;
+      case 'mo': return n;
+      case 'ma': return n / 10;
+      case 'mr': return n / 100;
+      default:   return n;
+    }
+  }
+
+  // Scala il costo dalla valuta del personaggio (converte tutto in rame, deduce, ridistribuisce).
+  // Ritorna true se ha avuto successo, false se fondi insufficienti.
+  function _deductCurrencyCost(char, costGp) {
+    const costCp = Math.round(costGp * 100);
+    let totalCp = (char.currency.pp || 0) * 1000
+                + (char.currency.gp || 0) * 100
+                + (char.currency.sp || 0) * 10
+                + (char.currency.cp || 0);
+    if (totalCp < costCp) return false;
+    totalCp -= costCp;
+    char.currency.pp = Math.floor(totalCp / 1000); totalCp %= 1000;
+    char.currency.gp = Math.floor(totalCp / 100);  totalCp %= 100;
+    char.currency.sp = Math.floor(totalCp / 10);
+    char.currency.cp = totalCp % 10;
+    return true;
+  }
 
   function _calcCurrencyTotalGp(char) {
     const c = char.currency || {};
@@ -1300,6 +1333,7 @@ const UI = (() => {
     _bindSkills();
     _bindWeapons();
     _bindEquip();
+    _bindPurchaseModal();
     _bindFeats();
     _bindSpells();
     _bindNotes();
@@ -1992,19 +2026,7 @@ const UI = (() => {
     });
     el('btn-search-item')?.addEventListener('click', () => {
       if (!_char || typeof SearchModal === 'undefined') return;
-      SearchModal.openEquipment(null, item => {
-        _char.equipment.push({
-          id:       Character.generateId(),
-          name:     item.name,
-          qty:      1,
-          weight:   item.weight || 0,
-          cost:     item.cost   || '',
-          location: 'zaino',
-          worn:     false,
-          notes:    '',
-        });
-        renderEquipaggiamento(_char); _dirty();
-      });
+      SearchModal.openEquipment(null, item => _showPurchaseDialog(item));
     });
     el('btn-add-item')?.addEventListener('click', () => {
       if (!_char) return;
@@ -2032,6 +2054,172 @@ const UI = (() => {
       const i   = toInt(row?.dataset.index, -1);
       if (i >= 0) { _char.equipment.splice(i, 1); renderEquipaggiamento(_char); _dirty(); }
     });
+  }
+
+  // ── Modal acquisto oggetto ─────────────────────────────────────────────────
+
+  function _showPurchaseDialog(item) {
+    const costGp  = _parseCostGp(item.cost);
+    // Oggetto gratuito o senza prezzo → aggiunge direttamente
+    if (costGp === 0) {
+      _addEquipItem(item);
+      return;
+    }
+    _pendingPurchaseItem = item;
+    const totalGp   = _calcCurrencyTotalGp(_char);
+    const canAfford = totalGp >= costGp;
+    const body      = document.getElementById('modal-purchase-body');
+    if (body) {
+      body.innerHTML = `
+        <div class="purchase-item-name">${_e(item.name)}</div>
+        <div class="purchase-row">
+          <span>Costo</span>
+          <strong>${_e(item.cost || '—')}</strong>
+        </div>
+        <div class="purchase-row">
+          <span>Disponibile</span>
+          <strong>${parseFloat(totalGp.toFixed(2))} go equiv.</strong>
+        </div>
+        ${!canAfford ? `<p class="purchase-warn">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Fondi insufficienti (mancano ${parseFloat((costGp - totalGp).toFixed(2))} go).
+        </p>` : ''}`;
+    }
+    const btnBuy    = document.getElementById('btn-purchase-buy');
+    const btnLoan   = document.getElementById('btn-purchase-loan');
+    if (btnBuy)  btnBuy.classList.toggle('hidden',  !canAfford);
+    if (btnLoan) btnLoan.classList.toggle('hidden', canAfford);
+    document.getElementById('modal-purchase')?.classList.remove('hidden');
+  }
+
+  function _addEquipItem(item) {
+    if (!_char) return;
+    _char.equipment.push({
+      id:       Character.generateId(),
+      name:     item.name,
+      qty:      1,
+      weight:   item.weight || 0,
+      cost:     item.cost   || '',
+      location: 'zaino',
+      worn:     false,
+      notes:    '',
+    });
+    renderEquipaggiamento(_char);
+    _dirty();
+  }
+
+  function _bindPurchaseModal() {
+    // Acquista: scala il costo e aggiunge l'oggetto
+    document.getElementById('btn-purchase-buy')?.addEventListener('click', () => {
+      if (!_char || !_pendingPurchaseItem) return;
+      const costGp = _parseCostGp(_pendingPurchaseItem.cost);
+      if (!_deductCurrencyCost(_char, costGp)) {
+        if (typeof showToast === 'function') showToast('Fondi insufficienti.', 'warning');
+        return;
+      }
+      _addEquipItem(_pendingPurchaseItem);
+      document.getElementById('modal-purchase')?.classList.add('hidden');
+      _pendingPurchaseItem = null;
+      if (typeof showToast === 'function')
+        showToast(`Acquistato! Costo scalato dalla borsa.`, 'success');
+    });
+
+    // Solo aggiungi: non scala il costo
+    document.getElementById('btn-purchase-free-add')?.addEventListener('click', () => {
+      if (!_pendingPurchaseItem) return;
+      _addEquipItem(_pendingPurchaseItem);
+      document.getElementById('modal-purchase')?.classList.add('hidden');
+      _pendingPurchaseItem = null;
+    });
+
+    // Annulla
+    document.getElementById('btn-purchase-cancel')?.addEventListener('click', () => {
+      document.getElementById('modal-purchase')?.classList.add('hidden');
+      _pendingPurchaseItem = null;
+    });
+    document.getElementById('modal-purchase-overlay')?.addEventListener('click', () => {
+      document.getElementById('modal-purchase')?.classList.add('hidden');
+      _pendingPurchaseItem = null;
+    });
+
+    // Chiedi prestito al party
+    document.getElementById('btn-purchase-loan')?.addEventListener('click', () => {
+      document.getElementById('modal-purchase')?.classList.add('hidden');
+      if (!_pendingPurchaseItem) return;
+      _showPartyLoanDialog(_parseCostGp(_pendingPurchaseItem.cost));
+    });
+
+    // Modal prestito: popola e mostra
+    document.getElementById('btn-loan-confirm')?.addEventListener('click', () => {
+      const lenderId = document.getElementById('loan-lender-select')?.value;
+      const amount   = parseFloat(document.getElementById('loan-amount-input')?.value || '0');
+      if (!lenderId || !amount || amount <= 0 || !_char || !_pendingPurchaseItem) return;
+
+      const lender = typeof Storage !== 'undefined' ? Storage.getCharacter(lenderId) : null;
+      if (!lender) return;
+      const available = _calcCurrencyTotalGp(lender);
+      if (available < amount) {
+        if (typeof showToast === 'function')
+          showToast(`${lender.meta?.name} non ha abbastanza monete.`, 'warning');
+        return;
+      }
+      // Trasferisce dal prestatore al PG corrente (tutto in gp per semplicità)
+      _deductCurrencyCost(lender, amount);
+      _char.currency.gp = (_char.currency.gp || 0) + amount;
+      if (typeof Storage !== 'undefined') Storage.saveCharacter(lender);
+
+      document.getElementById('modal-party-loan')?.classList.add('hidden');
+
+      // Ora prova ad acquistare
+      const costGp = _parseCostGp(_pendingPurchaseItem.cost);
+      if (_deductCurrencyCost(_char, costGp)) {
+        _addEquipItem(_pendingPurchaseItem);
+        if (typeof showToast === 'function')
+          showToast(`Prestito ricevuto e oggetto acquistato!`, 'success');
+      } else {
+        if (typeof showToast === 'function')
+          showToast(`Prestito ricevuto. Fondi ancora insufficienti per l'acquisto.`, 'warning');
+      }
+      _pendingPurchaseItem = null;
+    });
+
+    document.getElementById('btn-loan-cancel')?.addEventListener('click', () => {
+      document.getElementById('modal-party-loan')?.classList.add('hidden');
+      // Riapre il modal acquisto
+      if (_pendingPurchaseItem) _showPurchaseDialog(_pendingPurchaseItem);
+    });
+    document.getElementById('modal-party-loan-overlay')?.addEventListener('click', () => {
+      document.getElementById('modal-party-loan')?.classList.add('hidden');
+      if (_pendingPurchaseItem) _showPurchaseDialog(_pendingPurchaseItem);
+    });
+  }
+
+  function _showPartyLoanDialog(neededGp) {
+    const party = typeof Storage !== 'undefined' ? Storage.getParty() : null;
+    const members = (party?.characterIds || [])
+      .map(id => Storage.getCharacter(id))
+      .filter(c => c && c.id !== _char?.id);
+
+    const lenderSel = document.getElementById('loan-lender-select');
+    const amtInput  = document.getElementById('loan-amount-input');
+    const noParty   = document.getElementById('loan-no-party');
+    const loanForm  = document.getElementById('loan-form');
+
+    if (members.length === 0) {
+      noParty?.classList.remove('hidden');
+      loanForm?.classList.add('hidden');
+    } else {
+      noParty?.classList.add('hidden');
+      loanForm?.classList.remove('hidden');
+      if (lenderSel) {
+        lenderSel.innerHTML = members.map(c => {
+          const avail = parseFloat(_calcCurrencyTotalGp(c).toFixed(2));
+          return `<option value="${_e(c.id)}">${_e(c.meta?.name || '—')} (${avail} go)</option>`;
+        }).join('');
+      }
+      if (amtInput) amtInput.value = parseFloat(neededGp.toFixed(2));
+    }
+    document.getElementById('modal-party-loan')?.classList.remove('hidden');
   }
 
   function _bindFeats() {

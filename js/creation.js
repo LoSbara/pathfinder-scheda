@@ -72,6 +72,25 @@ const Creation = (() => {
   }
   function _sign(n) { return n >= 0 ? `+${n}` : `${n}`; }
 
+  // Converte costo PF1 in go (usato solo nel wizard, duplicato da ui.js che è privato)
+  function _parseCostGp(costStr) {
+    if (!costStr || costStr === '—') return 0;
+    const m = String(costStr).trim().match(/^([\d.,]+)\s*(mo|ma|mr|mp|pa)/i);
+    if (!m) return 0;
+    const n = parseFloat(m[1].replace(',', '.'));
+    switch (m[2].toLowerCase()) {
+      case 'mp': case 'pa': return n * 10;
+      case 'mo': return n;
+      case 'ma': return n / 10;
+      case 'mr': return n / 100;
+      default:   return n;
+    }
+  }
+
+  function _draftEquipCostTotal() {
+    return (_draft.startingEquipment || []).reduce((s, eq) => s + (eq.costGp || 0), 0);
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // Navigazione schermata
   // ─────────────────────────────────────────────────────────────────────────
@@ -92,6 +111,7 @@ const Creation = (() => {
       skillRanks: {},                  // { skillId: 0|1 }
       feats: [],                       // [{ name, type }]
       startingGp: null,          // null = non ancora tirato/scelto
+      startingEquipment: [],    // oggetti acquistati durante il wizard
     };
     _step = 0;
 
@@ -1010,6 +1030,33 @@ const Creation = (() => {
             </button>
           </div>
         </div>
+        ${_draft.startingGp !== null ? (() => {
+          const remaining = parseFloat(((_draft.startingGp ?? 0) - _draftEquipCostTotal()).toFixed(2));
+          const eqList    = _draft.startingEquipment || [];
+          return `
+        <div class="cs-sum-card cs-sum-card--equip">
+          <h3><i class="fa-solid fa-bag-shopping"></i> Equipaggiamento Iniziale</h3>
+          <div class="cs-sum-row">
+            <span>Monete rimaste</span>
+            <strong style="color:${remaining < 0 ? '#e07040' : 'var(--gold)'}">${remaining} go</strong>
+          </div>
+          <div id="cs-equip-list" style="margin:0.4rem 0">
+            ${eqList.length === 0
+              ? '<p class="text-muted" style="font-size:0.8rem">Nessun oggetto acquistato.</p>'
+              : eqList.map((eq, i) => `
+                <div class="cs-equip-row">
+                  <span class="cs-equip-name">${_e(eq.name)}</span>
+                  <span class="cs-equip-cost">${_e(eq.cost || '—')}</span>
+                  <button class="btn btn-xs btn-ghost cs-equip-remove" data-idx="${i}">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>`).join('')}
+          </div>
+          <button class="btn btn-sm btn-ghost" id="cs-btn-buy-equip">
+            <i class="fa-solid fa-magnifying-glass"></i> Cerca Oggetto
+          </button>
+        </div>`;
+        })() : ''}
       </div>`;
 
     // Listener ricchezza iniziale
@@ -1026,6 +1073,35 @@ const Creation = (() => {
       if (!sg) return;
       _draft.startingGp = Math.floor(sg.dice * ((sg.sides + 1) / 2)) * sg.multiplier;
       _renderSummary(document.getElementById('creation-content'));
+    });
+
+    // Listener equipaggiamento iniziale
+    document.getElementById('cs-btn-buy-equip')?.addEventListener('click', () => {
+      if (typeof SearchModal === 'undefined') return;
+      SearchModal.openEquipment(null, item => {
+        const costGp   = _parseCostGp(item.cost);
+        const remaining = (_draft.startingGp ?? 0) - _draftEquipCostTotal();
+        if (costGp > 0 && remaining < costGp) {
+          if (typeof showToast === 'function')
+            showToast(`Fondi insufficienti (rimasti ${parseFloat(remaining.toFixed(2))} go, servono ${costGp} go).`, 'warning');
+          return;
+        }
+        _draft.startingEquipment.push({
+          id: `eq_${Date.now()}`, name: item.name, qty: 1,
+          weight: item.weight || 0, cost: item.cost || '',
+          location: 'zaino', worn: false, notes: '', costGp,
+        });
+        _renderSummary(document.getElementById('creation-content'));
+      });
+    });
+    document.getElementById('cs-equip-list')?.addEventListener('click', e => {
+      const btn = e.target.closest('.cs-equip-remove');
+      if (!btn) return;
+      const idx = parseInt(btn.dataset.idx, 10);
+      if (!isNaN(idx)) {
+        _draft.startingEquipment.splice(idx, 1);
+        _renderSummary(document.getElementById('creation-content'));
+      }
     });
   }
 
@@ -1136,7 +1212,17 @@ const Creation = (() => {
     }
 
     // ── Valuta iniziale ────────────────────────────────────────────────────
-    char.currency.gp = _draft.startingGp ?? 0;
+    const spentGp = _draftEquipCostTotal();
+    char.currency.gp = Math.max(0, (_draft.startingGp ?? 0) - spentGp);
+
+    // ── Equipaggiamento acquistato nel wizard ──────────────────────────────
+    (_draft.startingEquipment || []).forEach(eq => {
+      char.equipment.push({
+        id: Character.generateId(), name: eq.name, qty: eq.qty ?? 1,
+        weight: eq.weight || 0, cost: eq.cost || '',
+        location: eq.location || 'zaino', worn: false, notes: '',
+      });
+    });
 
     return char;
   }

@@ -931,6 +931,44 @@
     </div>
   </div>
 
+  <!-- ===== MODAL: Conferma acquisto oggetto ===== -->
+  <div id="modal-purchase" class="modal hidden">
+    <div class="modal-overlay" id="modal-purchase-overlay"></div>
+    <div class="modal-content">
+      <h2><i class="fa-solid fa-cart-shopping"></i> Acquisto</h2>
+      <div id="modal-purchase-body"></div>
+      <div class="modal-footer" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end">
+        <button id="btn-purchase-cancel"   class="btn btn-ghost">Annulla</button>
+        <button id="btn-purchase-free-add" class="btn btn-ghost">Solo aggiungi</button>
+        <button id="btn-purchase-loan"     class="btn btn-secondary hidden"><i class="fa-solid fa-handshake"></i> Chiedi prestito</button>
+        <button id="btn-purchase-buy"      class="btn btn-primary"><i class="fa-solid fa-coins"></i> Acquista</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Prestito dal party ===== -->
+  <div id="modal-party-loan" class="modal hidden">
+    <div class="modal-overlay" id="modal-party-loan-overlay"></div>
+    <div class="modal-content">
+      <h2><i class="fa-solid fa-handshake"></i> Chiedi Prestito al Party</h2>
+      <p id="loan-no-party" class="text-muted hidden">Nessun membro del party disponibile. Unisciti a un party dalla Home.</p>
+      <div id="loan-form">
+        <div class="field-group">
+          <label>Prendi in prestito da</label>
+          <select id="loan-lender-select" class="field-input"></select>
+        </div>
+        <div class="field-group">
+          <label>Importo (go equiv.)</label>
+          <input type="number" id="loan-amount-input" class="field-input field-narrow" min="0.01" step="0.01" />
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex;gap:0.5rem;justify-content:flex-end">
+        <button id="btn-loan-cancel"  class="btn btn-ghost">Annulla</button>
+        <button id="btn-loan-confirm" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Chiedi prestito</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== MODAL: Crea/Modifica personaggio ===== -->
   <div id="modal-new-character" class="modal hidden">
     <div class="modal-overlay" id="modal-overlay"></div>

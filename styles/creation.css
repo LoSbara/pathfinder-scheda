@@ -582,3 +582,16 @@
 
 /* ── Card Ricchezza Iniziale ─────────────────────────────────────────────── */
 .cs-sum-card--gold { border-color: var(--gold); }
+
+/* ── Card Equipaggiamento Iniziale (summary wizard) ──────────────────────── */
+.cs-sum-card--equip { border-color: var(--border-gold); }
+.cs-equip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.cs-equip-name { flex: 1; color: var(--text-main); }
+.cs-equip-cost { color: var(--text-muted); min-width: 50px; text-align: right; }

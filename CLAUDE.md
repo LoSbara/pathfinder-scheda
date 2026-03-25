@@ -13,7 +13,7 @@
 
 > ⚠ Aggiornare questa sezione all'inizio/fine di ogni sessione di lavoro. È la prima cosa che l'AI deve leggere.
 
-### Ultima sessione: 2026-03-25 (sessione 17)
+### Ultima sessione: 2026-03-25 (sessione 18)
 
 **NON ancora committato.** Modifiche in working tree, pronte per commit.
 
@@ -136,6 +136,33 @@
   - `_bindEvents()` — listener per i 3 pulsanti del pannello transfer
 - `styles/main.css` — `.party-transfer-panel` (fixed bottom), `.party-transfer-header`, `.party-transfer-form`, `.party-transfer-row`
 - `styles/character.css` — `.currency-total-row` e `.currency-total-row span`
+
+**Modifiche sessione 18:**
+
+#### Acquisto equipaggiamento e prestiti — COMPLETATO
+- `js/ui.js`:
+  - `_parseCostGp(costStr)` — converte `"25 mo"` / `"5 mr"` / `"2 ma"` in go float
+  - `_deductCurrencyCost(char, costGp)` — converte tutto in rame, deduce, ridistribuisce in pp/go/ar/ra
+  - `_pendingPurchaseItem` — stato temporaneo per la conferma acquisto
+  - `_showPurchaseDialog(item)` — mostra `#modal-purchase` con costo, fondi disponibili, btn "Acquista" / "Chiedi prestito" / "Solo aggiungi"
+  - `_addEquipItem(item)` — helper che aggiunge alla lista e chiama render
+  - `_bindPurchaseModal()` — listener per tutti i pulsanti del modal (acquisto, prestito, annulla)
+  - `_showPartyLoanDialog(neededGp)` — popola `#modal-party-loan` con i membri del party e i loro fondi
+  - `btn-search-item` ora chiama `_showPurchaseDialog` invece di aggiungere direttamente
+- `index.html` — `#modal-purchase` (conferma acquisto) + `#modal-party-loan` (prestito dal party)
+- `styles/character.css` — `.purchase-item-name`, `.purchase-row`, `.purchase-warn`
+- `js/creation.js`:
+  - `_parseCostGp()` (duplicato privato per il wizard)
+  - `_draftEquipCostTotal()` — somma costGp degli oggetti già acquistati nel wizard
+  - `_draft.startingEquipment: []` — lista oggetti acquistati nel wizard
+  - `_renderSummary()` — card "Equipaggiamento Iniziale" (visibile solo dopo aver assegnato la ricchezza): monete rimaste, lista oggetti con ×, btn "Cerca Oggetto"
+  - `_buildCharacter()` — aggiunge `startingEquipment` a `char.equipment`; `char.currency.gp = startingGp - spentGp`
+- `styles/creation.css` — `.cs-sum-card--equip`, `.cs-equip-row`, `.cs-equip-name`, `.cs-equip-cost`
+
+**Note implementative:**
+- Oggetti con costo `'—'` o `0` vengono aggiunti direttamente senza conferma (looted/gratuiti)
+- Il prestito nel wizard non è disponibile (il PG non è ancora salvato/nel party); solo nella scheda personaggio
+- `_deductCurrencyCost` converte automaticamente le denominazioni (es. usa platino se non c'è abbastanza oro)
 
 **Prossimo lavoro prioritario (in ordine):**
 1. Importare talenti EN da d20pfsrd.com (~700+ totali, ora 487 IT)
